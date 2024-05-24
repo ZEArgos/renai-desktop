@@ -29,7 +29,7 @@ project(${PROJECT_NAME_STRING} VERSION ${PROJECT_VERSION_STRING} LANGUAGES ${PRO
 #! Set variables having to do with building the project.
 set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
 set(CMAKE_C_STANDARD 99)
-add_compile_options(-Os -g -Wall -Werror -Wpedantic -D__USE_MINGW_ANSI_STDIO=1)
+add_compile_options(-Os -g -Wall -Werror -Wpedantic)
 
 #! Directories that the project needs to be able to access.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/${PROJECT_NAME})
@@ -44,8 +44,7 @@ file(GLOB HEADER_FILES ${INCLUDE_DIRECTORIES}/glfw3.h ${PROJECT_ENGINE_DIRECTORY
 
 #! Creating the executable file and linking/including all directories needed.
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Dependencies/libglfw3.a)
-target_link_libraries(${PROJECT_NAME} PRIVATE Ntdll.lib)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Dependencies/glfw/libglfw3.a)
 
 #! Copying runtime binaries and Assets to their place in the compiled game 
 #! files.
