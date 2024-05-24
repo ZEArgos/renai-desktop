@@ -34,7 +34,7 @@ add_compile_options(-Os -g -Wall -Werror -Wpedantic)
 #! Directories that the project needs to be able to access.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/${PROJECT_NAME})
 set(PROJECT_SOURCE_DIRECTORY ${CMAKE_SOURCE_DIR}/Source)
-set(PROJECT_ENGINE_DIRECTORY ${CMAKE_SOURCE_DIR}/Source/Engine)
+set(PROJECT_ENGINE_DIRECTORY ${CMAKE_SOURCE_DIR}/Source/Modules)
 include_directories(${CMAKE_SOURCE_DIR}/Dependencies ${PROJECT_ENGINE_DIRECTORY})
 link_directories(${CMAKE_SOURCE_DIR}/Dependencies)
 
