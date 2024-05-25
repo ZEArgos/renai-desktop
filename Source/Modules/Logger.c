@@ -1,46 +1,52 @@
 #include "Logger.h"
 #include <stdarg.h>
+#include <string.h>
 
-/**
- * @brief The reported width of the terminal in columns.
- */
-u64 terminal_width = 0;
+const char *status_strings[2] = {"  SUCCESS  ", "   ERROR   "},
+           *status_colors[2] = {"\033[32m", "\033[31m"};
 
-#if defined(linux)
-
-#include <sys/ioctl.h>
-#include <unistd.h>
-null _GetTerminalWidth(void)
+char* _GetTimeString(void)
 {
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    terminal_width = w.ws_col;
+    i64 seconds = GetCurrentTime(), minutes = 0, hours = 0;
+    if (seconds / 60 > 0)
+    {
+        minutes = seconds / 60;
+        seconds = seconds % 60;
+    }
+    if (minutes / 60 > 0)
+    {
+        hours = minutes / 60;
+        minutes = minutes % 60;
+    }
+
+    char* time_string = malloc(256);
+    sprintf(time_string, "%ld seconds, %ld minutes, %ld hours", seconds,
+            minutes, hours);
+
+    return time_string;
 }
 
-#else
-null _GetTerminalWidth(void) {}
-#endif
-
-u8 _Print(u8 state, string msg, va_list args)
+u8 PrintMessage(u8 state, string message, ...)
 {
     if (terminal_width == 0)
-        _GetTerminalWidth();
+        GetTerminalWidth();
+    if (start_time == 0)
+        (null) GetCurrentTime();
+
+    va_list args;
+    va_start(args, message);
+
+    printf("%s[%s]\033[0m\033[33m  MESSAGE:\033[0m ", status_colors[state],
+           status_strings[state]);
+    vprintf(message, args);
+
+    char* time_string = _GetTimeString();
+    printf(
+        "%.*s", (i32)(terminal_width - strlen(time_string)),
+        "                                                                   "
+        "                                                                   ");
+    printf("\033[33mTIME:\033[0m %s\n", time_string);
+    free(time_string);
 
     return SUCCESS;
-}
-
-u8 PrintMessage(string task_msg, ...)
-{
-    va_list args;
-    va_start(args, task_msg);
-
-    return _Print(0, task_msg, args);
-}
-
-u8 PrintError(string task_msg, ...)
-{
-    va_list args;
-    va_start(args, task_msg);
-
-    return _Print(1, task_msg, args);
 }

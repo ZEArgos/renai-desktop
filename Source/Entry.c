@@ -2,6 +2,7 @@
 
 int32_t main(void)
 {
-    PrintMessage("hello, world!");
+    PrintSuccess("he");
+    PrintError("he");
     return 0;
 }
