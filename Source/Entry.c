@@ -1,6 +1,6 @@
 #include <Logger.h>
 
-int32_t main(void)
+i32 main(void)
 {
     PrintSuccess("he");
     PrintError("he");
