@@ -29,19 +29,17 @@ i64 GetCurrentTime(void)
         start_time = (int64_t)(time.tv_sec) * 1000 + time.tv_usec / 1000;
         return 0;
     }
-    else
-        return ((int64_t)(time.tv_sec) * 1000 + time.tv_usec / 1000) -
-               start_time;
+    return ((int64_t)(time.tv_sec) * 1000 + time.tv_usec / 1000) - start_time;
 }
 null GetTimeString(void)
 {
-    i64 seconds = GetCurrentTime(), minutes = 0, hours = 0;
-    if (seconds / 60 > 0)
+    i64 seconds = GetCurrentTime() / 1000, minutes = 0, hours = 0;
+    if (seconds / 60 > 1)
     {
         minutes = seconds / 60;
         seconds = seconds % 60;
     }
-    if (minutes / 60 > 0)
+    if (minutes / 60 > 1)
     {
         hours = minutes / 60;
         minutes = minutes % 60;

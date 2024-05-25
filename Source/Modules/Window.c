@@ -47,7 +47,7 @@ u8 InitializeGLAD(void)
 
 #if defined(linux)
 
-GLFWwindow* CreateWindow(string title, u16 width, u16 height, i32 x, i32 y)
+GLFWwindow* CreateWindow(u16 width, u16 height, i32 x, i32 y, string title, ...)
 {
     GLFWwindow* win =
         glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
