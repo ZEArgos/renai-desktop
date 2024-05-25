@@ -16,8 +16,25 @@
 // Include for my various typedefs.
 #include "Declarations.h"
 
+/**
+ * @brief Print a formatted and colored message to the console. Works basically
+ * as a wrapper around @ref printf() in the way it takes variadic args and
+ * concatenates them into the given message.
+ * @param state The state in which to print. (i.e failure/success)
+ * @param message The message given to print, with optional formatting
+ * characters to concatenate string into.
+ * @param ... The various arguments to be concatenated into the main message.
+ * @return An unsigned, 8-bit integer flag representing either success or
+ * failure.
+ */
 u8 PrintMessage(u8 state, string message, ...);
+/**
+ * @brief Print a message in success mode.
+ */
 #define PrintSuccess(...) PrintMessage(0, __VA_ARGS__);
+/**
+ * @brief Print a message in error mode.
+ */
 #define PrintError(...) PrintMessage(1, __VA_ARGS__);
 
 #endif // _RENAI_LOGGER_

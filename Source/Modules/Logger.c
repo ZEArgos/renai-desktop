@@ -71,6 +71,7 @@ u8 PrintMessage(u8 state, string message, ...)
     return SUCCESS;
 }
 
+// If debug mode is not on, just have the PrintMessage function do nothing.
 #else
 u8 PrintMessage(u8 state, string message, ...) { return SUCCESS; }
-#endif
+#endif // DEBUG_MODE
