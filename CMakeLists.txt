@@ -39,11 +39,12 @@ link_directories(${CMAKE_SOURCE_DIR}/Dependencies)
 
 #! Source files.
 file(GLOB SOURCE_FILES ${PROJECT_SOURCE_DIRECTORY}/*.c ${PROJECT_ENGINE_DIRECTORY}/*.c)
-file(GLOB HEADER_FILES ${INCLUDE_DIRECTORIES}/glfw3.h ${PROJECT_ENGINE_DIRECTORY}/*.h)
 
 #! Creating the executable file and linking/including all directories needed.
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Dependencies/glfw/libglfw3.a)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Dependencies/glad/libglad.a)
+target_link_libraries(${PROJECT_NAME} PRIVATE m)
 
 #! Copying runtime binaries and Assets to their place in the compiled game 
 #! files.

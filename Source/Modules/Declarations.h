@@ -63,6 +63,20 @@
  * @see The C standard library/manual
  */
 #include <string.h>
+/**
+ * @file glad.h
+ * @brief The file that defines GLAD, my OpenGL wrangler of choice. There's
+ * really nothing special about it, I just know how to use it, kinda.
+ * @see An OpenGL documentation website of your choice (https://docs.gl)
+ */
+#include <glad/glad.h>
+/**
+ * @file glfw3.h
+ * @brief The file that defines the GLFW library, which does all the heavy
+ * lifting for me on cross-compatible window creation + management. I love GLFW.
+ * @see The GLFW documentation (https://www.glfw.org/documentation.html)
+ */
+#include <glfw/glfw3.h>
 
 // Syntactic sugar for the various type cross-compatibile type defines provided
 // by the C standard library. I find them a little...verbose, so I choose to
@@ -85,6 +99,7 @@ typedef double f64;
 typedef long double f128;
 
 typedef char* string;
+typedef const char* cstring;
 typedef void null;
 
 #define SUCCESS 1

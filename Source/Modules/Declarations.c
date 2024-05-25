@@ -30,8 +30,8 @@ i64 GetCurrentTime(void)
         return 0;
     }
     else
-        return start_time -
-               ((int64_t)(time.tv_sec) * 1000 + time.tv_usec / 1000);
+        return ((int64_t)(time.tv_sec) * 1000 + time.tv_usec / 1000) -
+               start_time;
 }
 null GetTimeString(void)
 {

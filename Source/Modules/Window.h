@@ -16,6 +16,9 @@
 #include "Declarations.h"
 
 u8 InitializeGLFW(void);
+null KillGLFW(void);
 u8 InitializeGLAD(void);
+GLFWwindow* CreateWindow(string title, u16 width, u16 height, i32 x, i32 y);
+null DestroyWindow(GLFWwindow* win);
 
 #endif // _RENAI_WINDOW_

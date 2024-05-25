@@ -10,12 +10,12 @@
  * @brief A constant array of string to specify the messages given to the
  * terminal when a specific status is called upon.
  */
-const char* status_strings[2] = {"  SUCCESS  ", "   ERROR   "};
+const char* status_strings[3] = {"  SUCCESS  ", "   ERROR   ", "  WARNING  "};
 /**
  * @brief A constant array of color escape codes to indicate the status of
  * any message in the terminal.
  */
-const char* status_colors[2] = {"\033[32m", "\033[31m"};
+const char* status_colors[3] = {"\033[32m", "\033[31m", "\033[33m"};
 
 u8 PrintMessage(u8 state, string message, ...)
 {
@@ -32,10 +32,13 @@ u8 PrintMessage(u8 state, string message, ...)
 
     u64 line_length = 0, last_assigned_length = 0;
 
+    if (state > (sizeof status_strings) / (sizeof status_strings[0]))
+        return FAILURE;
+
     // Print the message status to the console, using the given color and string
     // label.
-    line_length = printf("%s[%s]\033[0m\033[33m  MESSAGE:\033[0m ",
-                         status_colors[state], status_strings[state]);
+    line_length = printf("%s[%s]  MESSAGE:\033[0m ", status_colors[state],
+                         status_strings[state]);
     if (line_length < 0)
         return FAILURE;
 
@@ -59,12 +62,12 @@ u8 PrintMessage(u8 state, string message, ...)
     // substring functionality of printf to only print the spaces we need, and
     // then the time value.
     if (printf(
-            "%.*s\033[33mTIME:\033[0m %s\n",
-            (i32)(terminal_width - line_length - strlen(last_time_string) + 7),
+            "%.*s%sTIME:\033[0m %s\n",
+            (i32)(terminal_width - line_length - strlen(last_time_string) + 3),
             "                                                               "
             "                                                               "
             "                                                               ",
-            last_time_string) < 0)
+            status_colors[state], last_time_string) < 0)
         return FAILURE;
 
     // Return that we've hit no issues.
