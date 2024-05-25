@@ -56,6 +56,13 @@
  * @see The C standard library/manual
  */
 #include <stdlib.h>
+/**
+ * @file stdlib.h
+ * @brief Provides a ton of C standard string functionality, another typical
+ * given for many C programs.
+ * @see The C standard library/manual
+ */
+#include <string.h>
 
 // Syntactic sugar for the various type cross-compatibile type defines provided
 // by the C standard library. I find them a little...verbose, so I choose to
@@ -80,14 +87,17 @@ typedef long double f128;
 typedef char* string;
 typedef void null;
 
-#define SUCCESS 0
-#define FAILURE 1
+#define SUCCESS 1
+#define FAILURE 0
 
 extern u16 terminal_width;
 null GetTerminalWidth(void);
 
 extern i64 start_time;
 i64 GetCurrentTime(void);
-char* GetTimeString(void);
+
+#define MAX_TIME_STRING_LENGTH 256
+extern char last_time_string[256];
+null GetTimeString(void);
 
 #endif // _RENAI_DECLARATIONS_

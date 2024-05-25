@@ -5,6 +5,7 @@
 
 u16 terminal_width = 0;
 i64 start_time = 0;
+char last_time_string[256] = "0 seconds, 0 minutes, 0 hours";
 
 #if defined(linux)
 null GetTerminalWidth(void)
@@ -32,7 +33,7 @@ i64 GetCurrentTime(void)
         return start_time -
                ((int64_t)(time.tv_sec) * 1000 + time.tv_usec / 1000);
 }
-char* GetTimeString(void)
+null GetTimeString(void)
 {
     i64 seconds = GetCurrentTime(), minutes = 0, hours = 0;
     if (seconds / 60 > 0)
@@ -46,12 +47,9 @@ char* GetTimeString(void)
         minutes = minutes % 60;
     }
 
-    char* time_string = malloc(256);
-    sprintf(time_string, "%ld seconds, %ld minutes, %ld hours", seconds,
+    sprintf(last_time_string, "%ld seconds, %ld minutes, %ld hours", seconds,
             minutes, hours);
-
-    return time_string;
 }
-#elif defined(WIN32)
+#elif defined(_WIN32)
 // windows terminal grabber code goes here
 #endif
