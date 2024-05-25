@@ -88,5 +88,6 @@ null GetTerminalWidth(void);
 
 extern i64 start_time;
 i64 GetCurrentTime(void);
+char* GetTimeString(void);
 
 #endif // _RENAI_DECLARATIONS_

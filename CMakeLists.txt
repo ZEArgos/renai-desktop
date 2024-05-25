@@ -9,13 +9,12 @@ set(GET_MINOR_VERSION "git tag | wc -l")
 execute_process(COMMAND bash "-c" ${GET_REVIS_VERSION} OUTPUT_VARIABLE PROJECT_REVIS_VERS OUTPUT_STRIP_TRAILING_WHITESPACE)
 execute_process(COMMAND bash "-c" ${GET_MINOR_VERSION} OUTPUT_VARIABLE PROJECT_MINOR_VERS OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set(PROJECT_DEBUG_MODE 1)
 if("PROJECT_REVIS_VERS" STREQUAL "" OR "PROJECT_MINOR_VERS" STREQUAL "")
     file(READ ${CMAKE_SOURCE_DIR}/Source/Assets/version.txt PROJECT_VERSION_STRING)
-    set(PROJECT_DEBUG_MODE 0)
 else()
     set(PROJECT_VERSION_STRING 0.${PROJECT_MINOR_VERS}.${PROJECT_REVIS_VERS})
     file(WRITE ${CMAKE_SOURCE_DIR}/Source/Assets/version.txt ${PROJECT_VERSION_STRING})
+    set(PROJECT_DEBUG_MODE 1)
 endif()
 
 #! Set some variables that have to do with the project, like description, 
@@ -54,4 +53,6 @@ file(WRITE ${CMAKE_SOURCE_DIR}/Build/${PROJECT_NAME}/Logs/_debug_log_location_ "
 #! Defining variables to use in the program.
 target_compile_definitions(${PROJECT_NAME} PRIVATE VERSION="v${PROJECT_VERSION_STRING}")
 target_compile_definitions(${PROJECT_NAME} PRIVATE TITLE="${PROJECT_NAME}")
-target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_MODE=${PROJECT_DEBUG_MODE})
+if(PROJECT_DEBUG_MODE)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_MODE=1)
+endif()

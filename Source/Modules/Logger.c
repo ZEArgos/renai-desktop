@@ -1,32 +1,11 @@
 #include "Logger.h"
+
+#ifdef DEBUG_MODE
 #include <stdarg.h>
 #include <string.h>
 
 const char *status_strings[2] = {"  SUCCESS  ", "   ERROR   "},
            *status_colors[2] = {"\033[32m", "\033[31m"};
-
-char* _GetTimeString(void)
-{
-    i64 seconds = GetCurrentTime(), minutes = 0, hours = 0;
-    if (seconds / 60 > 0)
-    {
-        minutes = seconds / 60;
-        seconds = seconds % 60;
-    }
-    if (minutes / 60 > 0)
-    {
-        hours = minutes / 60;
-        minutes = minutes % 60;
-    }
-
-    char* time_string = malloc(256);
-    sprintf(time_string, "%ld seconds, %ld minutes, %ld hours", seconds,
-            minutes, hours);
-
-    return time_string;
-}
-
-#ifdef DEBUG_MODE
 u8 PrintMessage(u8 state, string message, ...)
 {
     if (terminal_width == 0)
