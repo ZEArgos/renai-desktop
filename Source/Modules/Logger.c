@@ -26,6 +26,7 @@ char* _GetTimeString(void)
     return time_string;
 }
 
+#ifdef DEBUG_MODE
 u8 PrintMessage(u8 state, string message, ...)
 {
     if (terminal_width == 0)
@@ -50,3 +51,6 @@ u8 PrintMessage(u8 state, string message, ...)
 
     return SUCCESS;
 }
+#else
+u8 PrintMessage(u8 state, string message, ...) { return SUCCESS; }
+#endif
