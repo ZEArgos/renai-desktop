@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "Logger.h"
+#include <stdarg.h>
 
 null _PrintGLFWError(void)
 {
@@ -78,5 +79,21 @@ GLFWwindow* CreateWindow(string title, u16 width, u16 height, i32 x, i32 y)
 }
 
 #endif
+
+GLFWwindow* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title,
+                            ...)
+{
+    va_list args;
+    va_start(args, title);
+
+    char title_string[WINDOW_MAX_TITLE_LENGTH];
+
+    //!!!! error checking
+    vsnprintf(title_string, WINDOW_MAX_TITLE_LENGTH, title, args);
+
+    GLFWwindow* win = CreateWindow(width, height, x, y, title_string);
+    InitializeGLAD();
+    return win;
+}
 
 null DestroyWindow(GLFWwindow* win) { glfwDestroyWindow(win); }

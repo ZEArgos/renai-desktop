@@ -4,8 +4,7 @@
 i32 main(void)
 {
     InitializeGLFW();
-    GLFWwindow* win = CreateWindow(150, 150, 10, 50, "Testing");
-    InitializeGLAD();
+    GLFWwindow* win = CreateKeyWindow(150, 150, 10, 50, "testing");
 
     while (!glfwWindowShouldClose(win))
     {

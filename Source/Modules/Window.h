@@ -15,6 +15,8 @@
 // typedefs.
 #include "Declarations.h"
 
+#define WINDOW_MAX_TITLE_LENGTH 128
+
 u8 InitializeGLFW(void);
 null KillGLFW(void);
 u8 InitializeGLAD(void);
@@ -25,8 +27,8 @@ u8 InitializeGLAD(void);
  * and I would've needed to in order to decorate the window on Linux. However,
  * the decorators are gone when fully maximized, so I just decided that on
  * Linux, this function creates a borderless maximized window, and on Windows,
- * just creates a normal one. Because of this, the @param width, @param height,
- * @param x, and @param y arguments do nothing visible on Linux.
+ * just creates a normal one. Because of this, the @param title, @param width,
+ * @param height, @param x, and @param y arguments do nothing visible on Linux.
  * @param width The width of the window in screen coordinates.
  * @param height The height of the window in screen coordinates.
  * @param x The X coordinate of the window.
@@ -34,10 +36,17 @@ u8 InitializeGLAD(void);
  * @param title The given title of the window. This can be interlaced with
  * whatever variables you wish using format strings.
  * @param ... The arguments to be concatenated onto the title string.
- * @return GLFWwindow*
+ * @return A pointer to the created window.
  */
 GLFWwindow* CreateWindow(u16 width, u16 height, i32 x, i32 y, string title,
                          ...);
+/**
+ * @brief Does the exact same things as @ref CreateWindow, but it also
+ * initializes GLAD on successful return.
+ * @see CreateWindow
+ */
+GLFWwindow* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title,
+                            ...);
 
 null DestroyWindow(GLFWwindow* win);
 
