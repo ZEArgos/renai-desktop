@@ -45,7 +45,7 @@ GLFWwindow* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title,
     // our success.
     glfwMakeContextCurrent(win);
     PrintSuccess("Successfully created and made current the window '%s'.",
-                 title);
+                 title_string);
 
     // Try to initialize GLAD. If this fails, the process kills itself, so we
     // don't bother checking for further errors.

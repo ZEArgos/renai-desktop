@@ -49,7 +49,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE m)
 
 #! Copying runtime binaries and Assets to their place in the compiled game 
 #! files.
-file(COPY ${PROJECT_SOURCE_DIRECTORY}/Assets DESTINATION ${CMAKE_SOURCE_DIR}/build/${PROJECT_NAME})
+file(COPY ${PROJECT_SOURCE_DIRECTORY}/Assets DESTINATION ${CMAKE_SOURCE_DIR}/Build/${PROJECT_NAME})
 file(WRITE ${CMAKE_SOURCE_DIR}/Build/${PROJECT_NAME}/Logs/_debug_log_location_ "renai_debug_log_directory")
 
 #! Defining variables to use in the program.
