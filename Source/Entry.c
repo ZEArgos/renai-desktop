@@ -5,7 +5,7 @@
 i32 main(void)
 {
     InitializeGLFW();
-    GLFWwindow* win = CreateKeyWindow(150, 150, 10, 50, "testing");
+    GLFWwindow* win = CreateKeyWindow(150, 150, 10, 50, "Renai | %s", VERSION);
 
     while (!glfwWindowShouldClose(win))
     {
