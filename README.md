@@ -10,7 +10,7 @@ This project is under the [Mozilla General Public License v2.0](LICENSE.md).
 
 ---
 
-Renai can be run on 64x versions of Windows and most Linux distributions. It is programmed in C, and is installed via CMake. In order to install, the following steps are needed.
+Renai can be run on x64 versions of Windows and most Linux distributions. It is programmed in C, and is installed via CMake. In order to install, the following steps are needed.
 
 - 1. Download the source files. Git cloning should work fine, but so should downloading any of the releases directly from the repository.
 
