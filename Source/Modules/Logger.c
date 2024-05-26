@@ -57,10 +57,10 @@ u8 PrintMessage(u8 state, string message, ...)
     // Set the global Last_time_string value to, well, now.
     GetTimeString();
 
-    // Do possibly the most ugly operation ever (and probably most inefficient
-    // one too!) and append the time onto the console's output. Use the
-    // substring functionality of printf to only print the spaces we need, and
-    // then the time value.
+    // Do possibly the most ugly operation ever (and probably the most
+    // inefficient one too!) and append the time onto the console's output. Use
+    // the substring functionality of printf to only print the spaces we need,
+    // and then the time value.
     if (printf(
             "%.*s%sTIME:\033[0m %s\n",
             (i32)(terminal_width - line_length - strlen(last_time_string) + 3),

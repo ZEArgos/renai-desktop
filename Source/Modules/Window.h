@@ -38,13 +38,6 @@
  * @param ... The arguments to be concatenated onto the title string.
  * @return A pointer to the created window.
  */
-GLFWwindow* CreateWindow(u16 width, u16 height, i32 x, i32 y, string title);
-
-/**
- * @brief Does the exact same things as @ref CreateWindow, but it also
- * initializes GLAD on successful return.
- * @see CreateWindow
- */
 GLFWwindow* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title,
                             ...);
 
