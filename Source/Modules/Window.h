@@ -15,6 +15,10 @@
 // typedefs.
 #include "Declarations.h"
 
+/**
+ * @brief The max possible length of a window's title text. This is put in place
+ * to prevent certain overflow errors.
+ */
 #define WINDOW_MAX_TITLE_LENGTH 128
 
 /**
@@ -35,6 +39,7 @@
  * @return A pointer to the created window.
  */
 GLFWwindow* CreateWindow(u16 width, u16 height, i32 x, i32 y, string title);
+
 /**
  * @brief Does the exact same things as @ref CreateWindow, but it also
  * initializes GLAD on successful return.
