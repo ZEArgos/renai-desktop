@@ -17,10 +17,6 @@
 
 #define WINDOW_MAX_TITLE_LENGTH 128
 
-u8 InitializeGLFW(void);
-null KillGLFW(void);
-u8 InitializeGLAD(void);
-
 /**
  * @brief This function is rather strange. I didn't want to add another
  * dependency onto this project, especially not one I had no idea how to use,
@@ -38,8 +34,7 @@ u8 InitializeGLAD(void);
  * @param ... The arguments to be concatenated onto the title string.
  * @return A pointer to the created window.
  */
-GLFWwindow* CreateWindow(u16 width, u16 height, i32 x, i32 y, string title,
-                         ...);
+GLFWwindow* CreateWindow(u16 width, u16 height, i32 x, i32 y, string title);
 /**
  * @brief Does the exact same things as @ref CreateWindow, but it also
  * initializes GLAD on successful return.
@@ -48,6 +43,11 @@ GLFWwindow* CreateWindow(u16 width, u16 height, i32 x, i32 y, string title,
 GLFWwindow* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title,
                             ...);
 
-null DestroyWindow(GLFWwindow* win);
+/**
+ * @brief Kill the window passed in. This is a message-logging wrapper around
+ * the @ref glfwDestroyWindow function.
+ * @param win The window to destroy.
+ */
+null KillWindow(GLFWwindow* win);
 
 #endif // _RENAI_WINDOW_

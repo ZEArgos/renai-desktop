@@ -1,3 +1,4 @@
+#include <Libraries.h>
 #include <Logger.h>
 #include <Window.h>
 
@@ -14,6 +15,8 @@ i32 main(void)
         glfwPollEvents();
         glfwSwapBuffers(win);
     }
+
+    KillWindow(win);
     KillGLFW();
     return 0;
 }
