@@ -33,13 +33,10 @@
  * @param height The height of the window in screen coordinates.
  * @param x The X coordinate of the window.
  * @param y The Y coordinate of the window.
- * @param title The given title of the window. This can be interlaced with
- * whatever variables you wish using format strings.
- * @param ... The arguments to be concatenated onto the title string.
+ * @param title The given title of the window.
  * @return A pointer to the created window.
  */
-GLFWwindow* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title,
-                            ...);
+GLFWwindow* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title);
 
 /**
  * @brief Kill the window passed in. This is a message-logging wrapper around
