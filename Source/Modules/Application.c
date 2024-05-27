@@ -3,34 +3,34 @@
 #include "Logger.h"
 #include "Window.h"
 
+/**
+ * @brief The application data structure of the game. Contains the key window
+ * and some global data flags.
+ */
 struct
 {
     u8 initialized;
-    GLFWwindow* key_window;
-    f32 background_r, background_g, background_b;
-} _application = {0, NULL, .0f, .0f, .0f};
+    Window* key_window;
+} _application = {0, NULL};
 
-null InitializeApplication(string title, f32 bgr, f32 bgg, f32 bgb)
+GLFWwindow* GetKeyWindow(void) { return _application.key_window->inner_window; }
+
+null InitializeApplication()
 {
     if (_application.initialized == 1)
         return;
 
     InitializeGLFW();
 
-    _application.background_r = bgr;
-    _application.background_g = bgg;
-    _application.background_b = bgb;
-
     // Allocate some space for the title string.
     char title_string[WINDOW_MAX_TITLE_LENGTH];
     // Try to concatenate the version into the string. If this fails, print
     // the error and return nothing.
-    if (snprintf(title_string, WINDOW_MAX_TITLE_LENGTH, "%s | %s", title,
+    if (snprintf(title_string, WINDOW_MAX_TITLE_LENGTH, "%s | %s", TITLE,
                  VERSION) < 0)
     {
-        PrintError("Failed to create title string for window, expected; '%s'. "
-                   "Code: %d.",
-                   title, errno);
+        PrintError("Failed to create title string for window. Code: %d.",
+                   errno);
         exit(-1);
     }
 
@@ -49,14 +49,14 @@ u8 RunApplication(void)
         return FAILURE;
     }
 
-    while (!glfwWindowShouldClose(_application.key_window))
+    while (!glfwWindowShouldClose(GetKeyWindow()))
     {
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(_application.background_r, _application.background_g,
-                     _application.background_b, 1.0f);
+        glClearColor(WINDOW_BACKGROUND_R, WINDOW_BACKGROUND_G,
+                     WINDOW_BACKGROUND_B, 1.0f);
 
         glfwPollEvents();
-        glfwSwapBuffers(_application.key_window);
+        glfwSwapBuffers(GetKeyWindow());
     }
 
     return SUCCESS;

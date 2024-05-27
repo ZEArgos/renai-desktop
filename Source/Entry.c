@@ -2,8 +2,9 @@
 
 i32 main(void)
 {
-    InitializeApplication(TITLE, 1.0f, 0.0f, 0.0f);
-    RunApplication();
+    InitializeApplication();
+    if (RunApplication() == FAILURE)
+        return -1;
 
     DestroyApplication();
     return 0;

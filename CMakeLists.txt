@@ -62,6 +62,7 @@ macro(create_application)
     else()
         message(FATAL_ERROR "Renai doesn't support this operating system.")
     endif()
+    message(STATUS "Got operating system '${CMAKE_SYSTEM_NAME}'.")
 
     file(COPY ${CMAKE_SOURCE_DIR}/Source/Assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
     target_compile_definitions(${PROJECT_NAME} PRIVATE VERSION="v${PROJECT_VERSION_STRING}" TITLE="${PROJECT_NAME}")

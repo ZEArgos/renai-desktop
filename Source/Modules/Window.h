@@ -21,6 +21,34 @@
  */
 #define WINDOW_MAX_TITLE_LENGTH 128
 
+#define WINDOW_BACKGROUND_R 1.0f
+#define WINDOW_BACKGROUND_G 0.0f
+#define WINDOW_BACKGROUND_B 0.0f
+
+/**
+ * @brief A data structure to contain all the information about a specific
+ * window. Minimal interaction should be done with these objects, instead let
+ * the given functions interface with them.
+ */
+typedef struct Window
+{
+    /**
+     * @brief The inner GLFW interface of the window. This is what is actually
+     * displayed on screen.
+     */
+    GLFWwindow* inner_window;
+    /**
+     * @brief The window's title value.
+     */
+    char title[WINDOW_MAX_TITLE_LENGTH];
+    /**
+     * @brief A flag to specify if the window is initialized or not.
+     */
+    u8 initialized;
+} Window;
+
+GLFWwindow* GetInnerWindow(Window* win);
+
 /**
  * @brief This function is rather strange. I didn't want to add another
  * dependency onto this project, especially not one I had no idea how to use,
@@ -36,13 +64,13 @@
  * @param title The given title of the window.
  * @return A pointer to the created window.
  */
-GLFWwindow* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title);
+Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title);
 
 /**
  * @brief Kill the window passed in. This is a message-logging wrapper around
  * the @ref glfwDestroyWindow function.
  * @param win The window to destroy.
  */
-null KillWindow(GLFWwindow* win);
+null KillWindow(Window* win);
 
 #endif // _RENAI_WINDOW_
