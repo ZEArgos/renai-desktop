@@ -2,7 +2,19 @@
 #include "Libraries.h"
 #include "Logger.h"
 
-GLFWwindow* GetInnerWindow(Window* win) { return win->inner_window; }
+GLFWwindow* GetInnerWindow(Window* win)
+{
+    // Check to make sure the data we're returning isn't bullshit, and if it is,
+    // warn the user.
+    if (win == NULL || win->inner_window == NULL)
+    {
+        PrintWarning(
+            "Tried to access window interface before it was initialized.");
+        return NULL;
+    }
+    // Return the value we want, the inner GLFW interface.
+    return win->inner_window;
+}
 
 Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title)
 {
@@ -27,8 +39,10 @@ Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title)
     // If we fail to create the window, print the error and return nothing.
     if (win->inner_window == NULL)
     {
-        win->initialized = 0;
         PrintGLFWError();
+
+        // Make sure we don't spring a memory leak.
+        free(win);
         return NULL;
     }
 
@@ -36,21 +50,21 @@ Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title)
     // our success.
     glfwMakeContextCurrent(win->inner_window);
     PrintSuccess("Successfully created and made current the window '%s'.",
-                 title);
-
+                 win->title);
     // Try to initialize GLAD. If this fails, the process kills itself, so we
     // don't bother checking for further errors.
     InitializeGLAD();
 
-    win->initialized = 1;
     // Return the address of the newly created window.
     return win;
 }
 
 null KillWindow(Window* win)
 {
-    // Warn the user about the window's destruction.
-    PrintWarning("Killed window '%s'.", glfwGetWindowTitle(win->inner_window));
     glfwDestroyWindow(win->inner_window);
+    // Warn the user about the window's destruction.
+    PrintWarning("Killed window '%s'.", win->title);
+    // Free the window's associated memory space.
     free(win);
+    win = NULL;
 }

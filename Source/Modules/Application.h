@@ -14,6 +14,10 @@
 // Gimme them typedefs baby
 #include "Declarations.h"
 
+#define WINDOW_BACKGROUND_R 1.0f
+#define WINDOW_BACKGROUND_G 0.0f
+#define WINDOW_BACKGROUND_B 0.0f
+
 /**
  * @brief Get the inner_window object of the application's key window. This is
  * simply a getter. Returns NULL if the application hasn't been initialized.

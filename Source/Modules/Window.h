@@ -21,10 +21,6 @@
  */
 #define WINDOW_MAX_TITLE_LENGTH 128
 
-#define WINDOW_BACKGROUND_R 1.0f
-#define WINDOW_BACKGROUND_G 0.0f
-#define WINDOW_BACKGROUND_B 0.0f
-
 /**
  * @brief A data structure to contain all the information about a specific
  * window. Minimal interaction should be done with these objects, instead let
@@ -38,15 +34,19 @@ typedef struct Window
      */
     GLFWwindow* inner_window;
     /**
-     * @brief The window's title value.
+     * @brief The window's title value. This can only be 127 characters long (+
+     * a \0 character.)
      */
     char title[WINDOW_MAX_TITLE_LENGTH];
-    /**
-     * @brief A flag to specify if the window is initialized or not.
-     */
-    u8 initialized;
 } Window;
 
+/**
+ * @brief Get the GLFWwindow interface inside the given Window. We do some
+ * checks inside this function to make sure we're not gonna acess nonexistant
+ * data, or at least warn the user when we do.
+ * @param win A pointer to the window we're trying to check.
+ * @return A pointer to the inner GLFW interface of the window.
+ */
 GLFWwindow* GetInnerWindow(Window* win);
 
 /**
@@ -68,7 +68,7 @@ Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title);
 
 /**
  * @brief Kill the window passed in. This is a message-logging wrapper around
- * the @ref glfwDestroyWindow function.
+ * the @ref glfwDestroyWindow function. This will set the given Window to NULL.
  * @param win The window to destroy.
  */
 null KillWindow(Window* win);

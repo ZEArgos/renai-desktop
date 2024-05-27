@@ -17,15 +17,15 @@ GLFWwindow* GetKeyWindow(void)
 {
     // Make sure the application is initialized, and if not warn about the
     // access attempt.
-    if (_application.initialized == 0 || _application.key_window == NULL)
+    if (_application.initialized == 0)
     {
         PrintWarning("Tried to access the application's key window before its "
                      "initialization.");
         return NULL;
     }
-    // Return the key window's inner window. Note that we don't check to make
-    // sure THIS window is initialized, so it's up to the function caller.
-    return _application.key_window->inner_window;
+    // Return the key window's inner window, using a secondary check system
+    // implemented in the Window.h file.
+    return GetInnerWindow(_application.key_window);
 }
 
 null InitializeApplication(void)
@@ -77,8 +77,10 @@ u8 RunApplication(void)
 
 null DestroyApplication(void)
 {
+    // Make sure we clean up after ourselves.
     KillWindow(_application.key_window);
     KillGLFW();
 
+    // Set the initialization bits back to the original values.
     _application.initialized = 0;
 }
