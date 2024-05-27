@@ -4,3 +4,4 @@
 /.cache/
 /.vscode/
 /BuildProject.sh
+/.clang-format
