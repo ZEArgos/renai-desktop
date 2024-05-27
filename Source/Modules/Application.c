@@ -13,9 +13,22 @@ struct
     Window* key_window;
 } _application = {0, NULL};
 
-GLFWwindow* GetKeyWindow(void) { return _application.key_window->inner_window; }
+GLFWwindow* GetKeyWindow(void)
+{
+    // Make sure the application is initialized, and if not warn about the
+    // access attempt.
+    if (_application.initialized == 0 || _application.key_window == NULL)
+    {
+        PrintWarning("Tried to access the application's key window before its "
+                     "initialization.");
+        return NULL;
+    }
+    // Return the key window's inner window. Note that we don't check to make
+    // sure THIS window is initialized, so it's up to the function caller.
+    return _application.key_window->inner_window;
+}
 
-null InitializeApplication()
+null InitializeApplication(void)
 {
     if (_application.initialized == 1)
         return;

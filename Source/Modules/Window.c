@@ -6,18 +6,22 @@ GLFWwindow* GetInnerWindow(Window* win) { return win->inner_window; }
 
 Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title)
 {
+    // Allocate enough space for the window.
     Window* win = malloc(sizeof(Window));
+    // Give the window's title some text. To prevent buffer overflows, this is
+    // strictly cut off at the 127th index. We cast this to void because we
+    // don't give a fuck about this return value.
+    (void)strncpy(win->title, title, WINDOW_MAX_TITLE_LENGTH);
 
-    strcpy(win->title, title);
 #ifdef linux
     // Make GLFW create our window. Since, on GNOME (specifically Wayland),
     // window decorators are ugly as hell, I've decided to just have the
     // window be automatically in fullscreen borderless.
-    win->inner_window =
-        glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
+    win->inner_window = glfwCreateWindow(width, height, win->title,
+                                         glfwGetPrimaryMonitor(), NULL);
 #else
     // Make GLFW create our window.
-    win->inner_window = glfwCreateWindow(width, height, title, NULL, NULL);
+    win->inner_window = glfwCreateWindow(width, height, win->title, NULL, NULL);
 #endif
 
     // If we fail to create the window, print the error and return nothing.
