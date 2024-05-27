@@ -123,7 +123,8 @@ extern i64 start_time;
 i64 GetCurrentTime(void);
 
 #define MAX_TIME_STRING_LENGTH 256
-extern char last_time_string[256];
+extern char last_time_string[MAX_TIME_STRING_LENGTH];
 null GetTimeString(void);
+null FormatTimeString(i64 ms, i64 s, i64 m);
 
 #endif // _RENAI_DECLARATIONS_
