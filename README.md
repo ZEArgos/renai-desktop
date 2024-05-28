@@ -18,7 +18,7 @@ Renai can be run on x64 versions of Windows and most Linux distributions. It is 
 
 - 3. Run make, or whatever other build system you're making CMake use. On Windows, MinGW provides a make implementation. This will build the actual game files.
 
-- 4. Run the app. THe subfolder inside "build" should be named "Renai", which is a portable installation of the game, built for your specific machine and operating system. Move this to wherever you'd like.
+- 4. Run the app. The subfolder inside "build" should be named "Renai", which is a portable installation of the game, built for your specific machine and operating system. Move this to wherever you'd like.
 
 The full command breakdown (and the one I use in my build.sh file) is as follows;
 
