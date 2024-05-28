@@ -16,7 +16,7 @@ GLFWwindow* GetInnerWindow(Window* win)
     return win->inner_window;
 }
 
-Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title)
+Window* CreateKeyWindow(i32 x, i32 y, string title)
 {
     // Allocate enough space for the window.
     Window* win = malloc(sizeof(Window));
@@ -29,11 +29,16 @@ Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title)
     // Make GLFW create our window. Since, on GNOME (specifically Wayland),
     // window decorators are ugly as hell, I've decided to just have the
     // window be automatically in fullscreen borderless.
-    win->inner_window = glfwCreateWindow(width, height, win->title,
-                                         glfwGetPrimaryMonitor(), NULL);
+    win->inner_window =
+        glfwCreateWindow(1, 1, win->title, glfwGetPrimaryMonitor(), NULL);
 #else
+    // Get the primary monitor and its video information.
+    GLFWmonitor* primary = glfwGetPrimaryMonitor();
+    const GLFWvidmode* res = glfwGetVideoMode(primary);
     // Make GLFW create our window.
-    win->inner_window = glfwCreateWindow(width, height, win->title, NULL, NULL);
+    win->inner_window =
+        glfwCreateWindow((i32)(res->width / 1.25), (i32)(res->height / 1.25),
+                         win->title, NULL, NULL);
 #endif
 
     // If we fail to create the window, print the error and return nothing.
@@ -45,6 +50,8 @@ Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title)
         free(win);
         return NULL;
     }
+    // Set the position of the window as given.
+    glfwSetWindowPos(win->inner_window, x, y);
 
     // Make the window's OpenGL context the current one on this thread and print
     // our success.

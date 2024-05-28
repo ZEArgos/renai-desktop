@@ -30,9 +30,16 @@ GLFWwindow* GetKeyWindow(void)
 
 null InitializeApplication(void)
 {
+    // Check to make sure the application hasn't already been initialized, and
+    // if it has, do not proceed.
     if (_application.initialized == 1)
+    {
+        PrintWarning("Tried to initialize the application twice.");
         return;
+    }
 
+    // Initialize GLFW. This kills the application completely on failure, so we
+    // don't bother checking for errors.
     InitializeGLFW();
 
     // Allocate some space for the title string.
@@ -47,31 +54,43 @@ null InitializeApplication(void)
         exit(-1);
     }
 
-    _application.key_window = CreateKeyWindow(150, 150, 10, 50, title_string);
+    // Try to initialize the application's key window. if this fails, fail the
+    // application.
+    _application.key_window = CreateKeyWindow(10, 50, title_string);
     if (_application.key_window == NULL)
         exit(-1);
 
+    // Set the initialization flag of the application.
     _application.initialized = 1;
 }
 
 u8 RunApplication(void)
 {
+    // If the application hasn't yet been initialized, don't allow this function
+    // to continue any further, and log the issue to the console.
     if (_application.initialized == 0)
     {
-        PrintWarning("Tried to run the application before initialization.");
+        PrintError("Tried to run the application before initialization.");
         return FAILURE;
     }
+    PrintSuccess("Beginning the application's main loop.");
 
+    // While the window shouldn't be closed, run the render / update loop.
     while (!glfwWindowShouldClose(GetKeyWindow()))
     {
+        // Clear the color buffer and paint it with a clear white.
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(WINDOW_BACKGROUND_R, WINDOW_BACKGROUND_G,
-                     WINDOW_BACKGROUND_B, 1.0f);
+        glClearColor(APPLICATION_BACKGROUND_R, APPLICATION_BACKGROUND_G,
+                     APPLICATION_BACKGROUND_B, 1.0f);
 
+        // Poll for any events like keyboard pressing or resizing.
         glfwPollEvents();
+        // Swap the front and back framebuffers.
         glfwSwapBuffers(GetKeyWindow());
     }
+    PrintSuccess("Main loop finished.");
 
+    // Return that the function was successful.
     return SUCCESS;
 }
 

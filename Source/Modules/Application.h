@@ -1,8 +1,8 @@
 /**
  * @file Application.h
  * @author Zenais Argos
- * @brief Provides the methods required for running Renai's basest functionality
- * easily.
+ * @brief Provides the methods required for starting Renai's basest
+ * functionality easily.
  * @date 2024-05-26
  *
  * @copyright Copyright (c) 2024
@@ -14,9 +14,18 @@
 // Gimme them typedefs baby
 #include "Declarations.h"
 
-#define WINDOW_BACKGROUND_R 1.0f
-#define WINDOW_BACKGROUND_G 0.0f
-#define WINDOW_BACKGROUND_B 0.0f
+/**
+ * @brief The red value of each window's background.
+ */
+#define APPLICATION_BACKGROUND_R 1.0f
+/**
+ * @brief The green value of each window's background.
+ */
+#define APPLICATION_BACKGROUND_G 1.0f
+/**
+ * @brief The blue value of each window's background.
+ */
+#define APPLICATION_BACKGROUND_B 1.0f
 
 /**
  * @brief Get the inner_window object of the application's key window. This is

@@ -55,16 +55,14 @@ GLFWwindow* GetInnerWindow(Window* win);
  * and I would've needed to in order to decorate the window on Linux. However,
  * the decorators are gone when fully maximized, so I just decided that on
  * Linux, this function creates a borderless maximized window, and on Windows,
- * just creates a normal one. Because of this, the @param title, @param width,
- * @param height, @param x, and @param y arguments do nothing visible on Linux.
- * @param width The width of the window in screen coordinates.
- * @param height The height of the window in screen coordinates.
+ * just creates a normal one. Because of this, the @param title, @param x, and
+ * @param y arguments do nothing visible on Linux.
  * @param x The X coordinate of the window.
  * @param y The Y coordinate of the window.
  * @param title The given title of the window.
  * @return A pointer to the created window.
  */
-Window* CreateKeyWindow(u16 width, u16 height, i32 x, i32 y, string title);
+Window* CreateKeyWindow(i32 x, i32 y, string title);
 
 /**
  * @brief Kill the window passed in. This is a message-logging wrapper around
