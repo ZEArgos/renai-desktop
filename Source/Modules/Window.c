@@ -2,6 +2,11 @@
 #include "Libraries.h"
 #include "Logger.h"
 
+void _framebuffer_callback(GLFWwindow* win, i32 width, i32 height)
+{
+    glViewport(0, 0, width, height);
+}
+
 GLFWwindow* GetInnerWindow(Window* win)
 {
     // Check to make sure the data we're returning isn't bullshit, and if it is,
@@ -29,8 +34,7 @@ Window* CreateKeyWindow(i32 x, i32 y, string title)
     // Make GLFW create our window. Since, on GNOME (specifically Wayland),
     // window decorators are ugly as hell, I've decided to just have the
     // window be automatically in fullscreen borderless.
-    win->inner_window =
-        glfwCreateWindow(1, 1, win->title, glfwGetPrimaryMonitor(), NULL);
+    win->inner_window = glfwCreateWindow(1, 1, win->title, NULL, NULL);
 #else
     // Get the primary monitor and its video information.
     GLFWmonitor* primary = glfwGetPrimaryMonitor();
@@ -52,12 +56,16 @@ Window* CreateKeyWindow(i32 x, i32 y, string title)
     }
     // Set the position of the window as given.
     glfwSetWindowPos(win->inner_window, x, y);
+    glfwSetFramebufferSizeCallback(win->inner_window, _framebuffer_callback);
+    glfwSetWindowMonitor(win->inner_window, glfwGetPrimaryMonitor(), 0, 0, 1, 1,
+                         0);
 
-    // Make the window's OpenGL context the current one on this thread and print
-    // our success.
+    // Make the window's OpenGL context the current one on this thread and
+    // print our success.
     glfwMakeContextCurrent(win->inner_window);
     PrintSuccess("Successfully created and made current the window '%s'.",
                  win->title);
+
     // Try to initialize GLAD. If this fails, the process kills itself, so we
     // don't bother checking for further errors.
     InitializeGLAD();
