@@ -89,3 +89,15 @@ null FormatTimeString(i64 ms, i64 s, i64 m)
     sprintf(last_string_buffer, "%ldm", m);
     strcat(last_time_string, last_string_buffer);
 }
+
+#include "Logger.h"
+u8 PrintOpenGLError(void)
+{
+    i32 err = glGetError();
+    if (err != 0)
+    {
+        PrintError("Ran into an error with OpenGL. Code: %d", err);
+        return FAILURE;
+    }
+    return SUCCESS;
+}
