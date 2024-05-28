@@ -54,11 +54,16 @@ Window* CreateKeyWindow(i32 x, i32 y, string title)
         free(win);
         return NULL;
     }
+
+#ifdef linux
+    // Set the window to borderless fullscreen.
+    glfwSetWindowMonitor(win->inner_window, glfwGetPrimaryMonitor(), 0, 0, 1, 1,
+                         0);
+#endif
+
     // Set the position of the window as given.
     glfwSetWindowPos(win->inner_window, x, y);
     glfwSetFramebufferSizeCallback(win->inner_window, _framebuffer_callback);
-    glfwSetWindowMonitor(win->inner_window, glfwGetPrimaryMonitor(), 0, 0, 1, 1,
-                         0);
 
     // Make the window's OpenGL context the current one on this thread and
     // print our success.
