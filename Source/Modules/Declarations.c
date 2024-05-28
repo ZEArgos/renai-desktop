@@ -38,12 +38,12 @@ i64 GetCurrentTime(void)
 null GetTimeString(void)
 {
     i64 ms = GetCurrentTime(), s = 0, m = 0;
-    if (ms / 1000 > 1)
+    if (ms > 1000)
     {
         s = ms / 1000;
         ms = ms % 1000;
     }
-    if (s / 60 > 1)
+    if (s > 60)
     {
         m = s / 60;
         s = s % 60;
@@ -64,12 +64,12 @@ i32 _DigitCount(i64 n)
 
 null FormatTimeString(i64 ms, i64 s, i64 m)
 {
-    i32 ms_digit_count = _DigitCount(ms), s_digit_count = _DigitCount(s),
-        m_digit_count = _DigitCount(m);
+    i32 ms_digit_count = 4 - _DigitCount(ms),
+        s_digit_count = 2 - _DigitCount(s), m_digit_count = 5 - _DigitCount(m);
 
     char last_string_buffer[MAX_TIME_STRING_LENGTH];
     snprintf(
-        last_time_string, 4 - ms_digit_count,
+        last_time_string, ms_digit_count,
         "000000000000000000000000000000000000000000000000000000000000000000"
         "000000000000000000000000000000000000000000000000000000000000000000");
     sprintf(last_string_buffer, "%ldms, ", ms);
@@ -77,14 +77,14 @@ null FormatTimeString(i64 ms, i64 s, i64 m)
         last_string_buffer,
         "000000000000000000000000000000000000000000000000000000000000000000"
         "000000000000000000000000000000000000000000000000000000000000000000",
-        2 - s_digit_count);
+        s_digit_count);
     strcat(last_time_string, last_string_buffer);
     sprintf(last_string_buffer, "%lds, ", s);
     strncat(
         last_string_buffer,
         "000000000000000000000000000000000000000000000000000000000000000000"
         "000000000000000000000000000000000000000000000000000000000000000000",
-        5 - m_digit_count);
+        m_digit_count);
     strcat(last_time_string, last_string_buffer);
     sprintf(last_string_buffer, "%ldm", m);
     strcat(last_time_string, last_string_buffer);
