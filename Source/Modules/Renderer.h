@@ -13,13 +13,23 @@
 
 // Mmm typedefs
 #include "Declarations.h"
-#include "Shader.h"
+
+typedef struct ShaderNode
+{
+    struct ShaderNode* next;
+    u32 shader;
+    cstring name;
+} ShaderNode;
 
 typedef struct Renderer
 {
-    u32* shader_list_head;
+    ShaderNode* shader_list_head;
 } Renderer;
 
-Renderer* InitializeRenderer(void);
+u32 GetShader(cstring shader_name);
+null InsertShaderNode(ShaderNode* node);
+ShaderNode* CreateShaderNode(string shader_name);
+u8 InitializeRenderer(void);
+null DestroyRenderer(void);
 
 #endif

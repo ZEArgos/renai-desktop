@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Libraries.h"
 #include "Logger.h"
+#include "Renderer.h"
 #include "Shader.h"
 #include "Window.h"
 
@@ -12,6 +13,7 @@ struct
 {
     u8 initialized;
     Window* key_window;
+    Renderer renderer;
 } _application = {0, NULL};
 
 GLFWwindow* GetKeyWindow(void)
@@ -61,6 +63,10 @@ null InitializeApplication(void)
     if (_application.key_window == NULL)
         exit(-1);
 
+    // Try to initialize the renderer. If this fails, kill the application.
+    if (InitializeRenderer() == FAILURE)
+        exit(-1);
+
     // Set the initialization flag of the application.
     _application.initialized = 1;
 }
@@ -76,13 +82,14 @@ u8 RunApplication(void)
     }
     PrintSuccess("Beginning the application's main loop.");
 
-    u32 shader = LoadShader("basic");
-
     float vertices[] = {
         // positions         // colors
-        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-        0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
+        0.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom left
+        -0.5f, 0.5f,  0.0f, 0.0f, 0.0f, 0.0f, // top left
+        0.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom right
+        -0.5f, 0.5f,  0.0f, 0.0f, 0.0f, 0.0f, // top left
+        0.5f,  0.5f,  0.0f, 0.0f, 0.0f, 0.0f  // top right
     };
 
     unsigned int VBO, VAO;
@@ -112,10 +119,10 @@ u8 RunApplication(void)
         glClearColor(APPLICATION_BACKGROUND_R, APPLICATION_BACKGROUND_G,
                      APPLICATION_BACKGROUND_B, 1.0f);
 
-        if (!UseShader(shader))
+        if (!UseShader(GetShader("basic")))
             return FAILURE;
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Poll for any events like keyboard pressing or resizing.
         glfwPollEvents();
@@ -136,6 +143,7 @@ null DestroyApplication(void)
     // Make sure we clean up after ourselves.
     KillWindow(_application.key_window);
     KillGLFW();
+    DestroyRenderer();
 
     // Set the initialization bits back to the original values.
     _application.initialized = 0;

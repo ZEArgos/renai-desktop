@@ -13,29 +13,12 @@
 #ifndef _RENAI_DECLARATIONS_
 #define _RENAI_DECLARATIONS_
 
-// Cross-compilation includes that are different on Windows vs. Linux go here,
-// so the compiler can insert them as needed.
-#if defined(linux)
 /**
- * @file bits/stdint-intn.h
- * @brief Provides the various integer type defines that make my
- * cross-compilation job much, much easier.
+ * @file stdint.h
+ * @brief Provides the various portable types used in the project.
  * @see The C standard library/manual
  */
-#include <bits/stdint-intn.h>
-/**
- * @file bits/stdint-uintn.h
- * @brief Provides the various unsigned integer type defines that make my
- * cross-compilation job much, much easier.
- * @see The C standard library/manual
- */
-#include <bits/stdint-uintn.h>
-#elif defined(_WIN32)
-// insert cool win32 includes here
-#else
-#error "Compiling on unsupported operating system. Please reconsider."
-#endif
-
+#include <stdint.h>
 /**
  * @file errno.h
  * @brief Provides the ERRNO global variable, for diagnosing problems with
@@ -98,6 +81,11 @@ typedef uint32_t u32;
 typedef uint16_t u16;
 // x8 unsigned integer (0, +255)
 typedef uint8_t u8;
+
+// integer pointer
+typedef intptr_t iptr;
+// unsigned integer pointer
+typedef uintptr_t uptr;
 
 // x32 floating point (+/-3.4028235 × 10^38)
 typedef float f32;
