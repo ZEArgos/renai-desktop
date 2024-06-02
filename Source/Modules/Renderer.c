@@ -53,21 +53,19 @@ ShaderNode* CreateShaderNode(string shader_name)
 u8 _Renderer_RenderWindowContent(Renderer* self)
 {
     f32 vertices[] = {
-        0.5f,  0.5f,  0.0f, // top right
-        0.5f,  -0.5f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, // bottom left
-        -0.5f, 0.5f,  0.0f, // top left
+        // positions                        // colors
+        0.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom left
+        -0.5f, 0.5f,  0.0f, 0.0f, 0.0f, 0.0f, // top left
+        0.5f,  0.5f,  0.0f, 0.0f, 0.0f, 0.0f  // top right
     };
-    u32 indices[] = {
-        // note that we start from 0!
-        0, 1, 3, // first Triangle
-        1, 2, 3  // second Triangle
-    };
+    u32 indices[] = {0, 1, 2, 2, 3, 0};
 
-    unsigned int VBO, VAO, EBO;
+    u32 VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+
     // bind the Vertex Array Object first, then bind and set vertex buffer(s),
     // and then configure vertex attributes(s).
     glBindVertexArray(VAO);
@@ -92,6 +90,7 @@ u8 _Renderer_RenderWindowContent(Renderer* self)
     if (!shader->UseShader(shader))
         return FAILURE;
     glBindVertexArray(VAO);
+    // glDrawArrays(GL_TRIANGLES, 0, 6);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glDeleteVertexArrays(1, &VAO);
