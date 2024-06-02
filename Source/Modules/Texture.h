@@ -28,7 +28,7 @@ typedef struct TextureInstance
     u8 z;
 } TextureInstance;
 
-Texture LoadTextureFromFile(cstring name, f32 width, f32 height);
+Texture LoadTextureFromFile(cstring name);
 
 #define RegisterTexture(from, x, y, z)                                         \
     RegisterFullTexture(from, 1.0f, 0.0f, x, y, z)

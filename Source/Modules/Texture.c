@@ -2,7 +2,7 @@
 #include <glm/cglm.h>
 #include <stbi/stb_image.h>
 
-Texture LoadTextureFromFile(cstring name, f32 width, f32 height)
+Texture LoadTextureFromFile(cstring name)
 {
     u32 texture_identifier;
     glGenTextures(1, &texture_identifier);
@@ -59,7 +59,8 @@ Texture LoadTextureFromFile(cstring name, f32 width, f32 height)
                           (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    return (struct Texture){texture_identifier, VAO, width, height, name};
+    return (struct Texture){texture_identifier, VAO, image_width, image_height,
+                            name};
 }
 
 TextureInstance RegisterFullTexture(Texture* from, f32 brightness, f32 rotation,
