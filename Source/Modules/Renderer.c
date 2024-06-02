@@ -3,6 +3,9 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Window.h"
+#include <glm/cglm.h>
+#include <glm/common.h>
+#include <glm/util.h>
 
 extern struct
 {
@@ -51,7 +54,7 @@ ShaderNode* CreateShaderNode(string shader_name)
     return created;
 }
 
-u8 _Renderer_RenderWindowContent(Renderer* self)
+u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
 {
 
     ShaderNode* shader = GetShader("basic");
@@ -61,12 +64,45 @@ u8 _Renderer_RenderWindowContent(Renderer* self)
     glUniform1i(glGetUniformLocation(shader->shader, "in_texture"), 0);
     Texture tex = LoadTextureFromFile(
         "./Assets/Tilesets/xanthos_outskirts_1.jpg", 0.25f, 0.25f);
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex.inner);
 
+    mat4 view, projection;
+    glm_mat4_identity(view);
+    glm_mat4_identity(projection);
+    glm_perspective(glm_rad(45.0f), swidth / sheight, 0.1f, 100.0f, projection);
+    glm_translate_z(view, 3.0f);
+
+    glUniformMatrix4fv(glGetUniformLocation(shader->shader, "projection"), 1,
+                       GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(shader->shader, "view"), 1,
+                       GL_FALSE, &view[0][0]);
+
+    // world space positions of our cubes
+    vec3 cubePositions[] = {{0.0f, 0.0f, 0.0f},    {2.0f, 5.0f, -15.0f},
+                            {-1.5f, -2.2f, -2.5f}, {-3.8f, -2.0f, -12.3f},
+                            {2.4f, -0.4f, -3.5f},  {-1.7f, 3.0f, -7.5f},
+                            {1.3f, -2.0f, -2.5f},  {1.5f, 2.0f, -2.5f},
+                            {1.5f, 0.2f, -1.5f},   {-1.3f, 1.0f, -1.5f}};
+
+    // render boxes
     glBindVertexArray(tex.vao);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    for (unsigned int i = 0; i < 10; i++)
+    {
+        // calculate the model matrix for each object and pass it to shader
+        // before drawing
+        mat4 model;
+        glm_mat4_identity(model);
+        glm_translate(model, cubePositions[i]);
+
+        // float angle = 20.0f * i;
+        // glm_rotate_at()
+        //     glm_rotate(model, glm_rad(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        glUniformMatrix4fv(glGetUniformLocation(shader->shader, "model"), 1,
+                           GL_FALSE, &model[0][0]);
+
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     glDeleteVertexArrays(1, &tex.vao);
     return SUCCESS;
