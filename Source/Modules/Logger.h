@@ -35,10 +35,6 @@ u8 PrintMessage(u8 state, string message, ...);
  */
 #define PrintSuccess(...) PrintMessage(0, __VA_ARGS__)
 /**
- * @brief Print a message in error mode.
- */
-#define PrintError(...) PrintMessage(1, __VA_ARGS__)
-/**
  * @brief Print a message in warning mode.
  */
 #define PrintWarning(...) PrintMessage(2, __VA_ARGS__)
@@ -48,13 +44,14 @@ u8 PrintMessage(u8 state, string message, ...);
  */
 #define PrintSuccess(...)
 /**
- * @brief Print a message in error mode. (REMOVED DUE TO NON-DEBUG MODE)
- */
-#define PrintError(...)
-/**
  * @brief Print a message in warning mode. (REMOVED DUE TO NON-DEBUG MODE)
  */
 #define PrintWarning(...)
 #endif
+
+/**
+ * @brief Print a message in error mode.
+ */
+#define PrintError(...) PrintMessage(1, __VA_ARGS__)
 
 #endif // _RENAI_LOGGER_
