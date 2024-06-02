@@ -44,7 +44,7 @@ macro(setup_project)
     add_compile_options(-Os -g -Wall -Werror -Wpedantic)
     message(STATUS "Set compile options for the project. Using the ISO C${CMAKE_C_STANDARD} standard.")
 
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/${PROJECT_NAME})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
     include_directories(${CMAKE_SOURCE_DIR}/Dependencies ${CMAKE_SOURCE_DIR}/Source/Modules)
     link_directories(${CMAKE_SOURCE_DIR}/Dependencies/glfw ${CMAKE_SOURCE_DIR}/Dependencies/glad)
 endmacro()
