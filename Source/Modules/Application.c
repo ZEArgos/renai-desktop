@@ -63,7 +63,8 @@ null InitializeApplication(void)
         exit(-1);
 
     // Try to initialize the renderer. If this fails, kill the application.
-    if (InitializeRenderer() == FAILURE)
+    const GLFWvidmode* resolution = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    if (InitializeRenderer(resolution->width, resolution->height) == FAILURE)
         exit(-1);
 
     // Set the initialization flag of the application.
@@ -82,7 +83,6 @@ u8 RunApplication(void)
     PrintSuccess("Beginning the application's main loop.");
 
     glEnable(GL_DEPTH_TEST);
-    const GLFWvidmode* resolution = glfwGetVideoMode(glfwGetPrimaryMonitor());
     // While the window shouldn't be closed, run the render / update loop.
     while (!glfwWindowShouldClose(GetKeyWindow()))
     {
@@ -92,8 +92,7 @@ u8 RunApplication(void)
                      APPLICATION_BACKGROUND_B, 1.0f);
 
         // Render the contents of the window. If this fails, kill the function.
-        if (!_application.renderer.RenderWindowContent(
-                &_application.renderer, resolution->width, resolution->height))
+        if (!_application.renderer.RenderWindowContent(&_application.renderer))
         {
             PrintError("Failed to properly render the window's contents.");
             return FAILURE;

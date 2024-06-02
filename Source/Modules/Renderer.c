@@ -54,9 +54,8 @@ ShaderNode* CreateShaderNode(string shader_name)
     return created;
 }
 
-u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
+u8 _Renderer_RenderWindowContent(Renderer* self)
 {
-
     ShaderNode* shader = GetShader("basic");
     if (!shader->UseShader(shader))
         return FAILURE;
@@ -66,17 +65,6 @@ u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
         LoadTextureFromFile("./Assets/Tilesets/xanthos_outskirts_1.jpg");
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex.inner);
-
-    mat4 view, projection;
-    glm_mat4_identity(view);
-    glm_mat4_identity(projection);
-    glm_perspective(glm_rad(45.0f), swidth / sheight, 0.1f, 100.0f, projection);
-    glm_translate_z(view, -3.0f);
-
-    glUniformMatrix4fv(glGetUniformLocation(shader->shader, "projection"), 1,
-                       GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(glGetUniformLocation(shader->shader, "view"), 1,
-                       GL_FALSE, &view[0][0]);
 
     // world space positions of our cubes
     vec3 pos = {0.0f, 0.0f, 0.0f};
@@ -90,8 +78,8 @@ u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
     glm_mat4_identity(model);
     glm_translate(model, pos);
 
-    float angle = 20.0f;
-    glm_rotate(model, glm_rad(angle), (vec3){1.0f, 0.3f, 0.5f});
+    // float angle = 50.0f;
+    // glm_rotate(model, glm_rad(angle), (vec3){1.0f, 1.0f, 1.0f});
     glUniformMatrix4fv(glGetUniformLocation(shader->shader, "model"), 1,
                        GL_FALSE, &model[0][0]);
 
@@ -101,10 +89,23 @@ u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
     return SUCCESS;
 }
 
-u8 InitializeRenderer(void)
+u8 InitializeRenderer(f32 swidth, f32 sheight)
 {
     _application.renderer = (struct Renderer){CreateShaderNode("basic"),
                                               _Renderer_RenderWindowContent};
+
+    mat4 projection = GLM_MAT4_IDENTITY_INIT;
+    glm_perspective(glm_rad(60.0f), swidth / sheight, 0.1f, 100.0f, projection);
+    glm_translate_z(projection, -3.0f);
+
+    if (!_application.renderer.shader_list_head->UseShader(
+            _application.renderer.shader_list_head))
+        return FAILURE;
+    glUniformMatrix4fv(
+        glGetUniformLocation(_application.renderer.shader_list_head->shader,
+                             "projection"),
+        1, GL_FALSE, &projection[0][0]);
+
     PrintSuccess("Initialized the application renderer successfully.");
     return SUCCESS;
 }

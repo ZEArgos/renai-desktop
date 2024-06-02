@@ -17,15 +17,15 @@
 /**
  * @brief The red value of each window's background.
  */
-#define APPLICATION_BACKGROUND_R 1.0f
+#define APPLICATION_BACKGROUND_R 0.0f
 /**
  * @brief The green value of each window's background.
  */
-#define APPLICATION_BACKGROUND_G 1.0f
+#define APPLICATION_BACKGROUND_G 0.0f
 /**
  * @brief The blue value of each window's background.
  */
-#define APPLICATION_BACKGROUND_B 1.0f
+#define APPLICATION_BACKGROUND_B 0.0f
 
 /**
  * @brief Get the inner_window object of the application's key window. This is
