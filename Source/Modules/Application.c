@@ -81,12 +81,13 @@ u8 RunApplication(void)
     }
     PrintSuccess("Beginning the application's main loop.");
 
+    glEnable(GL_DEPTH_TEST);
     const GLFWvidmode* resolution = glfwGetVideoMode(glfwGetPrimaryMonitor());
     // While the window shouldn't be closed, run the render / update loop.
     while (!glfwWindowShouldClose(GetKeyWindow()))
     {
         // Clear the color buffer and paint it with a clear white.
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(APPLICATION_BACKGROUND_R, APPLICATION_BACKGROUND_G,
                      APPLICATION_BACKGROUND_B, 1.0f);
 
