@@ -90,13 +90,12 @@ u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
     glm_mat4_identity(model);
     glm_translate(model, pos);
 
-    // float angle = 20.0f * i;
-    // glm_rotate_at()
-    //     glm_rotate(model, glm_rad(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+    float angle = 20.0f;
+    glm_rotate(model, glm_rad(angle), (vec3){1.0f, 0.3f, 0.5f});
     glUniformMatrix4fv(glGetUniformLocation(shader->shader, "model"), 1,
                        GL_FALSE, &model[0][0]);
 
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glDeleteVertexArrays(1, &tex.vao);
     return SUCCESS;
