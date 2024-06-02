@@ -1,14 +1,14 @@
 #include "Texture.h"
 #include <stbi/stb_image.h>
 
-Texture* LoadTextureFromFile(cstring name, u16 width, u16 height)
+Texture LoadTextureFromFile(cstring name, f32 width, f32 height)
 {
     u32 texture_identifier;
     glGenTextures(1, &texture_identifier);
     glBindTexture(GL_TEXTURE_2D, texture_identifier);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -18,19 +18,60 @@ Texture* LoadTextureFromFile(cstring name, u16 width, u16 height)
 
     if (data != NULL)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-                     GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0,
+                     GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
         exit(-1);
     stbi_image_free(data);
 
-    Texture* tex = malloc(sizeof(struct Texture));
-    tex->inner = texture_identifier;
-    tex->height = height;
-    tex->width = width;
-    tex->name = name;
+    float vertices[] = {
+        // positions          // colors           // texture coords
+        width,  height,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+        width,  -height, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+        -width, -height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+        -width, height,  0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
+    };
+    unsigned int indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
-    return tex;
+    u32 VBO, VAO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s),
+    // and then configure vertex attributes(s).
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+                 GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // texture coords
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    return (struct Texture){texture_identifier, VAO, width, height, name};
+}
+
+TextureInstance RegisterFullTexture(Texture* from, f32 brightness, f32 rotation,
+                                    f32 x, f32 y, u8 z)
+{
+    return (struct TextureInstance){from, brightness, rotation, x, y, z};
 }

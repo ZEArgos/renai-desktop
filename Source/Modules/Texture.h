@@ -15,8 +15,8 @@
 
 typedef struct Texture
 {
-    u32 inner;
-    u16 width, height;
+    u32 inner, vao;
+    f32 width, height;
     cstring name;
 } Texture;
 
@@ -28,6 +28,12 @@ typedef struct TextureInstance
     u8 z;
 } TextureInstance;
 
-Texture* LoadTextureFromFile(cstring name, u16 width, u16 height);
+Texture LoadTextureFromFile(cstring name, f32 width, f32 height);
+
+#define RegisterTexture(from, x, y, z)                                         \
+    RegisterFullTexture(from, 1.0f, 0.0f, x, y, z)
+
+TextureInstance RegisterFullTexture(Texture* from, f32 brightness, f32 rotation,
+                                    f32 x, f32 y, u8 z);
 
 #endif
