@@ -28,6 +28,8 @@
  * failure.
  */
 u8 PrintMessage(u8 state, string message, ...);
+
+#ifdef DEBUG_MODE
 /**
  * @brief Print a message in success mode.
  */
@@ -40,5 +42,19 @@ u8 PrintMessage(u8 state, string message, ...);
  * @brief Print a message in warning mode.
  */
 #define PrintWarning(...) PrintMessage(2, __VA_ARGS__)
+#else
+/**
+ * @brief Print a message in success mode. (REMOVED DUE TO NON-DEBUG MODE)
+ */
+#define PrintSuccess(...)
+/**
+ * @brief Print a message in error mode. (REMOVED DUE TO NON-DEBUG MODE)
+ */
+#define PrintError(...)
+/**
+ * @brief Print a message in warning mode. (REMOVED DUE TO NON-DEBUG MODE)
+ */
+#define PrintWarning(...)
+#endif
 
 #endif // _RENAI_LOGGER_

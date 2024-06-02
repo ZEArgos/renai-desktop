@@ -19,14 +19,16 @@ typedef struct ShaderNode
     struct ShaderNode* next;
     u32 shader;
     cstring name;
+    u8 (*UseShader)(struct ShaderNode*);
 } ShaderNode;
 
 typedef struct Renderer
 {
     ShaderNode* shader_list_head;
+    u8 (*RenderWindowContent)(struct Renderer*);
 } Renderer;
 
-u32 GetShader(cstring shader_name);
+ShaderNode* GetShader(cstring shader_name);
 null InsertShaderNode(ShaderNode* node);
 ShaderNode* CreateShaderNode(string shader_name);
 u8 InitializeRenderer(void);
