@@ -1,3 +1,6 @@
+# UNTIL THE NEXT VERSION, THIS WILL ONLY COMPILE ON LINUX.
+
+
 ## Renai
 
 Renai is a high fantasy adult game set in the mystical world of Silre, where 'magic' and 'metal' are synonymous. As demons begin to spill from a crack in the gates to hell, a goddess bestows _you_ with the power to save humanity. Was her faith unfounded?
