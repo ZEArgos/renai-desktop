@@ -7,11 +7,9 @@ null PrintGLFWError(void)
     cstring description;
     i32 code = glfwGetError(&description);
 
-    // Try to print the message to console. If this, for some reason, fails,
-    // kill the process.
-    if (PrintError("An error happened with GLFW. Code: %d. Message: '%s'.",
-                   code, description) == FAILURE)
-        exit(-1);
+    // Try to print the message to console.
+    PrintError("An error happened with GLFW. Code: %d. Message: '%s'.", code,
+               description);
 }
 
 null InitializeGLFW(void)
