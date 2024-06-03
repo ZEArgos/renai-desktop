@@ -2,7 +2,7 @@
 #include <glm/cglm.h>
 #include <stbi/stb_image.h>
 
-Texture LoadTextureFromFile(cstring name)
+Texture LoadTextureFromFile(cstring name, f32 swidth, f32 sheight)
 {
     u32 texture_identifier;
     glGenTextures(1, &texture_identifier);
@@ -28,16 +28,24 @@ Texture LoadTextureFromFile(cstring name)
 
     stbi_image_free(data);
 
+    f32 vao_width = image_width / swidth * 5,
+        vao_height = image_height / sheight / 2 * 5;
     float vertices[] = {
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.5f,  -0.5f, -0.5f, 1.0f, 0.0f,
-        0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
-        -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+        // positions                  // texture coords
+        vao_width,  vao_height,  0.0f, 1.0f, 1.0f, // top right
+        vao_width,  -vao_height, 0.0f, 1.0f, 0.0f, // bottom right
+        -vao_width, -vao_height, 0.0f, 0.0f, 0.0f, // bottom left
+        -vao_width, vao_height,  0.0f, 0.0f, 1.0f  // top left
+    };
+    unsigned int indices[] = {
+        0, 1, 3,                                   // first triangle
+        1, 2, 3                                    // second triangle
     };
 
-    u32 VBO, VAO;
+    u32 VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    // glGenBuffers(1, &EBO);
+    glGenBuffers(1, &EBO);
 
     // bind the Vertex Array Object first, then bind and set vertex buffer(s),
     // and then configure vertex attributes(s).
@@ -46,9 +54,9 @@ Texture LoadTextureFromFile(cstring name)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-    //              GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+                 GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),

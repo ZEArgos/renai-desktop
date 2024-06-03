@@ -54,15 +54,15 @@ ShaderNode* CreateShaderNode(string shader_name)
     return created;
 }
 
-u8 _Renderer_RenderWindowContent(Renderer* self)
+u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
 {
     ShaderNode* shader = GetShader("basic");
     if (!shader->UseShader(shader))
         return FAILURE;
 
     glUniform1i(glGetUniformLocation(shader->shader, "in_texture"), 0);
-    Texture tex =
-        LoadTextureFromFile("./Assets/Tilesets/xanthos_outskirts_1.jpg");
+    Texture tex = LoadTextureFromFile(
+        "./Assets/Tilesets/xanthos_outskirts_1.jpg", swidth, sheight);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex.inner);
 
@@ -83,7 +83,7 @@ u8 _Renderer_RenderWindowContent(Renderer* self)
     glUniformMatrix4fv(glGetUniformLocation(shader->shader, "model"), 1,
                        GL_FALSE, &model[0][0]);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glDeleteVertexArrays(1, &tex.vao);
     return SUCCESS;

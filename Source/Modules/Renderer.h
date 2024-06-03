@@ -25,7 +25,7 @@ typedef struct ShaderNode
 typedef struct Renderer
 {
     ShaderNode* shader_list_head;
-    u8 (*RenderWindowContent)(struct Renderer*);
+    u8 (*RenderWindowContent)(struct Renderer*, f32, f32);
 } Renderer;
 
 ShaderNode* GetShader(cstring shader_name);
