@@ -28,8 +28,8 @@ Texture LoadTextureFromFile(cstring name, f32 swidth, f32 sheight)
 
     stbi_image_free(data);
 
-    f32 vao_width = image_width / swidth * 5,
-        vao_height = image_height / sheight / 2 * 5;
+    f32 vao_width = image_width / swidth * 4,
+        vao_height = image_height / sheight / 2 * 4;
     float vertices[] = {
         // positions                  // texture coords
         vao_width,  vao_height,  0.0f, 1.0f, 1.0f, // top right

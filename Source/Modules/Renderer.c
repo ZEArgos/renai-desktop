@@ -62,7 +62,7 @@ u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
 
     glUniform1i(glGetUniformLocation(shader->shader, "in_texture"), 0);
     Texture tex = LoadTextureFromFile(
-        "./Assets/Tilesets/xanthos_outskirts_1.jpg", swidth, sheight);
+        "./Assets/Tilesets/light_floorboard_1.jpg", swidth, sheight);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex.inner);
 
