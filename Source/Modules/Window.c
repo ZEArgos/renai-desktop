@@ -34,7 +34,7 @@ Window* CreateKeyWindow(i32 x, i32 y, string title)
     // Make GLFW create our window. Since, on GNOME (specifically Wayland),
     // window decorators are ugly as hell, I've decided to just have the
     // window be automatically in fullscreen borderless.
-    win->inner_window = glfwCreateWindow(1, 1, win->title, NULL, NULL);
+    // win->inner_window = glfwCreateWindow(1, 1, win->title, NULL, NULL);
 #else
     // Get the primary monitor and its video information.
     GLFWmonitor* primary = glfwGetPrimaryMonitor();
@@ -44,6 +44,14 @@ Window* CreateKeyWindow(i32 x, i32 y, string title)
         glfwCreateWindow((i32)(res->width / 1.25), (i32)(res->height / 1.25),
                          win->title, NULL, NULL);
 #endif
+
+    // Get the primary monitor and its video information.
+    GLFWmonitor* primary = glfwGetPrimaryMonitor();
+    const GLFWvidmode* res = glfwGetVideoMode(primary);
+    // Make GLFW create our window.
+    win->inner_window =
+        glfwCreateWindow((i32)(res->width / 1.25), (i32)(res->height / 1.25),
+                         win->title, NULL, NULL);
 
     // If we fail to create the window, print the error and return nothing.
     if (win->inner_window == NULL)
@@ -57,8 +65,9 @@ Window* CreateKeyWindow(i32 x, i32 y, string title)
 
 #ifdef linux
     // Set the window to borderless fullscreen.
-    glfwSetWindowMonitor(win->inner_window, glfwGetPrimaryMonitor(), 0, 0, 1, 1,
-                         0);
+    // glfwSetWindowMonitor(win->inner_window, glfwGetPrimaryMonitor(), 0, 0, 1,
+    // 1,
+    //                      0);
 #endif
 
     // Set the position of the window as given.
