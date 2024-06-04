@@ -36,7 +36,7 @@ void InitializeApplication(void)
     }
 
     // Log the beginning of the session, for time-keeping purposes.
-    char time_string[128];
+    char time_string[64];
     GetDateString(time_string);
     PrintWarning("Beginning a new session on %s.", time_string);
 
