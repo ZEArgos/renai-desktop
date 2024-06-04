@@ -1,6 +1,41 @@
 #include "Application.h" // Mother header of the file, provides all functions and structures.
 #include "Libraries.h" // Provides functions to initialize the various used libraries.
 #include "Logger.h" // Provides the debug logger functionality.
+#include "Renderer.h" // Include the various functions and data structures needed to render objects.
+#include "Window.h" // Includes the various structures/functions needed to create and manage windows.
+
+/**
+ * @brief The structuring of the application interface. This simply provides the
+ * gears to run the engine, everything must be setup using functions and other
+ * subdata.
+ */
+typedef struct Application
+{
+    /**
+     * @brief A flag to tell the user if the application has yet been
+     * initialized.
+     */
+    u8 initialized;
+    /**
+     * @brief The width of the primary monitor's framebuffer. This is used for a
+     * couple calculations throughout the application, so it's probably prudent
+     * to store its value.
+     */
+    f32 screen_width;
+    /**
+     * @brief The height of the monitor's framebuffer, kept for the same reasons
+     * as the width.
+     */
+    f32 screen_height;
+    /**
+     * @brief The window of the application.-
+     */
+    Window window;
+    /**
+     * @brief The application's renderer.
+     */
+    Renderer renderer;
+} Application;
 
 /**
  * @brief The application data structure of the game. Contains the window

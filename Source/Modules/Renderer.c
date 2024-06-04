@@ -4,9 +4,11 @@
 #include "Texture.h"
 #include "Window.h"
 #include <glm/cglm.h>
-#include <glm/common.h>
-#include <glm/util.h>
 
+/**
+ * @brief The internal application structure. This is defined in Application.h,
+ * so we just define it as external here and call it a day.
+ */
 extern struct
 {
     u8 initialized;
@@ -25,7 +27,7 @@ ShaderNode* GetShaderNode(const char* shader_name)
         current_node = current_node->next;
     }
 
-    PrintWarning("Couldn't find shader '%s'.", shader_name);
+    PrintWarning("Couldn't find shader node '%s'.", shader_name);
     return NULL;
 }
 
