@@ -37,7 +37,7 @@ typedef struct Window
      * @brief The window's title value. This can only be 127 characters long (+
      * a \0 character.)
      */
-    char title[WINDOW_MAX_TITLE_LENGTH];
+    char* title;
 } Window;
 
 /**
@@ -62,7 +62,7 @@ GLFWwindow* GetInnerWindow(Window* win);
  * @param title The given title of the window.
  * @return A pointer to the created window.
  */
-Window* CreateKeyWindow(i32 x, i32 y, string title);
+Window CreateKeyWindow(i32 x, i32 y, string title);
 
 /**
  * @brief Kill the window passed in. This is a message-logging wrapper around

@@ -10,7 +10,7 @@
 extern struct
 {
     u8 initialized;
-    Window* key_window;
+    Window key_window;
     Renderer renderer;
 } _application;
 

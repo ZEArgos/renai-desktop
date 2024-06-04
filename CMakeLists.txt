@@ -66,7 +66,7 @@ macro(create_application)
     message(STATUS "Got operating system '${CMAKE_SYSTEM_NAME}'.")
 
     file(COPY ${CMAKE_SOURCE_DIR}/Source/Assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    target_compile_definitions(${PROJECT_NAME} PRIVATE VERSION="v${PROJECT_VERSION_STRING}" TITLE="${PROJECT_NAME}")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TITLE="${PROJECT_NAME} | v${PROJECT_VERSION_STRING}")
     if(PROJECT_DEBUG_MODE)
         file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Logs/debug_log_location "renai_debug_log_directory")
         target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_MODE=1)

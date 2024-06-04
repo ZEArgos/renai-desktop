@@ -114,6 +114,7 @@ i64 GetCurrentTime(void);
 extern char last_time_string[MAX_TIME_STRING_LENGTH];
 null GetTimeString(void);
 null FormatTimeString(i64 ms, i64 s, i64 m);
+void GetDateString(char* buffer);
 
 u8 PrintOpenGLError(void);
 

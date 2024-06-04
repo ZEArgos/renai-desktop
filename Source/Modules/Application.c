@@ -8,12 +8,12 @@
  * @brief The application data structure of the game. Contains the key window
  * and some global data flags.
  */
-struct
+struct Application
 {
     u8 initialized;
-    Window* key_window;
+    Window key_window;
     Renderer renderer;
-} _application = {0, NULL};
+} _application = {0};
 
 GLFWwindow* GetKeyWindow(void)
 {
@@ -25,9 +25,10 @@ GLFWwindow* GetKeyWindow(void)
                      "initialization.");
         return NULL;
     }
+
     // Return the key window's inner window, using a secondary check system
     // implemented in the Window.h file.
-    return GetInnerWindow(_application.key_window);
+    return GetInnerWindow(&_application.key_window);
 }
 
 null InitializeApplication(void)
@@ -40,26 +41,19 @@ null InitializeApplication(void)
         return;
     }
 
+    // Log the beginning of the session, for time-keeping purposes.
+    char time_string[128];
+    GetDateString(time_string);
+    PrintWarning("Beginning a new session on %s.", time_string);
+
     // Initialize GLFW. This kills the application completely on failure, so we
     // don't bother checking for errors.
     InitializeGLFW();
 
-    // Allocate some space for the title string.
-    char title_string[WINDOW_MAX_TITLE_LENGTH];
-    // Try to concatenate the version into the string. If this fails, print
-    // the error and return nothing.
-    if (snprintf(title_string, WINDOW_MAX_TITLE_LENGTH, "%s | %s", TITLE,
-                 VERSION) < 0)
-    {
-        PrintError("Failed to create title string for window. Code: %d.",
-                   errno);
-        exit(-1);
-    }
-
     // Try to initialize the application's key window. if this fails, fail the
     // application.
-    _application.key_window = CreateKeyWindow(10, 50, title_string);
-    if (_application.key_window == NULL)
+    _application.key_window = CreateKeyWindow(10, 50, TITLE);
+    if (GetInnerWindow(&_application.key_window) == NULL)
         exit(-1);
 
     // Try to initialize the renderer. If this fails, kill the application.
@@ -89,8 +83,7 @@ u8 RunApplication(void)
     {
         // Clear the color buffer and paint it with a clear white.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(APPLICATION_BACKGROUND_R, APPLICATION_BACKGROUND_G,
-                     APPLICATION_BACKGROUND_B, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // Render the contents of the window. If this fails, kill the function.
         if (!_application.renderer.RenderWindowContent(
@@ -114,7 +107,7 @@ u8 RunApplication(void)
 null DestroyApplication(void)
 {
     // Make sure we clean up after ourselves.
-    KillWindow(_application.key_window);
+    KillWindow(&_application.key_window);
     KillGLFW();
     DestroyRenderer();
 
