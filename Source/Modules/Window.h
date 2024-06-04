@@ -40,6 +40,8 @@ typedef struct Window
     char* title;
 } Window;
 
+u8 CheckWindowValidity(Window* win);
+
 /**
  * @brief Get the GLFWwindow interface inside the given Window. We do some
  * checks inside this function to make sure we're not gonna acess nonexistant
@@ -49,20 +51,7 @@ typedef struct Window
  */
 GLFWwindow* GetInnerWindow(Window* win);
 
-/**
- * @brief This function is rather strange. I didn't want to add another
- * dependency onto this project, especially not one I had no idea how to use,
- * and I would've needed to in order to decorate the window on Linux. However,
- * the decorators are gone when fully maximized, so I just decided that on
- * Linux, this function creates a borderless maximized window, and on Windows,
- * just creates a normal one. Because of this, the @param title, @param x, and
- * @param y arguments do nothing visible on Linux.
- * @param x The X coordinate of the window.
- * @param y The Y coordinate of the window.
- * @param title The given title of the window.
- * @return A pointer to the created window.
- */
-Window CreateKeyWindow(i32 x, i32 y, string title);
+Window CreateKeyWindow(void);
 
 /**
  * @brief Kill the window passed in. This is a message-logging wrapper around

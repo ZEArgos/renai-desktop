@@ -13,6 +13,44 @@
 
 // Includes the various typedefs and utility functions needed to run the game.
 #include "Declarations.h"
+// Includes the various structures/functions needed to create and manage
+// windows.
+#include "Window.h"
+// Include the various functions and data structures needed to render objects.
+#include "Renderer.h"
+
+/**
+ * @brief The structuring of the application interface. This simply provides the
+ * gears to run the engine, everything must be setup using functions and other
+ * subdata.
+ */
+typedef struct Application
+{
+    /**
+     * @brief A flag to tell the user if the application has yet been
+     * initialized.
+     */
+    u8 initialized;
+    /**
+     * @brief The width of the primary monitor's framebuffer. This is used for a
+     * couple calculations throughout the application, so it's probably prudent
+     * to store its value.
+     */
+    f32 screen_width;
+    /**
+     * @brief The height of the monitor's framebuffer, kept for the same reasons
+     * as the width.
+     */
+    f32 screen_height;
+    /**
+     * @brief The window of the application.-
+     */
+    Window window;
+    /**
+     * @brief The application's renderer.
+     */
+    Renderer renderer;
+} Application;
 
 /**
  * @brief Get the inner_window object of the application's key window. This is
@@ -33,10 +71,9 @@ null InitializeApplication(void);
 /**
  * @brief Run the application's main gameplay loop. This should be the last
  * function call from the application's entrypoint, unless it's @ref
- * DestroyApplication.
- * @return An 8-bit integer flag representing success or failure.
+ * DestroyApplication. This function will kill the application on failure.
  */
-u8 RunApplication(void);
+null RunApplication(void);
 
 /**
  * @brief Kill the application. This should be the LAST function call from the

@@ -10,7 +10,8 @@
 extern struct
 {
     u8 initialized;
-    Window key_window;
+    f32 screen_width, screen_height;
+    Window window;
     Renderer renderer;
 } _application;
 
@@ -54,15 +55,16 @@ ShaderNode* CreateShaderNode(string shader_name)
     return created;
 }
 
-u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
+null RenderWindowContent(Renderer* renderer)
 {
     ShaderNode* shader = GetShader("basic");
     if (!shader->UseShader(shader))
-        return FAILURE;
+        exit(-1);
 
     glUniform1i(glGetUniformLocation(shader->shader, "in_texture"), 0);
     Texture tex = LoadTextureFromFile(
-        "./Assets/Tilesets/light_floorboard_1.jpg", swidth, sheight);
+        "./Assets/Tilesets/light_floorboard_1.jpg", _application.screen_width,
+        _application.screen_height);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex.inner);
 
@@ -86,16 +88,18 @@ u8 _Renderer_RenderWindowContent(Renderer* self, f32 swidth, f32 sheight)
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glDeleteVertexArrays(1, &tex.vao);
-    return SUCCESS;
 }
 
-u8 InitializeRenderer(f32 swidth, f32 sheight)
+u8 InitializeRenderer(void)
 {
-    _application.renderer = (struct Renderer){CreateShaderNode("basic"),
-                                              _Renderer_RenderWindowContent};
+    _application.renderer = (struct Renderer){
+        CreateShaderNode("basic"),
+    };
 
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
-    glm_perspective(glm_rad(60.0f), swidth / sheight, 0.1f, 100.0f, projection);
+    glm_perspective(glm_rad(60.0f),
+                    _application.screen_width / _application.screen_height,
+                    0.1f, 100.0f, projection);
     glm_translate_z(projection, -3.0f);
 
     if (!_application.renderer.shader_list_head->UseShader(

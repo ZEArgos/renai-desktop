@@ -9,10 +9,9 @@
 i32 main(void)
 {
     // Initialize the application and try to run its loop. If the loop fails,
-    // raise an error.
+    // the process will self-destruct, so don't worry about error checking.
     InitializeApplication();
-    if (RunApplication() == FAILURE)
-        return -1;
+    RunApplication();
 
     // Destroy/free all allocated memory and get ready to exit the application
     // entirely.

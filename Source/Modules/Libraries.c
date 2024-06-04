@@ -52,4 +52,7 @@ null InitializeGLAD(void)
     }
     PrintSuccess("Initialized GLAD and loaded OpenGL. Version: '%s'.",
                  glGetString(GL_VERSION));
+    // Set the OpenGL hint to indicate that we will be using various depth-based
+    // functions.
+    glEnable(GL_DEPTH_TEST);
 }

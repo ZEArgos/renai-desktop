@@ -25,13 +25,13 @@ typedef struct ShaderNode
 typedef struct Renderer
 {
     ShaderNode* shader_list_head;
-    u8 (*RenderWindowContent)(struct Renderer*, f32, f32);
 } Renderer;
 
 ShaderNode* GetShader(cstring shader_name);
 null InsertShaderNode(ShaderNode* node);
 ShaderNode* CreateShaderNode(string shader_name);
-u8 InitializeRenderer(f32 swidth, f32 sheight);
+u8 InitializeRenderer(void);
 null DestroyRenderer(void);
+null RenderWindowContent(Renderer* renderer);
 
 #endif
