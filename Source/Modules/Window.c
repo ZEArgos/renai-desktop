@@ -19,6 +19,8 @@ extern struct
 
 void _framebuffer_callback(GLFWwindow* win, i32 width, i32 height)
 {
+    // code graciously stolen from
+    // https://diegomacario.github.io/2021/04/23/how-to-keep-the-aspect-ratio-of-an-opengl-window-constant.html
     float desiredAspectRatio = 1;
 
     int widthOfViewport = 0, heightOfViewport = 0;
