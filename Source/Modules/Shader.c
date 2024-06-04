@@ -73,7 +73,7 @@ u8 _GetCompilationError(u32 program, u8 type)
     return SUCCESS;
 }
 
-u32 LoadShader(char* name)
+u32 LoadShader(const char* name)
 {
     // Set up the full shader paths, taking advantage of snprintf to concatenate
     // the full char* in one function call.

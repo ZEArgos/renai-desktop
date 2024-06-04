@@ -75,15 +75,15 @@ void RenderWindowContent(void);
  * @brief Get a shader node from the renderer's linked list by name.
  * @param shader_name The name of the shader, set by default as the name of the
  * shader's containing folder.
- * @return A pointer to the given shader node, or NULL if an error occurred.
+ * @return A pointer to the given shader node, or NULL if we couldn't find it.
  */
 ShaderNode* GetShaderNode(const char* shader_name);
 
 /**
- * @brief Insert a shader node into the renderer's linked list.
+ * @brief Append a shader node to the renderer's linked list.
  * @param node A pointer to the memory containing the to-be-inserted node.
  */
-void InsertShaderNode(ShaderNode* node);
+void AppendShaderNode(ShaderNode* node);
 
 /**
  * @brief Create a shader node from the given file name. This calls the @ref
@@ -92,6 +92,6 @@ void InsertShaderNode(ShaderNode* node);
  * @return A pointer to the memory of the shader node. Note that this needs to
  * be freed, as it was allocated dynamically.
  */
-ShaderNode* CreateShaderNode(char* shader_name);
+ShaderNode* CreateShaderNode(const char* shader_name);
 
 #endif // _RENAI_RENDERER_

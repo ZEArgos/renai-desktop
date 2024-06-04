@@ -1,6 +1,21 @@
 #include "Texture.h"
+#include "Renderer.h"
+#include "Window.h"
 #include <glm/cglm.h>
 #include <stbi/stb_image.h>
+
+/**
+ * @brief The internal application structure. This is defined in Application.h,
+ * so we just define it as external here and call it a day.
+ */
+extern struct
+{
+    u8 initialized;
+    f32 screen_width, screen_height;
+    f32 aspect_ratio;
+    Window window;
+    Renderer renderer;
+} _application;
 
 Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
 {
@@ -28,8 +43,8 @@ Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
 
     stbi_image_free(data);
 
-    f32 vao_width = image_width / swidth * 3,
-        vao_height = image_height / sheight / 2 * 3;
+    f32 vao_width = image_width / _application.screen_width,
+        vao_height = image_height / _application.screen_height;
     float vertices[] = {
         // positions                  // texture coords
         vao_width,  vao_height,  0.0f, 1.0f, 1.0f, // top right

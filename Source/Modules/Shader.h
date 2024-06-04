@@ -27,7 +27,7 @@
  * @param name The shader's containing folder's name.
  * @return The OpenGL shader ID, or 0 if an error occurred.
  */
-u32 LoadShader(char* name);
+u32 LoadShader(const char* name);
 
 /**
  * @brief Use the specified shader. Wrapper around @ref glUseProgram.

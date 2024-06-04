@@ -27,6 +27,7 @@ typedef struct Application
      * as the width.
      */
     f32 screen_height;
+    f32 aspect_ratio;
     /**
      * @brief The window of the application.-
      */
@@ -79,17 +80,17 @@ void InitializeApplication(void)
     // don't bother checking for errors.
     InitializeGLFW();
 
-    // Try to initialize the application's key window. If this fails, fail the
-    // application's process.
-    _application.window = CreateKeyWindow();
-    if (!CheckWindowValidity(&_application.window))
-        exit(-1);
-
     // Get the primary monitor's video information and store it. This is used in
     // many calculations throughout the process.
     const GLFWvidmode* resolution = glfwGetVideoMode(glfwGetPrimaryMonitor());
     _application.screen_width = resolution->width;
     _application.screen_height = resolution->height;
+
+    // Try to initialize the application's key window. If this fails, fail the
+    // application's process.
+    _application.window = CreateKeyWindow();
+    if (!CheckWindowValidity(&_application.window))
+        exit(-1);
 
     // Try to initialize the renderer. If this fails, the application will
     // self-destruct.
@@ -116,12 +117,18 @@ void RunApplication(void)
     {
         // Clear both the depth and color buffer, and then paint the window a
         // clear, opaque black.
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+        glEnable(GL_SCISSOR_TEST);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_SCISSOR_TEST);
+
+        RenderWindowContent();
 
         // Render the contents of the window. This kills the application on
         // failure, so don't worry about error checking.
-        RenderWindowContent();
 
         // Poll for any events like keyboard pressing or resizing.
         glfwPollEvents();
