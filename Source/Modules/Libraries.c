@@ -1,16 +1,15 @@
-#include "Libraries.h"
-#include "Logger.h"
+#include "Libraries.h" // The Libraries mother header, provides the function declarations defined here.
+#include "Logger.h" // Provides the functionality needed to log values to the terminal.
 
 void InitializeGLFW(void)
 {
     // Try to initialize GLFW, and if it fails, kill the process. If it doesn't,
     // print success to the console, along with the GLFW version we're working
     // with.
-    if (!glfwInit())
-    {
-        PrintGLFWError();
+    glfwInit();
+    if (!PrintGLFWError())
         exit(-1);
-    }
+
     PrintSuccess("Initialized GLFW successfully. Version: '%s'.",
                  glfwGetVersionString());
 
