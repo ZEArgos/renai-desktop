@@ -81,12 +81,11 @@ void RenderWindowContent(void)
     glBindVertexArray(tex.vao);
 
     // world space positions of our cubes
-    vec3 pos = {0.0f, 0.0f, 0.0f}, scale = {650.0f, 650.0f, 0.0f};
+    vec3 pos = {0.0f, 0.0f, 0.0f};
     // calculate the model matrix for each object and pass it to shader
     // before drawing
     mat4 model = GLM_MAT4_IDENTITY_INIT;
     glm_translate(model, pos);
-    glm_scale(model, scale);
 
     // float angle = 50.0f;
     // glm_rotate(model, glm_rad(angle), (vec3){1.0f, 1.0f, 1.0f});

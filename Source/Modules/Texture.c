@@ -43,8 +43,8 @@ Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
 
     stbi_image_free(data);
 
-    f32 vao_width = image_width / _application.screen_width,
-        vao_height = image_height / _application.screen_height;
+    f32 vao_width = (swidth / image_width) * 2,
+        vao_height = (sheight / image_height) * 2;
     float vertices[] = {
         // positions                  // texture coords
         vao_width,  vao_height,  0.0f, 1.0f, 1.0f, // top right
