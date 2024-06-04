@@ -15,7 +15,7 @@ extern struct
     Renderer renderer;
 } _application;
 
-ShaderNode* GetShader(const char* shader_name)
+ShaderNode* GetShaderNode(const char* shader_name)
 {
     ShaderNode* current_node = _application.renderer.shader_list_head;
     while (current_node != NULL)
@@ -38,30 +38,22 @@ void InsertShaderNode(ShaderNode* node)
     current_node->next = node;
 }
 
-u8 _ShaderNode_UseShader(ShaderNode* self)
-{
-    if (!UseShader(self->shader))
-        return FAILURE;
-    return SUCCESS;
-}
-
 ShaderNode* CreateShaderNode(char* shader_name)
 {
     ShaderNode* created = malloc(sizeof(struct ShaderNode));
     created->next = NULL;
-    created->shader = LoadShader(shader_name);
+    created->inner = LoadShader(shader_name);
     created->name = shader_name;
-    created->UseShader = _ShaderNode_UseShader;
     return created;
 }
 
-void RenderWindowContent(Renderer* renderer)
+void RenderWindowContent(void)
 {
-    ShaderNode* shader = GetShader("basic");
-    if (!shader->UseShader(shader))
+    ShaderNode* shader = GetShaderNode("basic");
+    if (!UseShader(shader->inner))
         exit(-1);
 
-    glUniform1i(glGetUniformLocation(shader->shader, "in_texture"), 0);
+    glUniform1i(glGetUniformLocation(shader->inner, "in_texture"), 0);
     Texture tex = LoadTextureFromFile(
         "./Assets/Tilesets/light_floorboard_1.jpg", _application.screen_width,
         _application.screen_height);
@@ -82,7 +74,7 @@ void RenderWindowContent(Renderer* renderer)
 
     // float angle = 50.0f;
     // glm_rotate(model, glm_rad(angle), (vec3){1.0f, 1.0f, 1.0f});
-    glUniformMatrix4fv(glGetUniformLocation(shader->shader, "model"), 1,
+    glUniformMatrix4fv(glGetUniformLocation(shader->inner, "model"), 1,
                        GL_FALSE, &model[0][0]);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -90,7 +82,7 @@ void RenderWindowContent(Renderer* renderer)
     glDeleteVertexArrays(1, &tex.vao);
 }
 
-u8 InitializeRenderer(void)
+void InitializeRenderer(void)
 {
     _application.renderer = (struct Renderer){
         CreateShaderNode("basic"),
@@ -102,16 +94,14 @@ u8 InitializeRenderer(void)
                     0.1f, 100.0f, projection);
     glm_translate_z(projection, -3.0f);
 
-    if (!_application.renderer.shader_list_head->UseShader(
-            _application.renderer.shader_list_head))
-        return FAILURE;
+    if (!UseShader(_application.renderer.shader_list_head->inner))
+        exit(-1);
     glUniformMatrix4fv(
-        glGetUniformLocation(_application.renderer.shader_list_head->shader,
+        glGetUniformLocation(_application.renderer.shader_list_head->inner,
                              "projection"),
         1, GL_FALSE, &projection[0][0]);
 
     PrintSuccess("Initialized the application renderer successfully.");
-    return SUCCESS;
 }
 
 void DestroyRenderer(void)

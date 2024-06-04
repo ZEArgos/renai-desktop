@@ -56,9 +56,9 @@ void InitializeApplication(void)
     _application.screen_width = resolution->width;
     _application.screen_height = resolution->height;
 
-    // Try to initialize the renderer. If this fails, kill the application.
-    if (!InitializeRenderer())
-        exit(-1);
+    // Try to initialize the renderer. If this fails, the application will
+    // self-destruct.
+    InitializeRenderer();
 
     // Set the initialization flag of the application to true, so this function
     // is not called twice.
@@ -86,7 +86,7 @@ void RunApplication(void)
 
         // Render the contents of the window. This kills the application on
         // failure, so don't worry about error checking.
-        RenderWindowContent(&_application.renderer);
+        RenderWindowContent();
 
         // Poll for any events like keyboard pressing or resizing.
         glfwPollEvents();

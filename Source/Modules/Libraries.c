@@ -10,16 +10,14 @@ void InitializeGLFW(void)
     if (!PrintGLFWError())
         exit(-1);
 
-    PrintSuccess("Initialized GLFW successfully. Version: '%s'.",
-                 glfwGetVersionString());
-
     // Set all the needed window hints to tell GLFW what version of OpenGL we're
     // trying to take advantage of.
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    PrintSuccess("Set GLFW window hints successfully.");
+    PrintSuccess("Initialized GLFW successfully. Version: '%s'.",
+                 glfwGetVersionString());
 }
 
 void KillGLFW(void)
@@ -38,9 +36,10 @@ void InitializeGLAD(void)
         PrintError("Failed to initialize GLAD. Code: %d.", glGetError());
         exit(-1);
     }
-    PrintSuccess("Initialized GLAD and loaded OpenGL. Version: '%s'.",
-                 glGetString(GL_VERSION));
     // Set the OpenGL hint to indicate that we will be using various depth-based
     // functions.
     glEnable(GL_DEPTH_TEST);
+
+    PrintSuccess("Initialized GLAD and loaded OpenGL. Version: '%s'.",
+                 glGetString(GL_VERSION));
 }

@@ -11,27 +11,87 @@
 #ifndef _RENAI_RENDERER_
 #define _RENAI_RENDERER_
 
-// Mmm typedefs
+// Provides the various type definitions needed for this program to compile.
 #include "Declarations.h"
 
+/**
+ * @brief A linked-list wrapper around an OpenGL shader. This is really not
+ * particularly useful outside of the shader linked list used by the renderer.
+ */
 typedef struct ShaderNode
 {
+    /**
+     * @brief The next node in the list.
+     */
     struct ShaderNode* next;
-    u32 shader;
+    /**
+     * @brief The string name of the shader. This is really only used for
+     * lookup.
+     */
     const char* name;
-    u8 (*UseShader)(struct ShaderNode*);
+    /**
+     * @brief The actual OpenGL shader ID of the node. This is the real meat of
+     * the operation.
+     */
+    u32 inner;
 } ShaderNode;
 
+/**
+ * @brief The renderer structure of the application. Includes all the data
+ * needed to render objects, but NOT the objects to render. That is the job of
+ * various other structures/functions.
+ */
 typedef struct Renderer
 {
+    /**
+     * @brief The head node of the shader linked list. This should NOT be
+     * accessed or edited by the user, instead leave that to the various helper
+     * functions.
+     */
     ShaderNode* shader_list_head;
 } Renderer;
 
-ShaderNode* GetShader(const char* shader_name);
-void InsertShaderNode(ShaderNode* node);
-ShaderNode* CreateShaderNode(char* shader_name);
-u8 InitializeRenderer(void);
-void DestroyRenderer(void);
-void RenderWindowContent(Renderer* renderer);
+/**
+ * @brief Initialize the application's renderer. There is no need to pass
+ * anything to this function, as it accesses the application structure itself.
+ * This kills the application on error.
+ */
+void InitializeRenderer(void);
 
-#endif
+/**
+ * @brief Destroy the application's renderer, returning it to nothing. This is
+ * required for the application to close properly, as many of the list items are
+ * dynamically allocated.
+ */
+void DestroyRenderer(void);
+
+/**
+ * @brief Render the contents of the application's window. This should only be
+ * called once every frame. This will kill the application on failure.
+ */
+void RenderWindowContent(void);
+
+/**
+ * @brief Get a shader node from the renderer's linked list by name.
+ * @param shader_name The name of the shader, set by default as the name of the
+ * shader's containing folder.
+ * @return A pointer to the given shader node, or NULL if an error occurred.
+ */
+ShaderNode* GetShaderNode(const char* shader_name);
+
+/**
+ * @brief Insert a shader node into the renderer's linked list.
+ * @param node A pointer to the memory containing the to-be-inserted node.
+ */
+void InsertShaderNode(ShaderNode* node);
+
+/**
+ * @brief Create a shader node from the given file name. This calls the @ref
+ * LoadShader functions internally.
+ * @param shader_name The name of the shader.
+ * @return A pointer to the memory of the shader node. Note that this needs to
+ * be freed, as it was allocated dynamically.
+ */
+ShaderNode* CreateShaderNode(char* shader_name);
+
+#endif // _RENAI_RENDERER_

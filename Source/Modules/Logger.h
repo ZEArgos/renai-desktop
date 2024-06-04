@@ -13,6 +13,8 @@
 #ifndef _RENAI_LOGGER_
 #define _RENAI_LOGGER_
 
+//! this is on the list for reconstruction
+
 // Include for my various typedefs.
 #include "Declarations.h"
 
