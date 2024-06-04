@@ -1,18 +1,7 @@
 #include "Libraries.h"
 #include "Logger.h"
 
-null PrintGLFWError(void)
-{
-    // Get both the error code and human-readable description of the error.
-    cstring description;
-    i32 code = glfwGetError(&description);
-
-    // Try to print the message to console.
-    PrintError("An error happened with GLFW. Code: %d. Message: '%s'.", code,
-               description);
-}
-
-null InitializeGLFW(void)
+void InitializeGLFW(void)
 {
     // Try to initialize GLFW, and if it fails, kill the process. If it doesn't,
     // print success to the console, along with the GLFW version we're working
@@ -34,14 +23,14 @@ null InitializeGLFW(void)
     PrintSuccess("Set GLFW window hints successfully.");
 }
 
-null KillGLFW(void)
+void KillGLFW(void)
 {
     // Kill GLFW and warn of the execution.
     glfwTerminate();
     PrintWarning("Terminated GLFW.");
 }
 
-null InitializeGLAD(void)
+void InitializeGLAD(void)
 {
     // Using the built-in GLAD initializer, load OpenGL using GLFW's procedure
     // address. If this fails, kill the application.

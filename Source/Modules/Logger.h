@@ -22,12 +22,12 @@
  * concatenates them into the given message.
  * @param state The state in which to print. (i.e failure/success)
  * @param message The message given to print, with optional formatting
- * characters to concatenate string into.
+ * characters to concatenate char* into.
  * @param ... The various arguments to be concatenated into the main message.
  * @return An unsigned, 8-bit integer flag representing either success or
  * failure.
  */
-u8 PrintMessage(u8 state, string message, ...);
+u8 PrintMessage(u8 state, char* message, ...);
 
 #ifdef DEBUG_MODE
 /**

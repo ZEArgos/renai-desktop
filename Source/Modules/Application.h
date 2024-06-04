@@ -66,20 +66,20 @@ GLFWwindow* GetKeyWindow(void);
  * function kills the application on failure, so no error checking against it is
  * needed.
  */
-null InitializeApplication(void);
+void InitializeApplication(void);
 
 /**
  * @brief Run the application's main gameplay loop. This should be the last
  * function call from the application's entrypoint, unless it's @ref
  * DestroyApplication. This function will kill the application on failure.
  */
-null RunApplication(void);
+void RunApplication(void);
 
 /**
  * @brief Kill the application. This should be the LAST function call from the
  * application's entrypoint. Nothing else needs to be called beyond this point,
  * as all data in my control has been freed.
  */
-null DestroyApplication(void);
+void DestroyApplication(void);
 
 #endif // _RENAI_APPLICATION_

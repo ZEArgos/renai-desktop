@@ -25,7 +25,7 @@ GLFWwindow* GetKeyWindow(void)
     return GetInnerWindow(&_application.window);
 }
 
-null InitializeApplication(void)
+void InitializeApplication(void)
 {
     // Check to make sure the application hasn't already been initialized, and
     // if it has, do not proceed.
@@ -65,7 +65,7 @@ null InitializeApplication(void)
     _application.initialized = 1;
 }
 
-null RunApplication(void)
+void RunApplication(void)
 {
     // If the application hasn't yet been initialized, don't allow this function
     // to continue any further, and log the issue to the console.
@@ -96,7 +96,7 @@ null RunApplication(void)
     PrintSuccess("Main loop finished.");
 }
 
-null DestroyApplication(void)
+void DestroyApplication(void)
 {
     // Make sure we clean up after ourselves, removing any window, renderer, and
     // GLFW data we may have accumulated.

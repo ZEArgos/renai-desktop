@@ -2,7 +2,7 @@
 #include <glm/cglm.h>
 #include <stbi/stb_image.h>
 
-Texture LoadTextureFromFile(cstring name, f32 swidth, f32 sheight)
+Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
 {
     u32 texture_identifier;
     glGenTextures(1, &texture_identifier);

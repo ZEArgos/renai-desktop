@@ -18,7 +18,7 @@ typedef struct ShaderNode
 {
     struct ShaderNode* next;
     u32 shader;
-    cstring name;
+    const char* name;
     u8 (*UseShader)(struct ShaderNode*);
 } ShaderNode;
 
@@ -27,11 +27,11 @@ typedef struct Renderer
     ShaderNode* shader_list_head;
 } Renderer;
 
-ShaderNode* GetShader(cstring shader_name);
-null InsertShaderNode(ShaderNode* node);
-ShaderNode* CreateShaderNode(string shader_name);
+ShaderNode* GetShader(const char* shader_name);
+void InsertShaderNode(ShaderNode* node);
+ShaderNode* CreateShaderNode(char* shader_name);
 u8 InitializeRenderer(void);
-null DestroyRenderer(void);
-null RenderWindowContent(Renderer* renderer);
+void DestroyRenderer(void);
+void RenderWindowContent(Renderer* renderer);
 
 #endif

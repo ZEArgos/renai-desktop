@@ -70,7 +70,7 @@ Window CreateKeyWindow(void)
     return (struct Window){temporary_win, TITLE};
 }
 
-null KillWindow(Window* win)
+void KillWindow(Window* win)
 {
     glfwDestroyWindow(win->inner_window);
     // Warn the user about the window's destruction.

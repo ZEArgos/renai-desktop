@@ -27,7 +27,7 @@
  * @param name The shader's containing folder's name.
  * @return The OpenGL shader ID, or 0 if an error occurred.
  */
-u32 LoadShader(string name);
+u32 LoadShader(char* name);
 
 /**
  * @brief Use the specified shader. Wrapper around @ref glUseProgram.
@@ -42,7 +42,7 @@ u8 UseShader(u32 shader);
  * @param name The name of the boolean.
  * @param value The new value of the boolean.
  */
-null SetBoolean(u32 shader, cstring name, i8 value);
+void SetBoolean(u32 shader, const char* name, i8 value);
 
 /**
  * @brief Set an integer variable inside the shader.
@@ -50,7 +50,7 @@ null SetBoolean(u32 shader, cstring name, i8 value);
  * @param name The name of the integer.
  * @param value The new value of the integer.
  */
-null SetInteger(u32 shader, cstring name, i32 value);
+void SetInteger(u32 shader, const char* name, i32 value);
 
 /**
  * @brief Set a float variable inside the shader.
@@ -58,6 +58,6 @@ null SetInteger(u32 shader, cstring name, i32 value);
  * @param name The name of the float.
  * @param value The new value of the float.
  */
-null SetFloat(u32 shader, cstring name, f32 value);
+void SetFloat(u32 shader, const char* name, f32 value);
 
 #endif // _RENAI_SHADER_

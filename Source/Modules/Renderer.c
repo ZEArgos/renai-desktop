@@ -15,7 +15,7 @@ extern struct
     Renderer renderer;
 } _application;
 
-ShaderNode* GetShader(cstring shader_name)
+ShaderNode* GetShader(const char* shader_name)
 {
     ShaderNode* current_node = _application.renderer.shader_list_head;
     while (current_node != NULL)
@@ -29,7 +29,7 @@ ShaderNode* GetShader(cstring shader_name)
     return NULL;
 }
 
-null InsertShaderNode(ShaderNode* node)
+void InsertShaderNode(ShaderNode* node)
 {
     ShaderNode* current_node = _application.renderer.shader_list_head;
     while (current_node->next != NULL)
@@ -45,7 +45,7 @@ u8 _ShaderNode_UseShader(ShaderNode* self)
     return SUCCESS;
 }
 
-ShaderNode* CreateShaderNode(string shader_name)
+ShaderNode* CreateShaderNode(char* shader_name)
 {
     ShaderNode* created = malloc(sizeof(struct ShaderNode));
     created->next = NULL;
@@ -55,7 +55,7 @@ ShaderNode* CreateShaderNode(string shader_name)
     return created;
 }
 
-null RenderWindowContent(Renderer* renderer)
+void RenderWindowContent(Renderer* renderer)
 {
     ShaderNode* shader = GetShader("basic");
     if (!shader->UseShader(shader))
@@ -114,7 +114,7 @@ u8 InitializeRenderer(void)
     return SUCCESS;
 }
 
-null DestroyRenderer(void)
+void DestroyRenderer(void)
 {
     ShaderNode* current_node = _application.renderer.shader_list_head;
     while (current_node != NULL)

@@ -58,6 +58,6 @@ Window CreateKeyWindow(void);
  * the @ref glfwDestroyWindow function. This will set the given Window to NULL.
  * @param win The window to destroy.
  */
-null KillWindow(Window* win);
+void KillWindow(Window* win);
 
 #endif // _RENAI_WINDOW_

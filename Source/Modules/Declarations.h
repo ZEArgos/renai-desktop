@@ -8,114 +8,67 @@
  * @copyright Copyright (c) 2024
  */
 
-// Include guard the file so its contents are not inserted into the final binary
-// twice. This also prevents undue compiler errors.
 #ifndef _RENAI_DECLARATIONS_
 #define _RENAI_DECLARATIONS_
 
-/**
- * @file stdint.h
- * @brief Provides the various portable types used in the project.
- * @see The C standard library/manual
- */
-#include <stdint.h>
-/**
- * @file errno.h
- * @brief Provides the ERRNO global variable, for diagnosing problems with
- * system calls.
- * @see The C standard library/manual
- */
-#include <errno.h>
-/**
- * @file stdio.h
- * @brief Provides all C input/output related functionality.
- * @see The C standard library/manual
- */
-#include <stdio.h>
-/**
- * @file stdlib.h
- * @brief Provides a BUNCH of C standard functionality, pretty much a given in
- * any C program.
- * @see The C standard library/manual
- */
-#include <stdlib.h>
-/**
- * @file stdlib.h
- * @brief Provides a ton of C standard string functionality, another typical
- * given for many C programs.
- * @see The C standard library/manual
- */
-#include <string.h>
-/**
- * @file glad.h
- * @brief The file that defines GLAD, my OpenGL wrangler of choice. There's
- * really nothing special about it, I just know how to use it, kinda.
- * @see An OpenGL documentation website of your choice (https://docs.gl)
- */
-#include <glad/glad.h>
-/**
- * @file glfw3.h
- * @brief The file that defines the GLFW library, which does all the heavy
- * lifting for me on cross-compatible window creation + management. I love GLFW.
- * @see The GLFW documentation (https://www.glfw.org/documentation.html)
- */
-#include <glfw/glfw3.h>
+// Provides a list of each include needed in the various translation units of
+// the project. IncludeBoard.h exists simply because it's ugly to have its
+// contents here.
+#include <IncludeBoard.h>
 
-// Syntactic sugar for the various type cross-compatibile type defines provided
-// by the C standard library. I find them a little...verbose, so I choose to
-// change them.
-
-// x64 integer (-9,223,372,036,854,775,807, +9,223,372,036,854,775,807)
+// (-9,223,372,036,854,775,807, +9,223,372,036,854,775,807)
 typedef int64_t i64;
-// x32 integer (−2,147,483,647, +2,147,483,647)
+// (−2,147,483,647, +2,147,483,647)
 typedef int32_t i32;
-// x16 integer (−32,767, +32,767)
+// (−32,767, +32,767)
 typedef int16_t i16;
-// x8 integer (−127, +127)
+// (−127, +127)
 typedef int8_t i8;
-// x64 unsigned integer (0, +18,446,744,073,709,551,615)
+// (0, +18,446,744,073,709,551,615)
 typedef uint64_t u64;
-// x32 unsigned integer (0, +4,294,967,295)
+// (0, +4,294,967,295)
 typedef uint32_t u32;
-// x16 unsigned integer (0, +65,535)
+// (0, +65,535)
 typedef uint16_t u16;
-// x8 unsigned integer (0, +255)
+// (0, +255)
 typedef uint8_t u8;
-
-// integer pointer
-typedef intptr_t iptr;
-// unsigned integer pointer
-typedef uintptr_t uptr;
-
-// x32 floating point (+/-3.4028235 × 10^38)
+// (+/-3.4028235 × 10^38)
 typedef float f32;
-// x64 floating point (to my knowledge, +/-1.79769313486e+308)
+// (to my knowledge, +/-1.79769313486e+308)
 typedef double f64;
-// ~x128 floating point (to my knowledge, +/-1.18973149535723176502e+4932)
+// (to my knowledge, +/-1.18973149535723176502e+4932)
 typedef long double f128;
 
-// pointer to character array
-typedef char* string;
-// constant pointer to character array
-typedef const char* cstring;
-// nothing
-typedef void null;
-
+/**
+ * @brief Syntactic sugar for the value 'true.'
+ */
 #define SUCCESS 1
+/**
+ * @brief Syntactic sugar for the value 'false.'
+ */
 #define FAILURE 0
 
-extern u16 terminal_width;
-null GetTerminalWidth(void);
-
-extern i64 start_time;
-i64 GetCurrentTime(void);
-
-#define MAX_TIME_STRING_LENGTH 256
-extern char last_time_string[MAX_TIME_STRING_LENGTH];
-null GetTimeString(void);
-null FormatTimeString(i64 ms, i64 s, i64 m);
+/**
+ * @brief Get a string representation of the current time and date, and
+ * concatenate it into the given string buffer.
+ * @param buffer The buffer into which we're copying the time and date.
+ */
 void GetDateString(char* buffer);
 
-u8 PrintOpenGLError(void);
+/**
+ * @brief Look for any potential GLFW errors. If none are found, simply finish
+ * the function with a success code.
+ * @return An 8-bit integer flag representing success state. The function fails
+ * if it finds an error.
+ */
+u8 PrintGLFWError(void);
+
+/**
+ * @brief Look for any potential OpenGL errors. If no errors are found, finish
+ * the function.
+ * @return An 8-bit integer flag representing success state. The function fails
+ * if it finds and error.
+ */
+u8 PrintGLError(void);
 
 #endif // _RENAI_DECLARATIONS_

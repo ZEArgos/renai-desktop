@@ -1,7 +1,7 @@
 #include "Shader.h"
 #include "Logger.h"
 
-u8 _FileRead(FILE* file, string buffer, i64 length)
+u8 _FileRead(FILE* file, char* buffer, i64 length)
 {
     // Try to utilize fread and read the file's bytes into the given buffer. If
     // that fails, attempt to diagnose the error and print it. If we can't do
@@ -23,13 +23,13 @@ u8 _FileRead(FILE* file, string buffer, i64 length)
     buffer[length] = '\0';
     return SUCCESS;
 }
-u8 _SetShaderSource(u32* shader, cstring source)
+u8 _SetShaderSource(u32* shader, const char* source)
 {
     // Try to set the source of the shader.
     glShaderSource(*shader, 1, &source, NULL);
 
     // If it fails, print the error and exit the method.
-    if (!PrintOpenGLError())
+    if (!PrintGLError())
         return FAILURE;
 
     // Print that everything went swimingly.
@@ -73,10 +73,10 @@ u8 _GetCompilationError(u32 program, u8 type)
     return SUCCESS;
 }
 
-u32 LoadShader(string name)
+u32 LoadShader(char* name)
 {
     // Set up the full shader paths, taking advantage of snprintf to concatenate
-    // the full string in one function call.
+    // the full char* in one function call.
     char vertex_path[SHADER_PATH_MAX_LENGTH],
         fragment_path[SHADER_PATH_MAX_LENGTH];
 
@@ -134,7 +134,7 @@ u32 LoadShader(string name)
         }
 
         // Create an array with enough characters to hold the file buffer (+ a
-        // null termination character.).
+        // void termination character.).
         char vertex_buffer[vertex_length + 1],
             fragment_buffer[fragment_length + 1];
 
@@ -151,10 +151,10 @@ u32 LoadShader(string name)
 
         // Convert the strings into ones OpenGL will accept, and then initialize
         // the memory needed for the vertex and fragment shaders.
-        cstring vertex_raw = vertex_buffer, fragment_raw = fragment_buffer;
+        const char *vertex_raw = vertex_buffer, *fragment_raw = fragment_buffer;
         u32 vertex = glCreateShader(GL_VERTEX_SHADER),
             fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        // Set the source string of the shaders, and fail if we can't.
+        // Set the source char* of the shaders, and fail if we can't.
         if (!_SetShaderSource(&vertex, vertex_raw) ||
             !_SetShaderSource(&fragment, fragment_raw))
             return FAILURE;
@@ -194,22 +194,22 @@ u8 UseShader(u32 shader)
     // Try to use the program. Afterward, run the PrintOpenGLError function,
     // which checks to see if there are any errors and prints them if so.
     glUseProgram(shader);
-    if (!PrintOpenGLError())
+    if (!PrintGLError())
         return FAILURE;
     return SUCCESS;
 }
 
-null SetBoolean(u32 shader, cstring name, i8 value)
+void SetBoolean(u32 shader, const char* name, i8 value)
 {
     glUniform1i(glGetUniformLocation(shader, name), (i32)value);
 }
 
-null SetInteger(u32 shader, cstring name, i32 value)
+void SetInteger(u32 shader, const char* name, i32 value)
 {
     glUniform1i(glGetUniformLocation(shader, name), value);
 }
 
-null SetFloat(u32 shader, cstring name, f32 value)
+void SetFloat(u32 shader, const char* name, f32 value)
 {
     glUniform1f(glGetUniformLocation(shader, name), value);
 }
