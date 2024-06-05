@@ -40,6 +40,11 @@ typedef struct Window
     char* title;
 } Window;
 
+/**
+ * @brief The ratio of width to height in the application's graphical rendering.
+ */
+#define APPLICATION_ASPECT_RATIO 1
+
 u8 CheckWindowValidity(Window* win);
 
 /**

@@ -19,74 +19,29 @@ extern struct
 
 void _framebuffer_callback(GLFWwindow* win, i32 width, i32 height)
 {
-    // code graciously stolen from
+    // code graciously stolen + adapted from
     // https://diegomacario.github.io/2021/04/23/how-to-keep-the-aspect-ratio-of-an-opengl-window-constant.html
-    float desiredAspectRatio = 1;
 
-    int widthOfViewport = 0, heightOfViewport = 0;
-    // These are two new values that we will be calculating in this function
-    int lowerLeftCornerOfViewportX = 0, lowerLeftCornerOfViewportY = 0;
+    i32 smallest_dimension = fmin(width, height), lower_left_corner_x = 0,
+        lower_left_corner_y = 0;
 
-    float requiredHeightOfViewport = width * (1.0f / desiredAspectRatio);
-    if (requiredHeightOfViewport > height)
+    if (smallest_dimension == height)
     {
-        float requiredWidthOfViewport = height * desiredAspectRatio;
-        if (requiredWidthOfViewport > width)
-        {
-            // std::cout << "Error: Couldn't find dimensions that preserve the
-            // aspect ratio\n";
-            exit(-1);
-        }
-        else
-        {
-            // Remember that if we reach this point you will observe vertical
-            // bars on the left and right
-            widthOfViewport = requiredWidthOfViewport;
-            heightOfViewport = height;
-
-            // The widths of the two vertical bars added together are equal to
-            // the difference between the width of the framebuffer and the width
-            // of the viewport
-            float widthOfTheTwoVerticalBars = width - widthOfViewport;
-
-            // Set the X position of the lower left corner of the viewport equal
-            // to the width of one of the vertical bars. By doing this, we
-            // center the viewport horizontally and we make vertical bars appear
-            // on the left and right
-            lowerLeftCornerOfViewportX = widthOfTheTwoVerticalBars / 2.0f;
-            // We don't need to center the viewport vertically because we are
-            // using the height of the framebuffer as the height of the viewport
-            lowerLeftCornerOfViewportY = 0;
-        }
+        f32 vertical_bar_width = width - smallest_dimension;
+        lower_left_corner_x = vertical_bar_width / 2.0f;
+        lower_left_corner_y = 0;
     }
     else
     {
-        // Remember that if we reach this point you will observe horizontal bars
-        // on the top and bottom
-        widthOfViewport = width;
-        heightOfViewport = requiredHeightOfViewport;
-
-        // The heights of the two horizontal bars added together are equal to
-        // the difference between the height of the framebuffer and the height
-        // of the viewport
-        float heightOfTheTwoHorizontalBars = height - heightOfViewport;
-
-        // We don't need to center the viewport horizontally because we are
-        // using the width of the framebuffer as the width of the viewport
-        lowerLeftCornerOfViewportX = 0;
-        // Set the Y position of the lower left corner of the viewport equal to
-        // the height of one of the vertical bars. By doing this, we center the
-        // viewport vertically and we make horizontal bars appear on the top and
-        // bottom
-        lowerLeftCornerOfViewportY = heightOfTheTwoHorizontalBars / 2.0f;
+        f32 horizontal_bar_height = height - smallest_dimension;
+        lower_left_corner_y = horizontal_bar_height / 2.0f;
+        lower_left_corner_x = 0;
     }
 
-    // Call glViewport to specify the new drawing area
-    // By specifying its lower left corner, we center it
-    glViewport(lowerLeftCornerOfViewportX, lowerLeftCornerOfViewportY,
-               widthOfViewport, heightOfViewport);
-    glScissor(lowerLeftCornerOfViewportX, lowerLeftCornerOfViewportY,
-              widthOfViewport, heightOfViewport);
+    glViewport(lower_left_corner_x, lower_left_corner_y, smallest_dimension,
+               smallest_dimension);
+    glScissor(lower_left_corner_x, lower_left_corner_y, smallest_dimension,
+              smallest_dimension);
 }
 
 u8 CheckWindowValidity(Window* win)
