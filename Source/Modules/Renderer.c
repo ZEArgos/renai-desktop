@@ -8,9 +8,10 @@ Renderer CreateRenderer(f32 swidth, f32 sheight)
     // lists.
     Renderer renderer = RENDERER_EMPTY_INIT;
 
+    // Start
     if (StartShaderList(&renderer, "basic") == FAILURE ||
-        StartTextureList(&renderer, "./Assets/Tilesets/light_floorboard_1.jpg",
-                         swidth, sheight) == FAILURE)
+        StartTextureList(&renderer, "light_floorboard_1.jpg", swidth,
+                         sheight) == FAILURE)
     {
         PrintError("Failed to begin the linked lists of the renderer.");
         return RENDERER_EMPTY_INIT;
@@ -197,8 +198,20 @@ void RenderWindowContent(Renderer* renderer)
     glBindVertexArray(renderer->texture_list_head->inner.vao);
 
     mat4 model = GLM_MAT4_IDENTITY_INIT;
-    glm_translate(model, (vec3){0.0f, 0.0f, 0.0f});
+    glm_translate(model, (vec3){0.0f, 0.0f, 0.0f}); // pos transform
+    // glm_translate(
+    //     model, (vec3){0.5f * renderer->texture_list_head->inner.width,
+    //                   0.5f * renderer->texture_list_head->inner.height,
+    //                   0.0f});
+    // glm_translate(
+    //     model, (vec3){-0.5f * renderer->texture_list_head->inner.width,
+    //                   -0.5f * renderer->texture_list_head->inner.height,
+    //                   0.0f});
+
+    // glm_scale(model, (vec3){renderer->texture_list_head->inner.width,
+    //                         renderer->texture_list_head->inner.height, 1.0f});
+
     SetMat4(basic_shader, "model", model);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 }

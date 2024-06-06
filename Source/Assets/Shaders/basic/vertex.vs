@@ -8,5 +8,5 @@ uniform mat4 model, projection;
 void main()
 {
     gl_Position = projection * model * vec4(position_values, 1.0f);
-    in_texture_coordinates = vec2(texture_coordinates.x, 1.0 - texture_coordinates.y);
+    in_texture_coordinates = texture_coordinates;
 }
