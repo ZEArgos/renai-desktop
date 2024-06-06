@@ -38,37 +38,12 @@ typedef struct Renderer
     TextureNode* texture_list_head;
 } Renderer;
 
+/**
+ * @brief An empty initializer for the @ref Renderer struct. This simply just
+ * makes sure everything is NULL.
+ */
 #define RENDERER_EMPTY_INIT                                                    \
     (struct Renderer) { NULL, NULL }
-
-#define SHADER_NODE  0x011
-#define TEXTURE_NODE 0x012
-void ClearLinkedList(Renderer* renderer, u8 type);
-
-#define FindShaderNode(renderer, name)                                         \
-    ((ShaderNode*)FindNode(renderer, SHADER_NODE, name))
-
-void* FindNode(Renderer* renderer, u8 type, const char* name);
-
-u8 AppendNode(Renderer* renderer, u8 type, void* node);
-
-void* GetListHead(Renderer* renderer, u8 type);
-
-u8 CheckFullNodeValidity(u8 type, void* node);
-u8 CheckShallowNodeValidity(u8 type, void* node);
-
-void* GetNodeNext(u8 type, void* node);
-u8 SetNodeNext(u8 type, void* node, void* subnode);
-
-const char* GetNodeName(u8 type, void* node);
-
-#define StartShaderList(renderer, name)                                        \
-    StartLinkedList(renderer, SHADER_NODE, name, 0, 0);
-#define StartTextureList(renderer, name, swidth, sheight)                      \
-    StartLinkedList(renderer, TEXTURE_NODE, name, swidth, sheight);
-
-void StartLinkedList(Renderer* renderer, u8 type, const char* name, f32 swidth,
-                     f32 sheight);
 
 /**
  * @brief Initialize the application's renderer. There is no need to pass
@@ -83,6 +58,41 @@ Renderer* InitializeRenderer(f32 swidth, f32 sheight);
  * dynamically allocated.
  */
 void DestroyRenderer(Renderer* renderer);
+
+typedef enum NodeType
+{
+    shader,
+    texture
+} NodeType;
+
+void ClearLinkedList(Renderer* renderer, NodeType type);
+
+#define FindShaderNode(renderer, name)                                         \
+    ((ShaderNode*)FindNode(renderer, shader, name))
+#define FindTextureNode(renderer, name)                                        \
+    ((TextureNode*)FindNode(renderer, shader, name))
+
+void* FindNode(Renderer* renderer, NodeType type, const char* name);
+
+u8 AppendNode(Renderer* renderer, NodeType type, void* node);
+
+void* GetListHead(Renderer* renderer, NodeType type);
+
+u8 CheckFullNodeValidity(NodeType type, void* node);
+u8 CheckShallowNodeValidity(u8 type, void* node);
+
+void* GetNodeNext(NodeType type, void* node);
+void SetNodeNext(NodeType type, void* node, void* subnode);
+
+const char* GetNodeName(NodeType type, void* node);
+
+#define StartShaderList(renderer, name)                                        \
+    StartLinkedList(renderer, shader, name, 0, 0);
+#define StartTextureList(renderer, name, swidth, sheight)                      \
+    StartLinkedList(renderer, texture, name, swidth, sheight);
+
+void StartLinkedList(Renderer* renderer, NodeType type, const char* name,
+                     f32 swidth, f32 sheight);
 
 /**
  * @brief Render the contents of the application's window. This should only be
