@@ -35,13 +35,6 @@ void _framebuffer_callback(GLFWwindow* win, i32 width, i32 height)
               smallest_dimension);
 }
 
-u8 CheckWindowValidity(Window* win)
-{
-    if (win->inner_window == NULL || win->title == NULL)
-        return FAILURE;
-    return SUCCESS;
-}
-
 GLFWwindow* GetInnerWindow(Window* win)
 {
     // Check to make sure the data we're returning isn't bullshit, and if it is,
@@ -57,32 +50,34 @@ GLFWwindow* GetInnerWindow(Window* win)
     return win->inner_window;
 }
 
-Window CreateKeyWindow(void)
+Window* CreateKeyWindow(void)
 {
+    Window* win = malloc(sizeof(struct Window));
+
     // Get the primary monitor and its video information.
     GLFWmonitor* primary = glfwGetPrimaryMonitor();
     const GLFWvidmode* res = glfwGetVideoMode(primary);
-    i32 window_width = (i32)(res->width / 1.25),
-        window_height = (i32)(res->height / 1.25);
+    win->window_width = (i32)(res->width / 1.25);
+    win->window_height = (i32)(res->height / 1.25);
 
     // Make GLFW create our window.
-    GLFWwindow* temporary_win =
-        glfwCreateWindow(window_width, window_height, TITLE, NULL, NULL);
+    win->inner_window = glfwCreateWindow(win->window_width, win->window_height,
+                                         TITLE, NULL, NULL);
 
     // If we fail to create the window, print the error and return nothing.
-    if (temporary_win == NULL)
+    if (win->inner_window == NULL)
     {
         PrintGLFWError();
 
         // Make sure we don't spring a memory leak.
-        free(temporary_win);
-        return (struct Window){NULL};
+        free(win);
+        return NULL;
     }
 
-    glfwSetFramebufferSizeCallback(temporary_win, _framebuffer_callback);
+    glfwSetFramebufferSizeCallback(win->inner_window, _framebuffer_callback);
 
     // Make the window's OpenGL context the current one on this thread.
-    glfwMakeContextCurrent(temporary_win);
+    glfwMakeContextCurrent(win->inner_window);
 
 #ifndef DEBUG_MODE
     // If we're not in debug mode, maximize the created window.
@@ -97,10 +92,11 @@ Window CreateKeyWindow(void)
     // don't bother checking for further errors.
     InitializeGLAD();
 
-    _framebuffer_callback(temporary_win, window_width, window_height);
+    _framebuffer_callback(win->inner_window, win->window_width,
+                          win->window_height);
 
     // Return the address of the newly created window.
-    return (struct Window){temporary_win, TITLE};
+    return win;
 }
 
 void KillWindow(Window* win)
@@ -108,4 +104,5 @@ void KillWindow(Window* win)
     glfwDestroyWindow(win->inner_window);
     // Warn the user about the window's destruction.
     PrintWarning("Killed window '%s'.", win->title);
+    free(win);
 }

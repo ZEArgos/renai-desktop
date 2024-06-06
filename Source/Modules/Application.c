@@ -30,7 +30,7 @@ typedef struct Application
     /**
      * @brief The window of the application.-
      */
-    Window window;
+    Window* window;
     /**
      * @brief The application's renderer.
      */
@@ -57,7 +57,7 @@ GLFWwindow* GetKeyWindow(void)
 
     // Return the window's inner, GLFW-created window, using a secondary check
     // implemented in the Window.h file.
-    return GetInnerWindow(&_application.window);
+    return GetInnerWindow(_application.window);
 }
 
 void InitializeApplication(void)
@@ -88,7 +88,7 @@ void InitializeApplication(void)
     // Try to initialize the application's key window. If this fails, fail the
     // application's process.
     _application.window = CreateKeyWindow();
-    if (!CheckWindowValidity(&_application.window))
+    if (_application.window == NULL)
         exit(-1);
 
     // Try to initialize the renderer. If this fails, the application will
@@ -150,7 +150,7 @@ void DestroyApplication(void)
 {
     // Make sure we clean up after ourselves, removing any window, renderer, and
     // GLFW data we may have accumulated.
-    KillWindow(&_application.window);
+    KillWindow(_application.window);
     DestroyRenderer(_application.renderer);
     KillGLFW();
 

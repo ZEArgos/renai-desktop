@@ -38,14 +38,14 @@ typedef struct Window
      * a \0 character.)
      */
     char* title;
+    i32 window_width;
+    i32 window_height;
 } Window;
 
 /**
  * @brief The ratio of width to height in the application's graphical rendering.
  */
 #define APPLICATION_ASPECT_RATIO 1
-
-u8 CheckWindowValidity(Window* win);
 
 /**
  * @brief Get the GLFWwindow interface inside the given Window. We do some
@@ -56,7 +56,7 @@ u8 CheckWindowValidity(Window* win);
  */
 GLFWwindow* GetInnerWindow(Window* win);
 
-Window CreateKeyWindow(void);
+Window* CreateKeyWindow(void);
 
 /**
  * @brief Kill the window passed in. This is a message-logging wrapper around
