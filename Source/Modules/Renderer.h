@@ -54,6 +54,14 @@ u8 AppendNode(Renderer* renderer, u8 type, void* node);
 
 void* GetListHead(Renderer* renderer, u8 type);
 
+u8 CheckFullNodeValidity(u8 type, void* node);
+u8 CheckShallowNodeValidity(u8 type, void* node);
+
+void* GetNodeNext(u8 type, void* node);
+u8 SetNodeNext(u8 type, void* node, void* subnode);
+
+const char* GetNodeName(u8 type, void* node);
+
 #define StartShaderList(renderer, name)                                        \
     StartLinkedList(renderer, SHADER_NODE, name, 0, 0);
 #define StartTextureList(renderer, name, swidth, sheight)                      \

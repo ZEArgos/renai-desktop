@@ -4,23 +4,12 @@
 
 void ClearLinkedList(Renderer* renderer, u8 type)
 {
-    void* current_node;
-
-    if (type == SHADER_NODE) current_node = renderer->shader_list_head;
-    else if (type == TEXTURE_NODE) current_node = renderer->texture_list_head;
-    else
-    {
-        PrintWarning("Attempted to clear a list that...doesn't exist. (%d)",
-                     type);
-        return;
-    }
+    void* current_node = GetListHead(renderer, type);
+    if (current_node == NULL) return;
 
     while (current_node != NULL)
     {
-        void* next_node;
-        if (type == SHADER_NODE)
-            next_node = ((ShaderNode*)(current_node))->next;
-        else next_node = ((TextureNode*)(current_node))->next;
+        void* next_node = GetNodeNext(type, current_node);
 
         free(current_node);
         current_node = next_node;
@@ -29,28 +18,14 @@ void ClearLinkedList(Renderer* renderer, u8 type)
 
 void* FindNode(Renderer* renderer, u8 type, const char* name)
 {
-    void* current_node;
-
-    if (type == SHADER_NODE) current_node = renderer->shader_list_head;
-    else if (type == TEXTURE_NODE) current_node = renderer->texture_list_head;
-    else
-    {
-        PrintWarning("Attempted to access a nonexistant node type. (%d)", type);
-        return NULL;
-    }
+    void* current_node = GetListHead(renderer, type);
+    if (current_node == NULL) return NULL;
 
     while (current_node != NULL)
     {
-        if (type == SHADER_NODE &&
-            strcmp(((ShaderNode*)current_node)->name, name) == 0)
+        if (strcmp(GetNodeName(type, current_node), name) == 0)
             return current_node;
-        else if (strcmp(((TextureNode*)current_node)->name, name) == 0)
-            return current_node;
-
-        if (type == SHADER_NODE)
-            current_node = ((ShaderNode*)current_node)->next;
-        if (type == TEXTURE_NODE)
-            current_node = ((TextureNode*)current_node)->next;
+        current_node = GetNodeNext(type, current_node);
     }
 
     PrintWarning("Couldn't find node '%s'.", name);
@@ -59,32 +34,24 @@ void* FindNode(Renderer* renderer, u8 type, const char* name)
 
 u8 AppendNode(Renderer* renderer, u8 type, void* node)
 {
-    void* current_node = GetListHead(renderer, type);
-
-    if (type == SHADER_NODE)
-    {
-        while (((ShaderNode*)current_node) != NULL &&
-               ((ShaderNode*)current_node)->next != NULL)
-            current_node = ((ShaderNode*)current_node)->next;
-
-        if ((ShaderNode*)current_node != NULL)
-            ((ShaderNode*)current_node)->next = node;
-        else
-        {
-            PrintWarning("Tried to start a linked list by appending a node. "
-                         "This is illegal.");
-            return FAILURE;
-        }
-    }
-    else if (type == TEXTURE_NODE)
-    {
-        while (((TextureNode*)current_node)->next != NULL)
-            current_node = ((TextureNode*)current_node)->next;
-        ((TextureNode*)current_node)->next = node;
-    }
-    else
+    if (type != SHADER_NODE && type != TEXTURE_NODE)
     {
         PrintWarning("Attempted to append a nonexistant node type. (%d)", type);
+        return FAILURE;
+    }
+
+    void* current_node = GetListHead(renderer, type);
+    if (current_node == NULL) return FAILURE;
+
+    while (CheckFullNodeValidity(type, current_node))
+        current_node = GetNodeNext(type, current_node);
+
+    if (CheckShallowNodeValidity(type, node))
+        SetNodeNext(type, current_node, node);
+    else
+    {
+        PrintWarning("Tried to start a linked list by appending a node. "
+                     "This is illegal.");
         return FAILURE;
     }
 
@@ -114,6 +81,77 @@ void StartLinkedList(Renderer* renderer, u8 type, const char* name, f32 swidth,
         PrintWarning("Attempted to access a start a linked list that doesn't "
                      "exist. (%d)",
                      type);
+    }
+}
+
+u8 CheckFullNodeValidity(u8 type, void* node)
+{
+    if (type == SHADER_NODE && ((ShaderNode*)node) != NULL &&
+        ((ShaderNode*)node)->next != NULL)
+        return SUCCESS;
+    else if (type == TEXTURE_NODE && ((TextureNode*)node) != NULL &&
+             ((TextureNode*)node)->next != NULL)
+        return SUCCESS;
+    else
+        PrintWarning("Attempted to access a start a linked list that doesn't "
+                     "exist. (%d)",
+                     type);
+    return FAILURE;
+}
+u8 CheckShallowNodeValidity(u8 type, void* node)
+{
+    if (type == SHADER_NODE && ((ShaderNode*)node) != NULL) return SUCCESS;
+    else if (type == TEXTURE_NODE && ((TextureNode*)node) != NULL)
+        return SUCCESS;
+    else
+        PrintWarning("Attempted to access a start a linked list that doesn't "
+                     "exist. (%d)",
+                     type);
+    return FAILURE;
+}
+
+void* GetNodeNext(u8 type, void* node)
+{
+    if (type == SHADER_NODE) return ((ShaderNode*)node)->next;
+    else if (type == TEXTURE_NODE) return ((TextureNode*)node)->next;
+    else
+    {
+        PrintWarning("Attempted to access a start a linked list that doesn't "
+                     "exist. (%d)",
+                     type);
+        return NULL;
+    }
+}
+u8 SetNodeNext(u8 type, void* node, void* subnode)
+{
+    if (type == SHADER_NODE)
+    {
+        ((ShaderNode*)node)->next = subnode;
+        return SUCCESS;
+    }
+    else if (type == TEXTURE_NODE)
+    {
+        ((TextureNode*)node)->next = subnode;
+        return SUCCESS;
+    }
+    else
+    {
+        PrintWarning("Attempted to access a start a linked list that doesn't "
+                     "exist. (%d)",
+                     type);
+        return FAILURE;
+    }
+}
+const char* GetNodeName(u8 type, void* node)
+{
+    if (type == SHADER_NODE) return ((ShaderNode*)node)->name;
+    else if (type == TEXTURE_NODE) return ((TextureNode*)node)->name;
+    else
+    {
+        PrintWarning("Attempted to access a start a linked list that doesn't "
+                     "exist. (%d)",
+                     type);
+        return NULL;
     }
 }
 
