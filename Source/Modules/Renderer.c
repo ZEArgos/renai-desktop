@@ -1,6 +1,5 @@
 #include "Renderer.h" // The renderer mother header, declaring the various functions we define here.
 #include "Logger.h" // Provides wrapper functions for logging to the standard output.
-#include "Texture.h" // Provides the various data structures and functions to handle textures.
 #include <glm/cglm.h> // Provides the math functions and data structures needed to run complex graphical calculations.
 
 Renderer* InitializeRenderer(f32 swidth, f32 sheight)
@@ -9,6 +8,9 @@ Renderer* InitializeRenderer(f32 swidth, f32 sheight)
     // lists.
     Renderer* renderer = malloc(sizeof(struct Renderer));
     renderer->shader_list_head = CreateShaderNode("basic");
+    renderer->texture_list_head = CreateTextureNode(
+        "./Assets/Tilesets/light_floorboard_1.jpg", swidth, sheight);
+
     if (renderer->shader_list_head == NULL)
         exit(-1);
 
@@ -41,16 +43,28 @@ Renderer* InitializeRenderer(f32 swidth, f32 sheight)
 void DestroyRenderer(Renderer* renderer)
 {
     // Loop through the current nodes until we have no more to loop through.
-    ShaderNode* current_node = renderer->shader_list_head;
-    while (current_node != NULL)
+    ShaderNode* current_shader_node = renderer->shader_list_head;
+    while (current_shader_node != NULL)
     {
         // If the shader exists, set the next in line to the stored next link of
         // the list.
-        ShaderNode* next_node = current_node->next;
+        ShaderNode* next_node = current_shader_node->next;
         // Free the shader's data.
-        free(current_node);
+        free(current_shader_node);
         // Move along in the cycle.
-        current_node = next_node;
+        current_shader_node = next_node;
+    }
+
+    TextureNode* current_texture_node = renderer->texture_list_head;
+    while (current_texture_node != NULL)
+    {
+        // If the shader exists, set the next in line to the stored next link of
+        // the list.
+        TextureNode* next_node = current_texture_node->next;
+        // Free the shader's data.
+        free(current_texture_node);
+        // Move along in the cycle.
+        current_texture_node = next_node;
     }
 
     // Free the memory allocated by the renderer itself.
@@ -66,21 +80,17 @@ void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight)
         exit(-1);
 
     SetInteger(basic_shader, "in_texture", 0);
-    Texture tex = LoadTextureFromFile(
-        "./Assets/Tilesets/light_floorboard_1.jpg", swidth, sheight);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex.inner);
+    glBindTexture(GL_TEXTURE_2D, renderer->texture_list_head->inner.inner);
 
-    glBindVertexArray(tex.vao);
+    glBindVertexArray(renderer->texture_list_head->inner.vao);
 
     mat4 model = GLM_MAT4_IDENTITY_INIT;
     glm_translate(model, (vec3){0.0f, 0.0f, 0.0f});
     SetMat4(basic_shader, "model", model);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    glDeleteVertexArrays(1, &tex.vao);
 }
 
 ShaderNode* GetShaderNode(Renderer* renderer, const char* shader_name)
@@ -102,10 +112,40 @@ ShaderNode* GetShaderNode(Renderer* renderer, const char* shader_name)
     return NULL;
 }
 
+TextureNode* GetTextureNode(Renderer* renderer, const char* texture_name)
+{
+    // Loop through each node, until the given node does not exist.
+    TextureNode* current_node = renderer->texture_list_head;
+    while (current_node != NULL)
+    {
+        // If the name of the node and the name we are told to look for match,
+        // return the node we're currently processing. If not, continue to the
+        // next iteration of the loop.
+        if (strcmp(current_node->name, texture_name) == 0)
+            return current_node;
+        current_node = current_node->next;
+    }
+
+    // Print that we failed to find the node and return empty-handed.
+    PrintWarning("Couldn't find texture node '%s'.", texture_name);
+    return NULL;
+}
+
 void AppendShaderNode(Renderer* renderer, ShaderNode* node)
 {
     // Loop through the shader nodes until we hit the end of the linked list.
     ShaderNode* current_node = renderer->shader_list_head;
+    while (current_node->next != NULL)
+        current_node = current_node->next;
+
+    // Add the node to the end of the list.
+    current_node->next = node;
+}
+
+void AppendTextureNode(Renderer* renderer, TextureNode* node)
+{
+    // Loop through the texture nodes until we hit the end of the linked list.
+    TextureNode* current_node = renderer->texture_list_head;
     while (current_node->next != NULL)
         current_node = current_node->next;
 

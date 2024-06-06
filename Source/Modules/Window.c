@@ -95,6 +95,7 @@ Window* CreateKeyWindow(void)
     _framebuffer_callback(win->inner_window, win->window_width,
                           win->window_height);
 
+    win->title = TITLE;
     // Return the address of the newly created window.
     return win;
 }

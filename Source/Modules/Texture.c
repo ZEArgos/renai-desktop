@@ -16,6 +16,24 @@ extern struct
     Renderer renderer;
 } _application;
 
+TextureNode* CreateTextureNode(const char* texture_name, f32 swidth,
+                               f32 sheight)
+{
+    // Allocate enough space for the node dynamically, and make sure the next
+    // slot is not full of garbage data.
+    TextureNode* created = malloc(sizeof(struct TextureNode));
+    created->next = NULL;
+    // Load the actual OpenGL shader into memory.
+    created->inner = LoadTextureFromFile(texture_name, swidth, sheight);
+    // if (created->inner == 0)
+    //     return NULL;
+
+    // Set the name of the shader to whatever value we were given.
+    created->name = texture_name;
+    // Return the newly created shader node.
+    return created;
+}
+
 Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
 {
     u32 texture_identifier;
