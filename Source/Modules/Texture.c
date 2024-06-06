@@ -42,8 +42,8 @@ Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     i32 image_width, image_height, image_channels;
     stbi_set_flip_vertically_on_load(1);
@@ -55,8 +55,7 @@ Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
                      GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-    else
-        exit(-1);
+    else exit(-1);
 
     stbi_image_free(data);
 
