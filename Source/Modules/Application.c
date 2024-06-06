@@ -34,7 +34,7 @@ typedef struct Application
     /**
      * @brief The application's renderer.
      */
-    Renderer renderer;
+    Renderer* renderer;
 } Application;
 
 /**
@@ -93,7 +93,8 @@ void InitializeApplication(void)
 
     // Try to initialize the renderer. If this fails, the application will
     // self-destruct.
-    InitializeRenderer();
+    _application.renderer =
+        InitializeRenderer(resolution->width / 1.25, resolution->height / 1.25);
 
     // Set the initialization flag of the application to true, so this function
     // is not called twice.
@@ -111,6 +112,11 @@ void RunApplication(void)
     }
     PrintSuccess("Beginning the application's main loop.");
 
+    // Get the width and height of the window, for passing into render
+    // calculation functions.
+    i32 window_width = 0, window_height = 0;
+    glfwGetWindowSize(GetKeyWindow(), &window_width, &window_height);
+
     // While the window shouldn't be closed, run the render / update loop.
     while (!glfwWindowShouldClose(GetKeyWindow()))
     {
@@ -127,7 +133,7 @@ void RunApplication(void)
         glDisable(GL_SCISSOR_TEST);
 
         // Render the window's actual content, beyond its background.
-        RenderWindowContent();
+        RenderWindowContent(_application.renderer, window_width, window_height);
 
         // Render the contents of the window. This kills the application on
         // failure, so don't worry about error checking.
@@ -145,7 +151,7 @@ void DestroyApplication(void)
     // Make sure we clean up after ourselves, removing any window, renderer, and
     // GLFW data we may have accumulated.
     KillWindow(&_application.window);
-    DestroyRenderer();
+    DestroyRenderer(_application.renderer);
     KillGLFW();
 
     // Set the initialization bits back to the original values.

@@ -1,28 +1,17 @@
-#include "Renderer.h"
-#include "Logger.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "Window.h"
-#include <glm/cglm.h>
+#include "Renderer.h" // The renderer mother header, declaring the various functions we define here.
+#include "Logger.h" // Provides wrapper functions for logging to the standard output.
+#include "Texture.h" // Provides the various data structures and functions to handle textures.
+#include <glm/cglm.h> // Provides the math functions and data structures needed to run complex graphical calculations.
 
-/**
- * @brief The internal application structure. This struct is defined in
- * Application.c, so we just define it as an external variable here and call it
- * a day.
- */
-extern struct
-{
-    u8 initialized;
-    f32 screen_width, screen_height;
-    Window window;
-    Renderer renderer;
-} _application;
-
-void InitializeRenderer(void)
+Renderer* InitializeRenderer(f32 swidth, f32 sheight)
 {
     // Setup the renderer by assembling the beginnings of each of its linked
     // lists.
-    _application.renderer = (struct Renderer){CreateShaderNode("basic")};
+    Renderer* renderer = malloc(sizeof(struct Renderer));
+    renderer->shader_list_head = CreateShaderNode("basic");
+    if (renderer->shader_list_head == NULL)
+        exit(-1);
+
     PrintSuccess("Initialized the application renderer successfully.");
 
     // Setup the projection matrix, making certain to initialize it to identity
@@ -30,15 +19,14 @@ void InitializeRenderer(void)
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
     // Create the orthographic projection matrix with the data we've assembled
     // so far, forming the last real base component of the rendering system.
-    glm_ortho(0.0f, _application.screen_width, _application.screen_height, 0.0f,
-              0.0f, 1000.0f, projection);
+    glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
 
     // If we can't manage to access the basic shader, kill the program, as
     // something's gone very, very wrong.
-    if (!UseShader(GetShaderNode("basic")->inner))
+    if (!UseShader(GetShaderNode(renderer, "basic")->inner))
         exit(-1);
     // Set the projection matrix inside of the shader. This is done only once.
-    SetMat4(GetShaderNode("basic")->inner, "projection", projection);
+    SetMat4(GetShaderNode(renderer, "basic")->inner, "projection", projection);
     // Poll for any potential OpenGL errors. If none occured, continue without
     // fail.
     if (!PrintGLError())
@@ -46,12 +34,14 @@ void InitializeRenderer(void)
 
     // Print our success.
     PrintSuccess("Set the projection matrix of the application.");
+
+    return renderer;
 }
 
-void DestroyRenderer(void)
+void DestroyRenderer(Renderer* renderer)
 {
     // Loop through the current nodes until we have no more to loop through.
-    ShaderNode* current_node = _application.renderer.shader_list_head;
+    ShaderNode* current_node = renderer->shader_list_head;
     while (current_node != NULL)
     {
         // If the shader exists, set the next in line to the stored next link of
@@ -62,21 +52,22 @@ void DestroyRenderer(void)
         // Move along in the cycle.
         current_node = next_node;
     }
+
+    // Free the memory allocated by the renderer itself.
+    free(renderer);
 }
 
-void RenderWindowContent(void)
+void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight)
 {
     // I'm not gonna bother documenting this function since its current state is
     // highly temporary.
-
-    u32 basic_shader = GetShaderNode("basic")->inner;
+    u32 basic_shader = GetShaderNode(renderer, "basic")->inner;
     if (!UseShader(basic_shader))
         exit(-1);
 
     SetInteger(basic_shader, "in_texture", 0);
     Texture tex = LoadTextureFromFile(
-        "./Assets/Tilesets/light_floorboard_1.jpg", _application.screen_width,
-        _application.screen_height);
+        "./Assets/Tilesets/light_floorboard_1.jpg", swidth, sheight);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex.inner);
@@ -92,10 +83,10 @@ void RenderWindowContent(void)
     glDeleteVertexArrays(1, &tex.vao);
 }
 
-ShaderNode* GetShaderNode(const char* shader_name)
+ShaderNode* GetShaderNode(Renderer* renderer, const char* shader_name)
 {
     // Loop through each node, until the given node does not exist.
-    ShaderNode* current_node = _application.renderer.shader_list_head;
+    ShaderNode* current_node = renderer->shader_list_head;
     while (current_node != NULL)
     {
         // If the name of the node and the name we are told to look for match,
@@ -111,27 +102,13 @@ ShaderNode* GetShaderNode(const char* shader_name)
     return NULL;
 }
 
-void AppendShaderNode(ShaderNode* node)
+void AppendShaderNode(Renderer* renderer, ShaderNode* node)
 {
     // Loop through the shader nodes until we hit the end of the linked list.
-    ShaderNode* current_node = _application.renderer.shader_list_head;
+    ShaderNode* current_node = renderer->shader_list_head;
     while (current_node->next != NULL)
         current_node = current_node->next;
 
     // Add the node to the end of the list.
     current_node->next = node;
-}
-
-ShaderNode* CreateShaderNode(const char* shader_name)
-{
-    // Allocate enough space for the node dynamically, and make sure the next
-    // slot is not full of garbage data.
-    ShaderNode* created = malloc(sizeof(struct ShaderNode));
-    created->next = NULL;
-    // Load the actual OpenGL shader into memory.
-    created->inner = LoadShader(shader_name);
-    // Set the name of the shader to whatever value we were given.
-    created->name = shader_name;
-    // Return the newly created shader node.
-    return created;
 }

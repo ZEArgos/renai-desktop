@@ -199,6 +199,23 @@ u8 UseShader(u32 shader)
     return SUCCESS;
 }
 
+ShaderNode* CreateShaderNode(const char* shader_name)
+{
+    // Allocate enough space for the node dynamically, and make sure the next
+    // slot is not full of garbage data.
+    ShaderNode* created = malloc(sizeof(struct ShaderNode));
+    created->next = NULL;
+    // Load the actual OpenGL shader into memory.
+    created->inner = LoadShader(shader_name);
+    if (created->inner == 0)
+        return NULL;
+
+    // Set the name of the shader to whatever value we were given.
+    created->name = shader_name;
+    // Return the newly created shader node.
+    return created;
+}
+
 void SetBoolean(u32 shader, const char* name, i8 value)
 {
     glUniform1i(glGetUniformLocation(shader, name), (i32)value);
