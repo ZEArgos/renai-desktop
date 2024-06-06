@@ -2,17 +2,131 @@
 #include "Logger.h" // Provides wrapper functions for logging to the standard output.
 #include <glm/cglm.h> // Provides the math functions and data structures needed to run complex graphical calculations.
 
+void ClearLinkedList(Renderer* renderer, u8 type)
+{
+    void* current_node;
+
+    if (type == SHADER_NODE) current_node = renderer->shader_list_head;
+    else if (type == TEXTURE_NODE) current_node = renderer->texture_list_head;
+    else
+    {
+        PrintWarning("Attempted to clear a list that...doesn't exist. (%d)",
+                     type);
+        return;
+    }
+
+    while (current_node != NULL)
+    {
+        void* next_node;
+        if (type == SHADER_NODE)
+            next_node = ((ShaderNode*)(current_node))->next;
+        else next_node = ((TextureNode*)(current_node))->next;
+
+        free(current_node);
+        current_node = next_node;
+    }
+}
+
+void* FindNode(Renderer* renderer, u8 type, const char* name)
+{
+    void* current_node;
+
+    if (type == SHADER_NODE) current_node = renderer->shader_list_head;
+    else if (type == TEXTURE_NODE) current_node = renderer->texture_list_head;
+    else
+    {
+        PrintWarning("Attempted to access a nonexistant node type. (%d)", type);
+        return NULL;
+    }
+
+    while (current_node != NULL)
+    {
+        if (type == SHADER_NODE &&
+            strcmp(((ShaderNode*)current_node)->name, name) == 0)
+            return current_node;
+        else if (strcmp(((TextureNode*)current_node)->name, name) == 0)
+            return current_node;
+
+        if (type == SHADER_NODE)
+            current_node = ((ShaderNode*)current_node)->next;
+        if (type == TEXTURE_NODE)
+            current_node = ((TextureNode*)current_node)->next;
+    }
+
+    PrintWarning("Couldn't find node '%s'.", name);
+    return NULL;
+}
+
+u8 AppendNode(Renderer* renderer, u8 type, void* node)
+{
+    void* current_node = GetListHead(renderer, type);
+
+    if (type == SHADER_NODE)
+    {
+        while (((ShaderNode*)current_node) != NULL &&
+               ((ShaderNode*)current_node)->next != NULL)
+            current_node = ((ShaderNode*)current_node)->next;
+
+        if ((ShaderNode*)current_node != NULL)
+            ((ShaderNode*)current_node)->next = node;
+        else
+        {
+            PrintWarning("Tried to start a linked list by appending a node. "
+                         "This is illegal.");
+            return FAILURE;
+        }
+    }
+    else if (type == TEXTURE_NODE)
+    {
+        while (((TextureNode*)current_node)->next != NULL)
+            current_node = ((TextureNode*)current_node)->next;
+        ((TextureNode*)current_node)->next = node;
+    }
+    else
+    {
+        PrintWarning("Attempted to append a nonexistant node type. (%d)", type);
+        return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
+void* GetListHead(Renderer* renderer, u8 type)
+{
+    if (type == SHADER_NODE) return renderer->shader_list_head;
+    else if (type == TEXTURE_NODE) return renderer->texture_list_head;
+    else
+    {
+        PrintWarning("Attempted to find an nonexistent list head.");
+        return NULL;
+    }
+}
+
+void StartLinkedList(Renderer* renderer, u8 type, const char* name, f32 swidth,
+                     f32 sheight)
+{
+    if (type == SHADER_NODE)
+        renderer->shader_list_head = CreateShaderNode(name);
+    else if (type == TEXTURE_NODE)
+        renderer->texture_list_head = CreateTextureNode(name, swidth, sheight);
+    else
+    {
+        PrintWarning("Attempted to access a start a linked list that doesn't "
+                     "exist. (%d)",
+                     type);
+    }
+}
+
 Renderer* InitializeRenderer(f32 swidth, f32 sheight)
 {
     // Setup the renderer by assembling the beginnings of each of its linked
     // lists.
     Renderer* renderer = malloc(sizeof(struct Renderer));
-    renderer->shader_list_head = CreateShaderNode("basic");
-    renderer->texture_list_head = CreateTextureNode(
-        "./Assets/Tilesets/light_floorboard_1.jpg", swidth, sheight);
+    *renderer = RENDERER_EMPTY_INIT;
 
-    if (renderer->shader_list_head == NULL)
-        exit(-1);
+    StartShaderList(renderer, "basic");
+    StartTextureList(renderer, "./Assets/Tilesets/light_floorboard_1.jpg",
+                     swidth, sheight);
 
     PrintSuccess("Initialized the application renderer successfully.");
 
@@ -25,14 +139,12 @@ Renderer* InitializeRenderer(f32 swidth, f32 sheight)
 
     // If we can't manage to access the basic shader, kill the program, as
     // something's gone very, very wrong.
-    if (!UseShader(GetShaderNode(renderer, "basic")->inner))
-        exit(-1);
+    if (!UseShader(FindShaderNode(renderer, "basic")->inner)) exit(-1);
     // Set the projection matrix inside of the shader. This is done only once.
-    SetMat4(GetShaderNode(renderer, "basic")->inner, "projection", projection);
+    SetMat4(FindShaderNode(renderer, "basic")->inner, "projection", projection);
     // Poll for any potential OpenGL errors. If none occured, continue without
     // fail.
-    if (!PrintGLError())
-        exit(-1);
+    if (!PrintGLError()) exit(-1);
 
     // Print our success.
     PrintSuccess("Set the projection matrix of the application.");
@@ -42,30 +154,8 @@ Renderer* InitializeRenderer(f32 swidth, f32 sheight)
 
 void DestroyRenderer(Renderer* renderer)
 {
-    // Loop through the current nodes until we have no more to loop through.
-    ShaderNode* current_shader_node = renderer->shader_list_head;
-    while (current_shader_node != NULL)
-    {
-        // If the shader exists, set the next in line to the stored next link of
-        // the list.
-        ShaderNode* next_node = current_shader_node->next;
-        // Free the shader's data.
-        free(current_shader_node);
-        // Move along in the cycle.
-        current_shader_node = next_node;
-    }
-
-    TextureNode* current_texture_node = renderer->texture_list_head;
-    while (current_texture_node != NULL)
-    {
-        // If the shader exists, set the next in line to the stored next link of
-        // the list.
-        TextureNode* next_node = current_texture_node->next;
-        // Free the shader's data.
-        free(current_texture_node);
-        // Move along in the cycle.
-        current_texture_node = next_node;
-    }
+    ClearLinkedList(renderer, SHADER_NODE);
+    ClearLinkedList(renderer, TEXTURE_NODE);
 
     // Free the memory allocated by the renderer itself.
     free(renderer);
@@ -75,9 +165,8 @@ void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight)
 {
     // I'm not gonna bother documenting this function since its current state is
     // highly temporary.
-    u32 basic_shader = GetShaderNode(renderer, "basic")->inner;
-    if (!UseShader(basic_shader))
-        exit(-1);
+    u32 basic_shader = FindShaderNode(renderer, "basic")->inner;
+    if (!UseShader(basic_shader)) exit(-1);
 
     SetInteger(basic_shader, "in_texture", 0);
 
@@ -91,64 +180,4 @@ void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight)
     SetMat4(basic_shader, "model", model);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-}
-
-ShaderNode* GetShaderNode(Renderer* renderer, const char* shader_name)
-{
-    // Loop through each node, until the given node does not exist.
-    ShaderNode* current_node = renderer->shader_list_head;
-    while (current_node != NULL)
-    {
-        // If the name of the node and the name we are told to look for match,
-        // return the node we're currently processing. If not, continue to the
-        // next iteration of the loop.
-        if (strcmp(current_node->name, shader_name) == 0)
-            return current_node;
-        current_node = current_node->next;
-    }
-
-    // Print that we failed to find the node and return empty-handed.
-    PrintWarning("Couldn't find shader node '%s'.", shader_name);
-    return NULL;
-}
-
-TextureNode* GetTextureNode(Renderer* renderer, const char* texture_name)
-{
-    // Loop through each node, until the given node does not exist.
-    TextureNode* current_node = renderer->texture_list_head;
-    while (current_node != NULL)
-    {
-        // If the name of the node and the name we are told to look for match,
-        // return the node we're currently processing. If not, continue to the
-        // next iteration of the loop.
-        if (strcmp(current_node->name, texture_name) == 0)
-            return current_node;
-        current_node = current_node->next;
-    }
-
-    // Print that we failed to find the node and return empty-handed.
-    PrintWarning("Couldn't find texture node '%s'.", texture_name);
-    return NULL;
-}
-
-void AppendShaderNode(Renderer* renderer, ShaderNode* node)
-{
-    // Loop through the shader nodes until we hit the end of the linked list.
-    ShaderNode* current_node = renderer->shader_list_head;
-    while (current_node->next != NULL)
-        current_node = current_node->next;
-
-    // Add the node to the end of the list.
-    current_node->next = node;
-}
-
-void AppendTextureNode(Renderer* renderer, TextureNode* node)
-{
-    // Loop through the texture nodes until we hit the end of the linked list.
-    TextureNode* current_node = renderer->texture_list_head;
-    while (current_node->next != NULL)
-        current_node = current_node->next;
-
-    // Add the node to the end of the list.
-    current_node->next = node;
 }

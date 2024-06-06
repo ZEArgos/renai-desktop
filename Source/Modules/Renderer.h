@@ -38,6 +38,30 @@ typedef struct Renderer
     TextureNode* texture_list_head;
 } Renderer;
 
+#define RENDERER_EMPTY_INIT                                                    \
+    (struct Renderer) { NULL, NULL }
+
+#define SHADER_NODE  0x011
+#define TEXTURE_NODE 0x012
+void ClearLinkedList(Renderer* renderer, u8 type);
+
+#define FindShaderNode(renderer, name)                                         \
+    ((ShaderNode*)FindNode(renderer, SHADER_NODE, name))
+
+void* FindNode(Renderer* renderer, u8 type, const char* name);
+
+u8 AppendNode(Renderer* renderer, u8 type, void* node);
+
+void* GetListHead(Renderer* renderer, u8 type);
+
+#define StartShaderList(renderer, name)                                        \
+    StartLinkedList(renderer, SHADER_NODE, name, 0, 0);
+#define StartTextureList(renderer, name, swidth, sheight)                      \
+    StartLinkedList(renderer, TEXTURE_NODE, name, swidth, sheight);
+
+void StartLinkedList(Renderer* renderer, u8 type, const char* name, f32 swidth,
+                     f32 sheight);
+
 /**
  * @brief Initialize the application's renderer. There is no need to pass
  * anything to this function, as it accesses the application structure itself.
@@ -57,23 +81,5 @@ void DestroyRenderer(Renderer* renderer);
  * called once every frame. This will kill the application on failure.
  */
 void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight);
-
-/**
- * @brief Get a shader node from the renderer's linked list by name.
- * @param shader_name The name of the shader, set by default as the name of the
- * shader's containing folder.
- * @return A pointer to the given shader node, or NULL if we couldn't find it.
- */
-ShaderNode* GetShaderNode(Renderer* renderer, const char* shader_name);
-
-TextureNode* GetTextureNode(Renderer* renderer, const char* texture_name);
-
-/**
- * @brief Append a shader node to the renderer's linked list.
- * @param node A pointer to the memory containing the to-be-inserted node.
- */
-void AppendShaderNode(Renderer* renderer, ShaderNode* node);
-
-void AppendTextureNode(Renderer* renderer, TextureNode* node);
 
 #endif // _RENAI_RENDERER_
