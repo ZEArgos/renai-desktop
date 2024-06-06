@@ -2,63 +2,61 @@
 #include "Logger.h" // Provides wrapper functions for logging to the standard output.
 #include <glm/cglm.h> // Provides the math functions and data structures needed to run complex graphical calculations.
 
-Renderer CreateRenderer(f32 swidth, f32 sheight)
+Renderer CreateRenderer(f32 swidth, f32 sheight, u32 uid)
 {
-    // Setup the renderer by assembling the beginnings of each of its linked
-    // lists.
+    // Initialize the renderer as empty right off the bat, and then assign a UID
+    // to it.
     Renderer renderer = RENDERER_EMPTY_INIT;
+    renderer.uid = uid;
 
-    // Start
-    if (StartShaderList(&renderer, "basic") == FAILURE ||
-        StartTextureList(&renderer, "light_floorboard_1.jpg", swidth,
-                         sheight) == FAILURE)
+    // Try to start the linked lists inside the renderer. If something goes
+    // wrong, kill the function and return the equivalent of NULL. Otherwise,
+    // print our success.
+    if (!StartShaderList(&renderer, "basic") ||
+        !StartTextureList(&renderer, "light_floorboard_1.jpg", swidth, sheight))
     {
         PrintError("Failed to begin the linked lists of the renderer.");
         return RENDERER_EMPTY_INIT;
     }
+    PrintSuccess("Initialized the renderer %d successfully.", uid);
 
-    PrintSuccess("Initialized the application renderer successfully.");
-
-    // Setup the projection matrix, making certain to initialize it to identity
-    // before we do any fancy math on it.
+    // Assign the projection matrix to identity by default.
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
-    // Create the orthographic projection matrix with the data we've assembled
-    // so far, forming the last real base component of the rendering system.
+    // Assemble the actual projection matrix, an orthographic projection with
+    // the dimensions [0, 0, width, height].
     glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
-
-    // If we can't manage to access the basic shader, kill the program, as
-    // something's gone very, very wrong.
+    // In order to set the uniform, we need to set the basic shader to be
+    // current. That's what we do here, if it fails, fail the application.
     if (!UseShader(FindShaderNode(&renderer, "basic")->inner))
         return RENDERER_EMPTY_INIT;
-    // Set the projection matrix inside of the shader. This is done only once.
+    // Set the matrix inside the shader.
     SetMat4(FindShaderNode(&renderer, "basic")->inner, "projection",
             projection);
-    // Poll for any potential OpenGL errors. If none occured, continue without
-    // fail.
+    // Print any errors that may have happened.
     if (!PrintGLError()) return RENDERER_EMPTY_INIT;
 
-    // Print our success and return the renderer.
-    PrintSuccess("Set the projection matrix of the application.");
+    // Print our success and exit the function.
+    PrintSuccess("Set the projection matrix of the renderer %d.", uid);
     return renderer;
 }
 
 void DestroyRenderer(Renderer* renderer)
 {
-    // Clear the renderer's linked lists.
     ClearShaderList(renderer);
     ClearTextureList(renderer);
 }
 
 u8 CheckRendererValidity(Renderer* renderer)
 {
-    if (renderer == NULL || renderer->shader_list_head == NULL ||
-        renderer->texture_list_head == NULL)
-    {
-        PrintError("The given renderer is not valid. Please report this "
-                   "bug ASAP.");
-        return FAILURE;
-    }
-    return SUCCESS;
+
+    if (renderer != NULL || renderer->shader_list_head != NULL ||
+        renderer->texture_list_head != NULL)
+        return SUCCESS;
+
+    PrintError("The given renderer (%d?) is not valid. Please report this "
+               "bug ASAP.",
+               renderer->uid);
+    return FAILURE;
 }
 
 void ClearLinkedList(Renderer* renderer, NodeType type)
@@ -199,17 +197,6 @@ void RenderWindowContent(Renderer* renderer)
 
     mat4 model = GLM_MAT4_IDENTITY_INIT;
     glm_translate(model, (vec3){0.0f, 0.0f, 0.0f}); // pos transform
-    // glm_translate(
-    //     model, (vec3){0.5f * renderer->texture_list_head->inner.width,
-    //                   0.5f * renderer->texture_list_head->inner.height,
-    //                   0.0f});
-    // glm_translate(
-    //     model, (vec3){-0.5f * renderer->texture_list_head->inner.width,
-    //                   -0.5f * renderer->texture_list_head->inner.height,
-    //                   0.0f});
-
-    // glm_scale(model, (vec3){renderer->texture_list_head->inner.width,
-    //                         renderer->texture_list_head->inner.height, 1.0f});
 
     SetMat4(basic_shader, "model", model);
 

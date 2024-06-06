@@ -36,14 +36,24 @@ typedef struct Renderer
      * provided.
      */
     TextureNode* texture_list_head;
+    /**
+     * @brief The name of the renderer. This is really only used for
+     * identification purposes.
+     */
+    u32 uid;
 } Renderer;
+
+/**
+ * @brief The identifier of the main rendering interface.
+ */
+#define RENDERER_MAIN_UID 0x1283A
 
 /**
  * @brief An empty initializer for the @ref Renderer struct. This simply just
  * makes sure everything is NULL.
  */
 #define RENDERER_EMPTY_INIT                                                    \
-    (struct Renderer) { NULL, NULL }
+    (struct Renderer) { NULL, NULL, 0 }
 
 /**
  * @brief Create a renderer object. This mainly initializes the linked lists of
@@ -52,10 +62,12 @@ typedef struct Renderer
  * projection calculations.
  * @param sheight The height of the primary monitor, to be used in texture and
  * projection calculations.
+ * @param uid The unique identifier of the renderer. This is used for
+ * identification purposes.
  * @return The renderer we've just created, or a renderer filled with NULL if
  * something went wrong.
  */
-Renderer CreateRenderer(f32 swidth, f32 sheight);
+Renderer CreateRenderer(f32 swidth, f32 sheight, u32 uid);
 
 /**
  * @brief Destroy a renderer and its contents.

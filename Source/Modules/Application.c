@@ -92,8 +92,8 @@ void InitializeApplication(void)
 
     // Try to initialize the renderer. If this fails, the application will
     // self-destruct.
-    _application.renderer =
-        CreateRenderer(resolution->width / 1.25, resolution->height / 1.25);
+    _application.renderer = CreateRenderer(
+        resolution->width / 1.25, resolution->height / 1.25, RENDERER_MAIN_UID);
     if (_application.renderer.shader_list_head == NULL) exit(-1);
 
     // Set the initialization flag of the application to true, so this
