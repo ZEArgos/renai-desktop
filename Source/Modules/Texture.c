@@ -12,7 +12,6 @@ extern struct
 {
     u8 initialized;
     f32 screen_width, screen_height;
-    f32 aspect_ratio;
     Window window;
     Renderer renderer;
 } _application;

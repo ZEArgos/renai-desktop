@@ -213,3 +213,9 @@ void SetFloat(u32 shader, const char* name, f32 value)
 {
     glUniform1f(glGetUniformLocation(shader, name), value);
 }
+
+void SetMat4(u32 shader, const char* name, mat4 value)
+{
+    glUniformMatrix4fv(glGetUniformLocation(shader, name), 1, GL_FALSE,
+                       &value[0][0]);
+}

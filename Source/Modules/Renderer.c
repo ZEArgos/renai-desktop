@@ -6,14 +6,14 @@
 #include <glm/cglm.h>
 
 /**
- * @brief The internal application structure. This is defined in Application.h,
- * so we just define it as external here and call it a day.
+ * @brief The internal application structure. This struct is defined in
+ * Application.c, so we just define it as an external variable here and call it
+ * a day.
  */
 extern struct
 {
     u8 initialized;
     f32 screen_width, screen_height;
-    f32 aspect_ratio;
     Window window;
     Renderer renderer;
 } _application;
@@ -28,69 +28,64 @@ void InitializeRenderer(void)
     // Setup the projection matrix, making certain to initialize it to identity
     // before we do any fancy math on it.
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
+    // Create the orthographic projection matrix with the data we've assembled
+    // so far, forming the last real base component of the rendering system.
+    glm_ortho(0.0f, _application.screen_width, _application.screen_height, 0.0f,
+              0.0f, 1000.0f, projection);
 
-    int width, height;
-    glfwGetWindowSize(_application.window.inner_window, &width, &height);
-
-    glm_ortho(0.0f, width, height, 0.0f, 0.0f, 1000.0f, projection);
-    // glm::ortho(0.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.0f);
-    //   glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(200.0f));
-    //   glm::mat4 VPmatrix = perspective * model;
-
-    // Setup the perspective matrix with 60 FOV, using the primary monitor's
-    // width and height.
-    // glm_perspective(glm_rad(60.0f), 1, 0.1f, 100.0f, projection);
-    // glm_translate_z(projection, -3.0f);
-
-    if (!UseShader(_application.renderer.shader_list_head->inner))
+    // If we can't manage to access the basic shader, kill the program, as
+    // something's gone very, very wrong.
+    if (!UseShader(GetShaderNode("basic")->inner))
         exit(-1);
-    glUniformMatrix4fv(
-        glGetUniformLocation(_application.renderer.shader_list_head->inner,
-                             "projection"),
-        1, GL_FALSE, &projection[0][0]);
+    // Set the projection matrix inside of the shader. This is done only once.
+    SetMat4(GetShaderNode("basic")->inner, "projection", projection);
+    // Poll for any potential OpenGL errors. If none occured, continue without
+    // fail.
+    if (!PrintGLError())
+        exit(-1);
 
     // Print our success.
-    PrintSuccess("Initialized the projection matrix of the application.");
+    PrintSuccess("Set the projection matrix of the application.");
 }
 
 void DestroyRenderer(void)
 {
+    // Loop through the current nodes until we have no more to loop through.
     ShaderNode* current_node = _application.renderer.shader_list_head;
     while (current_node != NULL)
     {
+        // If the shader exists, set the next in line to the stored next link of
+        // the list.
         ShaderNode* next_node = current_node->next;
+        // Free the shader's data.
         free(current_node);
+        // Move along in the cycle.
         current_node = next_node;
     }
 }
 
 void RenderWindowContent(void)
 {
-    ShaderNode* shader = GetShaderNode("basic");
-    if (!UseShader(shader->inner))
+    // I'm not gonna bother documenting this function since its current state is
+    // highly temporary.
+
+    u32 basic_shader = GetShaderNode("basic")->inner;
+    if (!UseShader(basic_shader))
         exit(-1);
 
-    glUniform1i(glGetUniformLocation(shader->inner, "in_texture"), 0);
+    SetInteger(basic_shader, "in_texture", 0);
     Texture tex = LoadTextureFromFile(
         "./Assets/Tilesets/light_floorboard_1.jpg", _application.screen_width,
         _application.screen_height);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex.inner);
 
-    // render boxes
     glBindVertexArray(tex.vao);
 
-    // world space positions of our cubes
-    vec3 pos = {0.0f, 0.0f, 0.0f};
-    // calculate the model matrix for each object and pass it to shader
-    // before drawing
     mat4 model = GLM_MAT4_IDENTITY_INIT;
-    glm_translate(model, pos);
-
-    // float angle = 50.0f;
-    // glm_rotate(model, glm_rad(angle), (vec3){1.0f, 1.0f, 1.0f});
-    glUniformMatrix4fv(glGetUniformLocation(shader->inner, "model"), 1,
-                       GL_FALSE, &model[0][0]);
+    glm_translate(model, (vec3){0.0f, 0.0f, 0.0f});
+    SetMat4(basic_shader, "model", model);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

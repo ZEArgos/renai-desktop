@@ -12,7 +12,6 @@ extern struct
 {
     u8 initialized;
     f32 screen_width, screen_height;
-    f32 aspect_ratio;
     Window window;
     Renderer renderer;
 } _application;
@@ -26,17 +25,9 @@ void _framebuffer_callback(GLFWwindow* win, i32 width, i32 height)
         lower_left_corner_y = 0;
 
     if (smallest_dimension == height)
-    {
-        f32 vertical_bar_width = width - smallest_dimension;
-        lower_left_corner_x = vertical_bar_width / 2.0f;
-        lower_left_corner_y = 0;
-    }
+        lower_left_corner_x = (width - smallest_dimension) / 2.0f;
     else
-    {
-        f32 horizontal_bar_height = height - smallest_dimension;
-        lower_left_corner_y = horizontal_bar_height / 2.0f;
-        lower_left_corner_x = 0;
-    }
+        lower_left_corner_y = (height - smallest_dimension) / 2.0f;
 
     glViewport(lower_left_corner_x, lower_left_corner_y, smallest_dimension,
                smallest_dimension);

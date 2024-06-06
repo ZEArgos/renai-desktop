@@ -13,6 +13,7 @@
 
 // Again, gimme them typedefs
 #include "Declarations.h"
+#include "glm/types.h"
 
 /**
  * @brief The max length a shader path can be. This is in place to prevent
@@ -59,5 +60,13 @@ void SetInteger(u32 shader, const char* name, i32 value);
  * @param value The new value of the float.
  */
 void SetFloat(u32 shader, const char* name, f32 value);
+
+/**
+ * @brief Set a 4x4 matrix variable inside the given shader.
+ * @param shader The shader we're changing.
+ * @param name The name of the mat4.
+ * @param value The new value of the mat4.
+ */
+void SetMat4(u32 shader, const char* name, mat4 value);
 
 #endif // _RENAI_SHADER_

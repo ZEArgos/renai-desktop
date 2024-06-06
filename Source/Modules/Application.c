@@ -27,7 +27,6 @@ typedef struct Application
      * as the width.
      */
     f32 screen_height;
-    f32 aspect_ratio;
     /**
      * @brief The window of the application.-
      */
@@ -121,10 +120,13 @@ void RunApplication(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
+        // Clip the edges of the scissor box, using our beautiful built-in
+        // OpenGL tooling that totally doesn't look ridiculous.
         glEnable(GL_SCISSOR_TEST);
         glClear(GL_COLOR_BUFFER_BIT);
         glDisable(GL_SCISSOR_TEST);
 
+        // Render the window's actual content, beyond its background.
         RenderWindowContent();
 
         // Render the contents of the window. This kills the application on
