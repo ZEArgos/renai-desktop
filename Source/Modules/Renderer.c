@@ -180,7 +180,7 @@ const char* GetNodeName(NodeType type, void* node)
     else return NULL;
 }
 
-void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight)
+void RenderWindowContent(Renderer* renderer)
 {
     if (!CheckRendererValidity(renderer)) exit(-1);
 

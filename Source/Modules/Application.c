@@ -112,11 +112,6 @@ void RunApplication(void)
     }
     PrintSuccess("Beginning the application's main loop.");
 
-    // Get the width and height of the window, for passing into render
-    // calculation functions.
-    i32 window_width = 0, window_height = 0;
-    glfwGetWindowSize(GetKeyWindow(), &window_width, &window_height);
-
     // While the window shouldn't be closed, run the render / update loop.
     while (!glfwWindowShouldClose(GetKeyWindow()))
     {
@@ -133,8 +128,7 @@ void RunApplication(void)
         glDisable(GL_SCISSOR_TEST);
 
         // Render the window's actual content, beyond its background.
-        RenderWindowContent(&_application.renderer, window_width,
-                            window_height);
+        RenderWindowContent(&_application.renderer);
 
         // Render the contents of the window. This kills the application on
         // failure, so don't worry about error checking.

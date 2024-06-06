@@ -73,11 +73,10 @@ void DestroyRenderer(Renderer* renderer);
 u8 CheckRendererValidity(Renderer* renderer);
 
 /**
- * @brief Render the contents of the application's window using the given
- * renderer. This should only be called once every frame. This will kill the
- * application on failure.
+ * @brief Render the contents of the game's window with the given renderer.
+ * @param renderer The renderer in question.
  */
-void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight);
+void RenderWindowContent(Renderer* renderer);
 
 /**
  * @brief The possible node types of the application. These are used in the
