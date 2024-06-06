@@ -56,7 +56,7 @@ typedef struct Window
  */
 GLFWwindow* GetInnerWindow(Window* win);
 
-Window* CreateKeyWindow(void);
+Window CreateKeyWindow(void);
 
 /**
  * @brief Kill the window passed in. This is a message-logging wrapper around

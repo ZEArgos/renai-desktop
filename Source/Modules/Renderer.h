@@ -46,58 +46,188 @@ typedef struct Renderer
     (struct Renderer) { NULL, NULL }
 
 /**
- * @brief Initialize the application's renderer. There is no need to pass
- * anything to this function, as it accesses the application structure itself.
- * This kills the application on error.
+ * @brief Create a renderer object. This mainly initializes the linked lists of
+ * the renderer.
+ * @param swidth The width of the primary monitor, to be used in texture and
+ * projection calculations.
+ * @param sheight The height of the primary monitor, to be used in texture and
+ * projection calculations.
+ * @return The renderer we've just created, or a renderer filled with NULL if
+ * something went wrong.
  */
-Renderer* InitializeRenderer(f32 swidth, f32 sheight);
+Renderer CreateRenderer(f32 swidth, f32 sheight);
 
 /**
- * @brief Destroy the application's renderer, returning it to nothing. This is
- * required for the application to close properly, as many of the list items are
- * dynamically allocated.
+ * @brief Destroy a renderer and its contents.
+ * @param renderer The renderer we are destroying.
  */
 void DestroyRenderer(Renderer* renderer);
 
+/**
+ * @brief Check the validity of the given renderer. This basically just checks
+ * to make sure nothing inside the renderer is uninitialized.
+ * @param renderer The renderer to check.
+ * @return The success flag of the function. SUCCESS means the renderer is
+ * valid, FAILURE means it's invalid.
+ */
+u8 CheckRendererValidity(Renderer* renderer);
+
+/**
+ * @brief Render the contents of the application's window using the given
+ * renderer. This should only be called once every frame. This will kill the
+ * application on failure.
+ */
+void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight);
+
+/**
+ * @brief The possible node types of the application. These are used in the
+ * general Node___ methods.
+ */
 typedef enum NodeType
 {
+    /**
+     * @brief A shader node, corresponding to the @ref ShaderNode type.
+     */
     shader,
+    /**
+     * @brief A texture node, corresponding to the @ref TextureNode type.
+     */
     texture
 } NodeType;
 
-void ClearLinkedList(Renderer* renderer, NodeType type);
-
-#define FindShaderNode(renderer, name)                                         \
-    ((ShaderNode*)FindNode(renderer, shader, name))
-#define FindTextureNode(renderer, name)                                        \
-    ((TextureNode*)FindNode(renderer, shader, name))
-
-void* FindNode(Renderer* renderer, NodeType type, const char* name);
-
-u8 AppendNode(Renderer* renderer, NodeType type, void* node);
-
+/**
+ * @brief Get the list head of the given type of object in the given renderer.
+ * @param renderer The renderer to search.
+ * @param type The type of linked list to look at.
+ * @return A pointer to the list head, or NULL if something went wrong.
+ */
 void* GetListHead(Renderer* renderer, NodeType type);
 
-u8 CheckFullNodeValidity(NodeType type, void* node);
-u8 CheckShallowNodeValidity(u8 type, void* node);
-
-void* GetNodeNext(NodeType type, void* node);
-void SetNodeNext(NodeType type, void* node, void* subnode);
-
-const char* GetNodeName(NodeType type, void* node);
-
-#define StartShaderList(renderer, name)                                        \
-    StartLinkedList(renderer, shader, name, 0, 0);
-#define StartTextureList(renderer, name, swidth, sheight)                      \
-    StartLinkedList(renderer, texture, name, swidth, sheight);
-
-void StartLinkedList(Renderer* renderer, NodeType type, const char* name,
-                     f32 swidth, f32 sheight);
+/**
+ * @brief Begin the given type of linked list for the given renderer. Using this
+ * function as a user is cumbersome. Please use one of the helper definitions.
+ * @param renderer The given renderer for which we are starting the list.
+ * @param type The type of list to start.
+ * @param name The name of the node we are inserting.
+ * @param swidth The width of the primary monitor. @b Only needed for texture
+ * list.
+ * @param sheight The height of the primary monitor. @b Only needed for the
+ * texture list.
+ * @return An integer flag representing the success state of the function. This
+ * can only be SUCCESS or FAILURE.
+ */
+u8 StartLinkedList(Renderer* renderer, NodeType type, const char* name,
+                   f32 swidth, f32 sheight);
 
 /**
- * @brief Render the contents of the application's window. This should only be
- * called once every frame. This will kill the application on failure.
+ * @brief Start the shader linked list of the given renderer. This eliminates
+ * the need to specify the extra arguments in the @ref StartLinkedList function
+ * by hand.
  */
-void RenderWindowContent(Renderer* renderer, f32 swidth, f32 sheight);
+#define StartShaderList(renderer, name)                                        \
+    StartLinkedList(renderer, shader, name, 0, 0)
+
+/**
+ * @brief Start the texture linked list of the given renderer.
+ */
+#define StartTextureList(renderer, name, swidth, sheight)                      \
+    StartLinkedList(renderer, texture, name, swidth, sheight)
+
+/**
+ * @brief Clear a specific linked list within a @ref Renderer object.
+ * @param renderer The renderer of which's linked list we are clearing.
+ * @param type The type of linked list we want to clear.
+ */
+void ClearLinkedList(Renderer* renderer, NodeType type);
+
+/**
+ * @brief Clear specifically the shader list of the given renderer.
+ */
+#define ClearShaderList(renderer) ClearLinkedList(renderer, shader)
+
+/**
+ * @brief Clear specifically the texture list of the given renderer.
+ */
+#define ClearTextureList(renderer) ClearLinkedList(renderer, texture)
+
+/**
+ * @brief Find a node from a specific list in a specific renderer by name.
+ * @param renderer The renderer from which we are trying to grab the node.
+ * @param type The type of node we are trying to grab.
+ * @param name The name of the node we are trying to grab.
+ * @return A pointer to the node, or NULL if something went wrong.
+ */
+void* FindNode(Renderer* renderer, NodeType type, const char* name);
+
+/**
+ * @brief Find a shader node within the given renderer. This just automatically
+ * converts the void* return of @ref FindNode to a @ref ShaderNode.
+ */
+#define FindShaderNode(renderer, name)                                         \
+    ((ShaderNode*)FindNode(renderer, shader, name))
+
+/**
+ * @brief Find a texture node within the given renderer. Smiliar to @ref
+ * FindShaderNode, this just automatically converts the void* return of @ref
+ * FindNode to a @ref TextureNode.
+ */
+#define FindTextureNode(renderer, name)                                        \
+    ((TextureNode*)FindNode(renderer, texture, name))
+
+/**
+ * @brief Append a node to the end of the given renderer's @param type linked
+ * list.
+ * @param renderer The "given renderer".
+ * @param type The type of list to look through.
+ * @param node The node to append.
+ * @return An integer success flag. This will only ever be FAILURE if the given
+ * renderer's @param type list is already initialized.
+ */
+u8 AppendNode(Renderer* renderer, NodeType type, void* node);
+
+/**
+ * @brief Append specifically a shader node to the given renderer.
+ */
+#define AppendShaderNode(renderer, node) AppendNode(renderer, shader, node)
+
+/**
+ * @brief Append specifically a texture node to the given renderer.
+ */
+#define AppendTextureNode(renderer, node) AppendNode(renderer, texture, node)
+
+/**
+ * @brief Get the name of the given node in string form.
+ * @param type The type of node the function's been given.
+ * @param node The node to ask.
+ * @return The string name of the node, or NULL if something went wrong.
+ */
+const char* GetNodeName(NodeType type, void* node);
+
+/**
+ * @brief Get the node linked to the given one.
+ * @param type The type of node given.
+ * @param node The node to check.
+ * @return The node linked, or NULL if something went wrong.
+ */
+void* GetNodeNext(NodeType type, void* node);
+
+/**
+ * @brief Set the value of the node linked to the given one.
+ * @param type The type of node we're setting.
+ * @param node The node to link the @param subnode to.
+ * @param subnode The node to be linked.
+ * @return A success flag, either SUCCESS or FAILURE.
+ */
+u8 SetNodeNext(NodeType type, void* node, void* subnode);
+
+/**
+ * @brief Check a node's innards for inconsistencies with a fully initialized
+ * node. @b Note that this does not check the node-type-specific components of
+ * the given node, for that you have the node-specific helper functions.
+ * @param type The type of node to check against.
+ * @param node The node we're checking.
+ * @return A success flag for the function, either SUCCESS or FAILURE.
+ */
+u8 CheckNodeValidity(NodeType type, void* node);
 
 #endif // _RENAI_RENDERER_

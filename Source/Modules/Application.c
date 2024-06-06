@@ -30,11 +30,11 @@ typedef struct Application
     /**
      * @brief The window of the application.-
      */
-    Window* window;
+    Window window;
     /**
      * @brief The application's renderer.
      */
-    Renderer* renderer;
+    Renderer renderer;
 } Application;
 
 /**
@@ -57,7 +57,7 @@ GLFWwindow* GetKeyWindow(void)
 
     // Return the window's inner, GLFW-created window, using a secondary check
     // implemented in the Window.h file.
-    return GetInnerWindow(_application.window);
+    return GetInnerWindow(&_application.window);
 }
 
 void InitializeApplication(void)
@@ -88,16 +88,16 @@ void InitializeApplication(void)
     // Try to initialize the application's key window. If this fails, fail the
     // application's process.
     _application.window = CreateKeyWindow();
-    if (_application.window == NULL)
-        exit(-1);
+    if (_application.window.inner_window == NULL) exit(-1);
 
     // Try to initialize the renderer. If this fails, the application will
     // self-destruct.
     _application.renderer =
-        InitializeRenderer(resolution->width / 1.25, resolution->height / 1.25);
+        CreateRenderer(resolution->width / 1.25, resolution->height / 1.25);
+    if (_application.renderer.shader_list_head == NULL) exit(-1);
 
-    // Set the initialization flag of the application to true, so this function
-    // is not called twice.
+    // Set the initialization flag of the application to true, so this
+    // function is not called twice.
     _application.initialized = 1;
 }
 
@@ -133,7 +133,8 @@ void RunApplication(void)
         glDisable(GL_SCISSOR_TEST);
 
         // Render the window's actual content, beyond its background.
-        RenderWindowContent(_application.renderer, window_width, window_height);
+        RenderWindowContent(&_application.renderer, window_width,
+                            window_height);
 
         // Render the contents of the window. This kills the application on
         // failure, so don't worry about error checking.
@@ -150,8 +151,8 @@ void DestroyApplication(void)
 {
     // Make sure we clean up after ourselves, removing any window, renderer, and
     // GLFW data we may have accumulated.
-    KillWindow(_application.window);
-    DestroyRenderer(_application.renderer);
+    KillWindow(&_application.window);
+    DestroyRenderer(&_application.renderer);
     KillGLFW();
 
     // Set the initialization bits back to the original values.
