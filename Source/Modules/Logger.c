@@ -162,7 +162,7 @@ u8 PrintMessage(u8 state, char* message, ...)
     char msg_full[512];
     va_list args;
     va_start(args, message);
-    vsprintf(msg, msg, args);
+    vsprintf(msg_full, msg, args);
 
     system(msg_full);
     return SUCCESS;
