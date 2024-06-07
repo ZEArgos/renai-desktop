@@ -2,8 +2,8 @@
  * @file Logger.h
  * @author Zenais Argos
  * @brief File to declare functions and various other utilities to be used when
- * logging messages to the console. This should be available in every
- * translation unit throughout the project.
+ * logging messages to the console. This should be available in very nearly
+ * every translation unit throughout the project.
  * @date 2024-05-23
  *
  * @copyright Copyright (c) 2024

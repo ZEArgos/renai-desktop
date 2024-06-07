@@ -99,6 +99,7 @@ const char* status_strings[3] = {"  SUCCESS  ", "   ERROR   ", "  WARNING  "};
  */
 const char* status_colors[3] = {"\033[32m", "\033[31m", "\033[33m"};
 
+#ifdef DEBUG_MODE
 u8 PrintMessage(u8 state, char* message, ...)
 {
     // If the terminal's width hasn't been grabbed yet, do it. If this function
@@ -151,3 +152,14 @@ u8 PrintMessage(u8 state, char* message, ...)
     // Return that we've hit no issues.
     return SUCCESS;
 }
+#else
+u8 PrintMessage(u8 state, char* message, ...)
+{
+    char msg[512] = "notify-send -t 0 'Renai ran into an error: ";
+    strncat(msg, message, 485);
+    strncat(msg, "'", 486);
+
+    system(msg);
+    return SUCCESS;
+}
+#endif
