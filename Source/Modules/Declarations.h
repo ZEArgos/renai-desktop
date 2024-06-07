@@ -49,6 +49,37 @@ typedef long double f128;
 #define FAILURE 0
 
 /**
+ * @brief Get a string representation of the current time in milliseconds.
+ * @param storage The string which will become the host of the current time.
+ * @param string_size The size of the given string.
+ */
+void GetTimeString(char* storage, u32 string_size);
+
+/**
+ * @brief The exact amount of milliseconds it had been since the beginning of
+ * the epoch when the application began.
+ */
+extern i64 start_time;
+
+/**
+ * @brief Get the current time, based off of @ref start_time and the @b current
+ * number of milliseconds it's been since the beginning of the epoch.
+ * @return A 64-bit integer representation of the milliseconds difference
+ * between the two; the amount of time the application has been running.
+ */
+i64 GetCurrentTime(void);
+
+/**
+ * @brief Count the number of digits in the number passed to the function. Note
+ * that this function's effectiveness cuts at 255 digits, as the situation I use
+ * this function in does not necessitate any longer numbers.
+ * @param number The number whose digits we want to count.
+ * @return A 16-bit unsigned integer that represents the size of the number, or
+ * 0 if something went wrong.
+ */
+u8 CountDigits(u32 number);
+
+/**
  * @brief Get a string representation of the current time and date, and
  * concatenate it into the given string buffer.
  * @param buffer The buffer into which we're copying the time and date.

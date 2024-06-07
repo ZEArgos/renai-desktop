@@ -13,33 +13,32 @@
 #ifndef _RENAI_LOGGER_
 #define _RENAI_LOGGER_
 
-#include "Declarations.h"
+typedef enum MessageState
+{
+    success,
+    error,
+    warning
+} MessageState;
 
-u8 PrintMessage(u8 state, char* message, ...);
+/**
+ * @brief Print a message to whatever output the application is currently
+ * set to utilize. In debug mode, that would be the standard output, and in
+ * production binaries, that would be the @ref notify-send or @ref
+ * MessageBox interface, depending on the operating system.
+ * @param state The state of the message.
+ * @param message The message to send. This is similar to the format string
+ * in any of the @ref printf function family.
+ * @param ... The arguments to concatenate into @param message.
+ */
+void PrintMessage(MessageState state, char* message, ...);
 
-#ifdef DEBUG_MODE
-/**
- * @brief Print a message in success mode.
- */
-#define PrintSuccess(...) PrintMessage(0, __VA_ARGS__)
-/**
- * @brief Print a message in warning mode.
- */
-#define PrintWarning(...) PrintMessage(2, __VA_ARGS__)
-#else
-/**
- * @brief Print a message in success mode. (REMOVED DUE TO NON-DEBUG MODE)
- */
-#define PrintSuccess(...)
-/**
- * @brief Print a message in warning mode. (REMOVED DUE TO NON-DEBUG MODE)
- */
-#define PrintWarning(...)
+#define PrintSuccess(...) PrintMessage(success, __VA_ARGS__)
+#define PrintError(...)   PrintMessage(error, __VA_ARGS__)
+#define PrintWarning(...) PrintMessage(warning, __VA_ARGS__)
+
+#ifndef DEBUG_MODE
+#undef PrintSuccess(...)
+#undef PrintWarning(...)
 #endif
-
-/**
- * @brief Print a message in error mode.
- */
-#define PrintError(...) PrintMessage(1, __VA_ARGS__)
 
 #endif // _RENAI_LOGGER_

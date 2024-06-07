@@ -1,4 +1,5 @@
 #include "Libraries.h" // The Libraries mother header, provides the function declarations defined here.
+#include "Declarations.h" // Provides the various type definitions, includes, and methods needed in this translation unit.
 #include "Logger.h" // Provides the functionality needed to log values to the terminal.
 
 void InitializeGLFW(void)
@@ -7,8 +8,7 @@ void InitializeGLFW(void)
     // print success to the console, along with the GLFW version we're working
     // with.
     glfwInit();
-    if (!PrintGLFWError())
-        exit(-1);
+    if (!PrintGLFWError()) exit(-1);
 
     // Set all the needed window hints to tell GLFW what version of OpenGL we're
     // trying to take advantage of.
