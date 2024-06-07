@@ -59,6 +59,8 @@ u32 LoadShader(const char* name);
  */
 u8 UseShader(u32 shader);
 
+//! check for glerror in each fo these!
+
 /**
  * @brief Set a boolean variable inside the shader.
  * @param shader The shader we're changing.

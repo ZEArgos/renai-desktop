@@ -191,10 +191,8 @@ void* FindNode(Renderer* renderer, NodeType type, const char* name);
  * @param renderer The "given renderer".
  * @param type The type of list to look through.
  * @param node The node to append.
- * @return An integer success flag. This will only ever be FAILURE if the given
- * renderer's @param type list is already initialized.
  */
-u8 AppendNode(Renderer* renderer, NodeType type, void* node);
+void AppendNode(Renderer* renderer, NodeType type, void* node);
 
 /**
  * @brief Append specifically a shader node to the given renderer.
