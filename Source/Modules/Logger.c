@@ -4,8 +4,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#ifdef DEBUG_MODE
-
 // Provides variadic argument handling functionality.
 #include <stdarg.h>
 
@@ -153,8 +151,3 @@ u8 PrintMessage(u8 state, char* message, ...)
     // Return that we've hit no issues.
     return SUCCESS;
 }
-
-// If debug mode is not on, just have the PrintMessage function do nothing.
-#else
-u8 PrintMessage(u8 state, char* message, ...) {}
-#endif // DEBUG_MODE
