@@ -79,7 +79,7 @@ Window CreateKeyWindow(void)
 
 #ifndef DEBUG_MODE
     // If we're not in debug mode, maximize the created window.
-    glfwMaximizeWindow(win->inner_window);
+    glfwMaximizeWindow(win.inner_window);
 #endif
 
     // Finally, print our success.
