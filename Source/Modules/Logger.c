@@ -159,11 +159,12 @@ u8 PrintMessage(u8 state, char* message, ...)
     strncat(msg, message, 485);
     strncat(msg, "'", 486);
 
+    char msg_full[512];
     va_list args;
     va_start(args, message);
     vsprintf(msg, msg, args);
 
-    system(msg);
+    system(msg_full);
     return SUCCESS;
 }
 #endif
