@@ -12,10 +12,8 @@
 #include <limits.h>
 i32 _DigitCount(i64 n)
 {
-    if (n < 0)
-        return _DigitCount((n == INT_MIN) ? INT_MAX : -n);
-    if (n < 10)
-        return 1;
+    if (n < 0) return _DigitCount((n == INT_MIN) ? INT_MAX : -n);
+    if (n < 10) return 1;
     return 1 + _DigitCount(n / 10);
 }
 
@@ -108,13 +106,11 @@ u8 PrintMessage(u8 state, char* message, ...)
     // If the terminal's width hasn't been grabbed yet, do it. If this function
     // fails the whole program is sent to hell, so we don't bother error
     // checking.
-    if (terminal_width == 0)
-        GetTerminalWidth();
+    if (terminal_width == 0) GetTerminalWidth();
     // Similarly, if the program's start time hasn't yet been grabbed, do that.
     // This function will, on first call, always return zero, so we cast it to
     // void as we do not care.
-    if (start_time == 0)
-        (void)GetCurrentTime();
+    if (start_time == 0) (void)GetCurrentTime();
 
     u64 line_length = 0, last_assigned_length = 0;
 
@@ -125,8 +121,7 @@ u8 PrintMessage(u8 state, char* message, ...)
     // label.
     line_length = printf("%s[%s]  MESSAGE:\033[0m ", status_colors[state],
                          status_strings[state]);
-    if (line_length < 0)
-        return FAILURE;
+    if (line_length < 0) return FAILURE;
 
     // Get the variadic arguments passed into the function. If none are passed,
     // this is void.
@@ -136,8 +131,7 @@ u8 PrintMessage(u8 state, char* message, ...)
     // Calculate the lenght of the char*, print the formatted message, and
     // check if we need to fail the function. If not, add in the new length.
     last_assigned_length = vprintf(message, args);
-    if (last_assigned_length < 0)
-        return FAILURE;
+    if (last_assigned_length < 0) return FAILURE;
     line_length += last_assigned_length;
 
     // Set the global Last_time_string value to, well, now.
@@ -162,5 +156,5 @@ u8 PrintMessage(u8 state, char* message, ...)
 
 // If debug mode is not on, just have the PrintMessage function do nothing.
 #else
-u8 PrintMessage(u8 state, char* message, ...)
+u8 PrintMessage(u8 state, char* message, ...) {}
 #endif // DEBUG_MODE

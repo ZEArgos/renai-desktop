@@ -13,22 +13,8 @@
 #ifndef _RENAI_LOGGER_
 #define _RENAI_LOGGER_
 
-//! this is on the list for reconstruction
-
-// Include for my various typedefs.
 #include "Declarations.h"
 
-/**
- * @brief Print a formatted and colored message to the console. Works basically
- * as a wrapper around @ref printf() in the way it takes variadic args and
- * concatenates them into the given message.
- * @param state The state in which to print. (i.e failure/success)
- * @param message The message given to print, with optional formatting
- * characters to concatenate char* into.
- * @param ... The various arguments to be concatenated into the main message.
- * @return An unsigned, 8-bit integer flag representing either success or
- * failure.
- */
 u8 PrintMessage(u8 state, char* message, ...);
 
 #ifdef DEBUG_MODE
