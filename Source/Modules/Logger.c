@@ -128,25 +128,45 @@ __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
     // not exceed 512 characters, so we set a hard limit there.
     char msg[512];
     // Do the first string concatenation into the buffer, this one with the most
-    // of the meat.
-    snprintf(msg, 512,
-             "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "
-             "\"Renai ran into an error. Caller: %s on line %d. Message: '",
-             caller, line);
-    // Get the variable arguments passed to the function, so we can utilize them
-    // in the vsprintf.
+    // of the meat. If this fails, the user must know at all costs, so we'll try
+    // to directly talk to them. If THAT, dystopically, fails, well, their
+    // computer is probably fucked, so we'll just ignore it.
+    if (snprintf(
+            msg, 512,
+            "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "
+            "\"Renai ran into an error. Caller: %s on line %d. Message: '",
+            caller, line) < 0)
+    {
+        system(
+            "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "
+            "\"The Renai error reporter failed. Something is either seriously "
+            "wrong with your computer, or this program. Please report ASAP.\"");
+        exit(-1);
+    }
+
+    // Get the variable arguments passed to the function, so we can utilize
+    // them in the vsprintf.
     va_list args;
     va_start(args, message);
     // Actually put the messaage into the buffer object, making certain not to
     // overflow the buffer in case of a particularly large buffer; instead the
-    // command will just fail.
-    vsnprintf(msg + strlen(msg), 512 - strlen(msg), message, args);
-    strncat(msg, "'\"", 512 - strlen(msg));
+    // command will just fail on execution. Just like the earlier snprintf call,
+    // if this, somehow, fails, we're screwed.
+    if (vsnprintf(msg + strlen(msg), 512 - strlen(msg), message, args) < 0)
+    {
+        system(
+            "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "
+            "\"The Renai error reporter failed. Something is either seriously "
+            "wrong with your computer, or this program. Please report ASAP.\"");
+        exit(-1);
+    }
+    (void)strncat(msg, "'\"", 512 - strlen(msg));
 
 #ifdef linux
     // If we're on linux, just syscall the command. This will execute the
-    // notify-send.
-    system(msg);
+    // notify-send. We...cannot fix any errors associated with this function, so
+    // we just explicitly ignore them.
+    (void)system(msg);
 #else
     //! windows
 #endif
