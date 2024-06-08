@@ -128,8 +128,6 @@ __KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
 u8 PrintMessage(u8 state, char* message, ...) {}
 #endif
 
-void copy(i32 fd, i16 ev, void* arg) { printf("e"); }
-
 __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
 {
     char msg[512];
