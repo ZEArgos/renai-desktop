@@ -128,12 +128,6 @@ __KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
 u8 PrintMessage(u8 state, char* message, ...) {}
 #endif
 
-#ifdef linux
-#define error_reporter 0
-#else
-#define error_reporter 1
-#endif
-
 void copy(i32 fd, i16 ev, void* arg) { printf("e"); }
 
 __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
@@ -149,11 +143,11 @@ __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
     vsnprintf(msg + strlen(msg), 512 - strlen(msg), message, args);
     strncat(msg, "'\"", 512 - strlen(msg));
 
-    if (error_reporter == 0) system(msg);
-    else
-    {
-        //! windows error reporter!!
-    }
+#ifdef linux
+    system(msg);
+#else
+    //! windows
+#endif
 
     exit(-1);
 }
