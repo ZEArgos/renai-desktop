@@ -8,6 +8,7 @@
  */
 i32 main(void)
 {
+
     // Initialize the application and try to run its loop. If the loop fails,
     // the process will self-destruct, so don't worry about error checking.
     InitializeApplication();

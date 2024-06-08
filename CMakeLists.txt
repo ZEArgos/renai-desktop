@@ -47,7 +47,7 @@ macro(setup_project)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
     include_directories(${CMAKE_SOURCE_DIR}/Dependencies ${CMAKE_SOURCE_DIR}/Source/Modules)
     link_directories(${CMAKE_SOURCE_DIR}/Dependencies/glfw ${CMAKE_SOURCE_DIR}/Dependencies/glad 
-        ${CMAKE_SOURCE_DIR}/Dependencies/stbi ${CMAKE_SOURCE_DIR}/Dependencies/cglm ${CMAKE_CURRENT_BINARY_DIR}/Dependencies/errn)
+        ${CMAKE_SOURCE_DIR}/Dependencies/stbi ${CMAKE_SOURCE_DIR}/Dependencies/cglm)
 endmacro()
 setup_project()
 
@@ -55,9 +55,7 @@ setup_project()
 macro(create_application)
     file(GLOB SOURCE_FILES ${CMAKE_SOURCE_DIR}/Source/*.c ${CMAKE_SOURCE_DIR}/Source/Modules/*.c)
     add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-    add_subdirectory(Dependencies/errn)
 
-    target_link_libraries(${PROJECT_NAME} PUBLIC error)
     if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
         target_link_libraries(${PROJECT_NAME} PRIVATE libglfw3-linux.a PRIVATE libglad-linux.a PRIVATE libstbi-linux.a 
             PRIVATE libglm-linux.a PRIVATE m)

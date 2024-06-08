@@ -62,7 +62,8 @@ void _GetTerminalWidth(void)
 #define COLOR_MESSAGE(type)                                                    \
     (type == success ? "\033[32m" : type == error ? "\033[31m" : "\033[33m")
 
-__KILLFAIL PrintMessage(MessageState state, char* message, ...)
+__KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
+                        ...)
 {
     // If the terminal's width hasn't been grabbed yet, do it. If this function
     // fails the whole program is sent to hell, so we don't bother error
@@ -139,3 +140,18 @@ u8 PrintMessage(u8 state, char* message, ...)
     return SUCCESS;
 }
 #endif
+
+#ifdef linux
+#define error_reporter 0
+#else
+#define error_reporter 1
+#endif
+
+__KILL PrintErrorMessage(const char* caller, char* message, ...)
+{
+    if (error_reporter == 0) {}
+    else
+    {
+        //! windows error reporter!!
+    }
+}

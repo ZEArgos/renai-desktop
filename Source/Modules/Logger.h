@@ -34,11 +34,14 @@ typedef enum MessageState
  * in any of the @ref printf function family.
  * @param ... The arguments to concatenate into @param message.
  */
-__KILLFAIL PrintMessage(MessageState state, char* message, ...);
+__KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
+                        ...);
 
-#define PrintSuccess(...) PrintMessage(success, __VA_ARGS__)
-#define PrintError(...)   PrintMessage(error, __VA_ARGS__)
-#define PrintWarning(...) PrintMessage(warning, __VA_ARGS__)
+__KILL PrintErrorMessage(const char* caller, char* message, ...);
+
+#define PrintSuccess(...) PrintMessage(success, __func__, __VA_ARGS__)
+#define PrintError(...)   PrintErrorMessage(__func__, __VA_ARGS__)
+#define PrintWarning(...) PrintMessage(warning, __func__, __VA_ARGS__)
 
 #ifndef DEBUG_MODE
 #undef PrintSuccess(...)
