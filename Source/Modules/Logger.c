@@ -125,20 +125,7 @@ __KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
     }
 }
 #else
-u8 PrintMessage(u8 state, char* message, ...)
-{
-    char msg[512] = "notify-send -t 0 'Renai ran into an error: ";
-    strncat(msg, message, 485);
-    strncat(msg, "'", 486);
-
-    char msg_full[512];
-    va_list args;
-    va_start(args, message);
-    vsprintf(msg_full, msg, args);
-
-    system(msg_full);
-    return SUCCESS;
-}
+u8 PrintMessage(u8 state, char* message, ...) {}
 #endif
 
 #ifdef linux
@@ -147,11 +134,26 @@ u8 PrintMessage(u8 state, char* message, ...)
 #define error_reporter 1
 #endif
 
-__KILL PrintErrorMessage(const char* caller, char* message, ...)
+void copy(i32 fd, i16 ev, void* arg) { printf("e"); }
+
+__KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
 {
-    if (error_reporter == 0) {}
+    char msg[512];
+    snprintf(msg, 512,
+             "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "
+             "\"Renai ran into an error. Caller: %s on line %d. Message: '",
+             caller, line);
+
+    va_list args;
+    va_start(args, message);
+    vsnprintf(msg + strlen(msg), 512 - strlen(msg), message, args);
+    strncat(msg, "'\"", 512 - strlen(msg));
+
+    if (error_reporter == 0) system(msg);
     else
     {
         //! windows error reporter!!
     }
+
+    exit(-1);
 }

@@ -37,10 +37,10 @@ typedef enum MessageState
 __KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
                         ...);
 
-__KILL PrintErrorMessage(const char* caller, char* message, ...);
+__KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...);
 
 #define PrintSuccess(...) PrintMessage(success, __func__, __VA_ARGS__)
-#define PrintError(...)   PrintErrorMessage(__func__, __VA_ARGS__)
+#define PrintError(...)   PrintErrorMessage(__func__, __LINE__, __VA_ARGS__)
 #define PrintWarning(...) PrintMessage(warning, __func__, __VA_ARGS__)
 
 #ifndef DEBUG_MODE
