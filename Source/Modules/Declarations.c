@@ -118,3 +118,13 @@ void GetTimeString(char* storage, u32 string_size)
              3 - CountDigits(ms), "000", ms, 2 - CountDigits(s), "00", s,
              3 - CountDigits(m), "000", m);
 }
+
+void FreeItem(void* item)
+{
+    if (item == NULL)
+    {
+        PrintWarning("Attempted to free a nonexistant object.");
+        return;
+    }
+    free(item);
+}

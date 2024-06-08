@@ -60,6 +60,46 @@ typedef long double f128;
  */
 #define __KILL void
 
+typedef enum Typenames
+{
+    t_u8,
+    t_i8,
+    t_u16,
+    t_i16,
+    t_u32,
+    t_i32,
+    t_u64,
+    t_i64,
+    t_f32,
+    t_f64,
+    t_f128,
+    t_charp,
+    t_voidp,
+    t_texturep,
+    t_unknown
+} Typenames;
+
+#define typename(x)                                                            \
+    _Generic((x),                                                              \
+        unsigned char: t_u8,                                                   \
+        char: t_i8,                                                            \
+        signed char: t_i8,                                                     \
+        short int: t_i16,                                                      \
+        unsigned short int: t_u16,                                             \
+        int: t_i32,                                                            \
+        unsigned int: t_u32,                                                   \
+        long int: t_i64,                                                       \
+        unsigned long int: t_u64,                                              \
+        float: t_f32,                                                          \
+        double: t_f64,                                                         \
+        long double: t_f128,                                                   \
+        char*: t_charp,                                                        \
+        void*: t_voidp,                                                        \
+        Texture: t_texturep,                                                   \
+        default: t_unknown)
+
+void FreeItem(void* item);
+
 /**
  * @brief Get a string representation of the current time in milliseconds.
  * @param storage The string which will become the host of the current time.

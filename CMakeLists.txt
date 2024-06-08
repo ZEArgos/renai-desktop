@@ -40,12 +40,12 @@ macro(setup_project)
         "Renai is a high fantasy adult RPG game set in the world of Silre.")
     message(STATUS "Verified project information.")
 
-    set(CMAKE_C_STANDARD 99)
+    set(CMAKE_C_STANDARD 11)
     add_compile_options(-Os -g -Wall -Werror -Wpedantic)
     message(STATUS "Set compile options for the project. Using the ISO C${CMAKE_C_STANDARD} standard.")
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
-    include_directories(${CMAKE_SOURCE_DIR}/Dependencies ${CMAKE_SOURCE_DIR}/Source/Modules)
+    include_directories(${CMAKE_SOURCE_DIR}/Dependencies ${CMAKE_SOURCE_DIR}/Source/Modules ${CMAKE_SOURCE_DIR}/Source/Types)
     link_directories(${CMAKE_SOURCE_DIR}/Dependencies/glfw ${CMAKE_SOURCE_DIR}/Dependencies/glad 
         ${CMAKE_SOURCE_DIR}/Dependencies/stbi ${CMAKE_SOURCE_DIR}/Dependencies/cglm)
 endmacro()
@@ -53,7 +53,7 @@ setup_project()
 
 #! Setup the final bits of the application, readying it for compilation.
 macro(create_application)
-    file(GLOB SOURCE_FILES ${CMAKE_SOURCE_DIR}/Source/*.c ${CMAKE_SOURCE_DIR}/Source/Modules/*.c)
+    file(GLOB SOURCE_FILES ${CMAKE_SOURCE_DIR}/Source/*.c ${CMAKE_SOURCE_DIR}/Source/Modules/*.c ${CMAKE_SOURCE_DIR}/Source/Types/*.c)
     add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
     if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")

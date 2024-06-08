@@ -29,8 +29,7 @@ u8 _SetShaderSource(u32* shader, const char* source)
     glShaderSource(*shader, 1, &source, NULL);
 
     // If it fails, print the error and exit the method.
-    if (!PrintGLError())
-        return FAILURE;
+    if (!PrintGLError()) return FAILURE;
 
     // Print that everything went swimingly.
     return SUCCESS;
@@ -57,10 +56,8 @@ u8 _GetCompilationError(u32 program, u8 type)
         // by shader problems.
         char info_log[512];
         // Get the info log, and copy it into the buffer, ready for us to print.
-        if (type)
-            glGetShaderInfoLog(program, 512, NULL, info_log);
-        else
-            glGetProgramInfoLog(program, 512, NULL, info_log);
+        if (type) glGetShaderInfoLog(program, 512, NULL, info_log);
+        else glGetProgramInfoLog(program, 512, NULL, info_log);
 
         // Print what went wrong, and on what type of shader it happened.
         PrintError("There was an issue with the compilation of a shader (%d). "
@@ -171,8 +168,7 @@ u32 LoadShader(const char* name)
         glAttachShader(final, vertex);
         glAttachShader(final, fragment);
         // Try to compile the final program. If that fails, kill the function.
-        if (!_GetCompilationError(final, 0))
-            return FAILURE;
+        if (!_GetCompilationError(final, 0)) return FAILURE;
 
         // Delete the now useless individual shader programs.
         glDeleteShader(vertex);
@@ -194,8 +190,7 @@ u8 UseShader(u32 shader)
     // Try to use the program. Afterward, run the PrintOpenGLError function,
     // which checks to see if there are any errors and prints them if so.
     glUseProgram(shader);
-    if (!PrintGLError())
-        return FAILURE;
+    if (!PrintGLError()) return FAILURE;
     return SUCCESS;
 }
 
@@ -207,8 +202,7 @@ ShaderNode* CreateShaderNode(const char* shader_name)
     created->next = NULL;
     // Load the actual OpenGL shader into memory.
     created->inner = LoadShader(shader_name);
-    if (created->inner == 0)
-        return NULL;
+    if (created->inner == 0) return NULL;
 
     // Set the name of the shader to whatever value we were given.
     created->name = shader_name;

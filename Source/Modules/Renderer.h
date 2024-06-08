@@ -44,6 +44,22 @@ typedef struct Renderer
 } Renderer;
 
 /**
+ * @brief The possible node types of the application. These are used in the
+ * general Node___ methods.
+ */
+typedef enum NodeType
+{
+    /**
+     * @brief A shader node, corresponding to the @ref ShaderNode type.
+     */
+    shader,
+    /**
+     * @brief A texture node, corresponding to the @ref TextureNode type.
+     */
+    texture
+} NodeType;
+
+/**
  * @brief The identifier of the main rendering interface.
  */
 #define RENDERER_MAIN_UID 0x1283A
@@ -89,22 +105,6 @@ u8 CheckRendererValidity(Renderer* renderer);
  * @param renderer The renderer in question.
  */
 void RenderWindowContent(Renderer* renderer);
-
-/**
- * @brief The possible node types of the application. These are used in the
- * general Node___ methods.
- */
-typedef enum NodeType
-{
-    /**
-     * @brief A shader node, corresponding to the @ref ShaderNode type.
-     */
-    shader,
-    /**
-     * @brief A texture node, corresponding to the @ref TextureNode type.
-     */
-    texture
-} NodeType;
 
 /**
  * @brief Get the list head of the given type of object in the given renderer.
