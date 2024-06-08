@@ -13,7 +13,7 @@
 
 // Again, gimme them typedefs
 #include "Declarations.h"
-#include "glm/types.h"
+#include <cglm/cglm.h>
 
 /**
  * @brief A linked-list wrapper around an OpenGL shader. This is really not

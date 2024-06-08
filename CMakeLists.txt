@@ -47,7 +47,7 @@ macro(setup_project)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
     include_directories(${CMAKE_SOURCE_DIR}/Dependencies ${CMAKE_SOURCE_DIR}/Source/Modules)
     link_directories(${CMAKE_SOURCE_DIR}/Dependencies/glfw ${CMAKE_SOURCE_DIR}/Dependencies/glad 
-        ${CMAKE_SOURCE_DIR}/Dependencies/stbi ${CMAKE_SOURCE_DIR}/Dependencies/glm)
+        ${CMAKE_SOURCE_DIR}/Dependencies/stbi ${CMAKE_SOURCE_DIR}/Dependencies/cglm ${CMAKE_CURRENT_BINARY_DIR}/Dependencies/errn)
 endmacro()
 setup_project()
 
@@ -55,11 +55,15 @@ setup_project()
 macro(create_application)
     file(GLOB SOURCE_FILES ${CMAKE_SOURCE_DIR}/Source/*.c ${CMAKE_SOURCE_DIR}/Source/Modules/*.c)
     add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+    add_subdirectory(Dependencies/errn)
 
+    target_link_libraries(${PROJECT_NAME} PUBLIC error)
     if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-        target_link_libraries(${PROJECT_NAME} PRIVATE libglfw3-linux.a libglad-linux.a libstbi-linux.a libglm-linux.a m)
+        target_link_libraries(${PROJECT_NAME} PRIVATE libglfw3-linux.a PRIVATE libglad-linux.a PRIVATE libstbi-linux.a 
+            PRIVATE libglm-linux.a PRIVATE m)
     elseif("{CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-        target_link_libraries(${PROJECT_NAME} PRIVATE libglfw3-win32.a libglad-win32.a libstbi-win32.a libglm-win32.a)
+        target_link_libraries(${PROJECT_NAME} PRIVATE libglfw3-win32.a PRIVATE libglad-win32.a PRIVATE libstbi-win32.a 
+            PRIVATE libglm-win32.a)
     else()
         message(FATAL_ERROR "Renai doesn't support this operating system.")
     endif()
@@ -73,6 +77,7 @@ macro(create_application)
     endif()
 endmacro()
 create_application()
+
 
 #! Separate our messages from the CMake generated ones.
 message(STATUS "")

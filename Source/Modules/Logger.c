@@ -1,5 +1,4 @@
-#include "Logger.h"       // Provides the logger mother header.
-#include "Declarations.h" // The Declarations header file, used in this context exclusively for its type definitions.
+#include "Logger.h" // Provides the logger mother header.
 #include <stdarg.h> // Provides the standard C library variable argument method module.
 
 // Most of the code in this file is highly distribution-dependent, meaning that
@@ -48,64 +47,81 @@ void _GetTerminalWidth(void)
     terminal_width = terminal_dimensions.ws_col;
 }
 
-#define SUCCESS_STATUS "\033[32m[  SUCCESS  ]"
-#define ERROR_STATUS   "\033[31m[   ERROR   ]"
-#define WARNING_STATUS "\033[33m[  WARNING  ]"
+/**
+ * @brief Get a message to go along with whatever status we've been passed. This
+ * is always a string.
+ */
+#define STATUS_MESSAGE(type)                                                   \
+    (type == success ? "\033[32m[  SUCCESS  ]"                                 \
+     : type == error ? "\033[31m[   ERROR   ]"                                 \
+                     : "\033[33m[  WARNING  ]")
+/**
+ * @brief Get a color to go along with whatever status we've been passed. This
+ * is always an ANSI color escape code.
+ */
+#define COLOR_MESSAGE(type)                                                    \
+    (type == success ? "\033[32m" : type == error ? "\033[31m" : "\033[33m")
 
-void PrintMessage(MessageState state, char* message, ...)
+__KILLFAIL PrintMessage(MessageState state, char* message, ...)
 {
     // If the terminal's width hasn't been grabbed yet, do it. If this function
     // fails the whole program is sent to hell, so we don't bother error
     // checking.
-    if (terminal_width == 0) _GetTerminalWidth();
+    if (!terminal_width) _GetTerminalWidth();
     // Similarly, if the program's start time hasn't yet been grabbed, do that.
     // This function will, on first call, always return zero, so we cast it to
-    // void as we do not care.
-    if (start_time == 0) (void)GetCurrentTime();
+    // void as we explicitly do not care about this value.
+    if (!start_time) (void)GetCurrentTime();
 
-    u64 line_length = 0, last_assigned_length = 0;
+    // A variable to store the total line length printed thus far, for some
+    // space-printing calculations at the end.
+    u32 line_length = 0;
 
-    // Print the message status to the console, using the given color and char*
-    // label.
-    line_length =
-        printf("%s MESSAGE:\033[0m ", (state == success ? SUCCESS_STATUS
-                                       : state == error ? ERROR_STATUS
-                                                        : WARNING_STATUS));
-    if (line_length < 0) return; //!!!
+    // Print the message status to the console, using the given color and string
+    // label. If this, for some reason, fails, print the error and fail the
+    // process.
+    if ((line_length = printf("%s MESSAGE:\033[0m ", STATUS_MESSAGE(state))) <
+        0)
+    {
+        PrintError(
+            "An input/output error has occurred. Please report this bug ASAP.");
+        exit(-1);
+    }
 
-    // Get the variadic arguments passed into the function. If none are passed,
-    // this is void.
+    // Collect the variable arguments. If there are none provided, this is
+    // simply initialized to NULL and each function that uses it will ignore it.
     va_list args;
     va_start(args, message);
 
-    // Calculate the lenght of the char*, print the formatted message, and
-    // check if we need to fail the function. If not, add in the new length.
-    last_assigned_length = vprintf(message, args);
-    if (last_assigned_length < 0) return; //!!!
-    line_length += last_assigned_length;
+    // Try to print out a string formatted with the variable args. If this, for
+    // some reason, fails, kill the process.
+    u32 variable_arg_print_length = 0;
+    if ((variable_arg_print_length = vprintf(message, args)) < 0)
+    {
+        PrintError("An input/output error has occurred. Please report this bug "
+                   "ASAP. ");
+        exit(-1);
+    }
+    // Add the amount of characters we just printed to the line length.
+    line_length += variable_arg_print_length;
 
-    // Set the global Last_time_string value to, well, now.
-    char time_string[512];
-    GetTimeString(time_string, 512);
+    // Get the time string. Note that we define its max length as the terminal
+    // width minus the length of whatever we've already printed.
+    char time_string[terminal_width - line_length];
+    GetTimeString(time_string, terminal_width - line_length);
+    // Create the final "line length", or really, the distance we will need to
+    // go until we print the time string on the right side of the output.
+    line_length = terminal_width - line_length - strlen(time_string) + 7;
 
-    // Do possibly the most ugly operation ever (and probably the most
-    // inefficient one too!) and append the time onto the console's output. Use
-    // the substring functionality of printf to only print the spaces we need,
-    // and then the time value.
-    if (printf(
-            "%.*s%sTIME:\033[0m %s\n",
-            (i32)(terminal_width - line_length - strlen(time_string) + 3),
-            "                                                               "
-            "                                                               "
-            "                                                               ",
-            (state == success ? "\033[32m"
-             : state == error ? "\033[31m"
-                              : "\033[33m"),
-            time_string) < 0)
-        return; //!!
-
-    // Return that we've hit no issues.
-    return; //!!
+    // Try to print the time string. If this, for some ungodly reason, fails,
+    // kill the process in a panic.
+    if (printf("%*sTIME:\033[0m %s\n", line_length, COLOR_MESSAGE(state),
+               time_string) < 0)
+    {
+        PrintError(
+            "An input/output error has occurred. Please report this bug ASAP.");
+        exit(-1);
+    }
 }
 #else
 u8 PrintMessage(u8 state, char* message, ...)

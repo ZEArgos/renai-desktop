@@ -1,6 +1,6 @@
 #include "Renderer.h" // The renderer mother header, declaring the various functions we define here.
 #include "Logger.h" // Provides wrapper functions for logging to the standard output.
-#include <glm/cglm.h> // Provides the math functions and data structures needed to run complex graphical calculations.
+#include <cglm/cglm.h> // Provides the math functions and data structures needed to run complex graphical calculations.
 
 /**
  * @brief Create the projection matrix for a shader/renderer. The projection

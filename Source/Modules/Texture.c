@@ -1,7 +1,7 @@
 #include "Texture.h"
 #include "Renderer.h"
 #include "Window.h"
-#include <glm/cglm.h>
+#include <cglm/cglm.h>
 #include <stbi/stb_image.h>
 
 /**

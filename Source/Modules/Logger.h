@@ -13,6 +13,10 @@
 #ifndef _RENAI_LOGGER_
 #define _RENAI_LOGGER_
 
+// The Declarations header file, used in this context exclusively for its type
+// definitions.
+#include "Declarations.h"
+
 typedef enum MessageState
 {
     success,
@@ -30,7 +34,7 @@ typedef enum MessageState
  * in any of the @ref printf function family.
  * @param ... The arguments to concatenate into @param message.
  */
-void PrintMessage(MessageState state, char* message, ...);
+__KILLFAIL PrintMessage(MessageState state, char* message, ...);
 
 #define PrintSuccess(...) PrintMessage(success, __VA_ARGS__)
 #define PrintError(...)   PrintMessage(error, __VA_ARGS__)

@@ -49,6 +49,18 @@ typedef long double f128;
 #define FAILURE 0
 
 /**
+ * @brief Indicates a function that kills the application on fail. This is
+ * simply a distinguisher between actual void-return functions and error-kill
+ * functions.
+ */
+#define __KILLFAIL void
+/**
+ * @brief Indicates a function that will @b always kill the process on
+ * completion. This is used nearly exclusively by the error-handling interface.
+ */
+#define __KILL void
+
+/**
  * @brief Get a string representation of the current time in milliseconds.
  * @param storage The string which will become the host of the current time.
  * @param string_size The size of the given string.
