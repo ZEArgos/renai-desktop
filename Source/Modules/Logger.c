@@ -120,8 +120,6 @@ __KILLFAIL PrintMessage(MessageState state, char* message, ...)
         exit(-1);
     }
 }
-#else
-u8 PrintMessage(u8 state, char* message, ...) {}
 #endif
 
 __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)

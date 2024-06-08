@@ -17,11 +17,26 @@
 // definitions.
 #include "Declarations.h"
 
+/**
+ * @brief An enum to represent the various states logged messages can be.
+ */
 typedef enum MessageState
 {
+    /**
+     * @brief An operation was a success. Printed in green.
+     */
     success,
+    /**
+     * @brief Something went vaguely wrong, or at least there's something the
+     * user should know. Printed in yellow.
+     */
     warning
 } MessageState;
+
+// As to prevent unnecessary bloat--however small it may be--inside the
+// production binaries, add/remove this code althogether depending on the
+// application's state.
+#ifdef DEBUG_MODE
 
 /**
  * @brief Print a message to whatever output the application is currently
@@ -34,6 +49,22 @@ typedef enum MessageState
  * @param ... The arguments to concatenate into @param message.
  */
 __KILLFAIL PrintMessage(MessageState state, char* message, ...);
+
+/**
+ * @brief Print A specifically success message, which is colored in green.
+ */
+#define PrintSuccess(...) PrintMessage(success, __VA_ARGS__)
+/**
+ * @brief Print a warning message to the standard terminal. This message will be
+ * colored yellow.
+ */
+#define PrintWarning(...) PrintMessage(warning, __VA_ARGS__)
+
+#else
+#define PrintSuccess(...)
+#define PrintWarning(...)
+#endif
+
 /**
  * @brief Print an error message to the secondary output of the application, as
  * to be certain the message gets out if something goes wrong. This functions @b
@@ -46,23 +77,9 @@ __KILLFAIL PrintMessage(MessageState state, char* message, ...);
 __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...);
 
 /**
- * @brief Print A specifically success message, which is colored in green.
- */
-#define PrintSuccess(...) PrintMessage(success, __VA_ARGS__)
-/**
- * @brief Print a warning message to the standard terminal. This message will be
- * colored yellow.
- */
-#define PrintWarning(...) PrintMessage(warning, __VA_ARGS__)
-/**
  * @brief Print an error to the secondary output. This macro makes calling the
  * function a whole lot easier and less cumbersome.
  */
 #define PrintError(...) PrintErrorMessage(__func__, __LINE__, __VA_ARGS__)
-
-#ifndef DEBUG_MODE
-#undef PrintSuccess(...)
-#undef PrintWarning(...)
-#endif
 
 #endif // _RENAI_LOGGER_
