@@ -74,6 +74,11 @@ typedef struct LinkedList
 #define texture_contents   contents.texture
 #define shader_contents    contents.shader
 
+#define GetShaderNode(list, name)  GetNode(list, name)->shader_contents
+#define GetTextureNode(list, name) GetNode(list, name)->texture_contents
+#define GetShaderListHead(list)    list->list_head_shader
+#define GetTextureListHead(list)   list->list_head_texture
+
 #define CreateShaderNode(type, name)                                           \
     __CreateNode(type, name, LoadShader(name), TEXTURE_EMPTY_INIT)
 #define CreateTextureNode(type, name, swidth, sheight)                         \

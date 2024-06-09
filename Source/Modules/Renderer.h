@@ -13,6 +13,15 @@
 
 #include <LinkedList.h>
 
+#define RendererTextureList renderer->texture_list
+#define RendererShaderList  renderer->shader_list
+#define RendererTextureListHead                                                \
+    renderer->texture_list->first_node->texture_contents
+#define RendererShaderListHead                                                 \
+    renderer->shader_list->first_node->shader_contents
+#define RendererTextureListHeadNode renderer.texture_list->first_node
+#define RendererShaderListHeadNode  renderer.shader_list->first_node
+
 /**
  * @brief The renderer structure of the application. Includes all the data
  * needed to render objects, but NOT the objects to render. That is the job of

@@ -46,11 +46,9 @@ Renderer CreateRenderer(f32 swidth, f32 sheight, u32 uid)
     renderer.texture_list = CreateLinkedList(
         texture,
         CreateTextureNode(texture, "light_floorboard_1.jpg", swidth, sheight));
-
     // Try to create the projection matrix of the renderer. If something goes
     // wrong, kill the function, just as for each of the linked lists.
-    if (!_CreateProjectionMatrix(GetNode(renderer.shader_list, "basic"), swidth,
-                                 sheight))
+    if (!_CreateProjectionMatrix(RendererShaderListHeadNode, swidth, sheight))
         return RENDERER_EMPTY_INIT;
 
     // Print our success and exit the function.
@@ -62,16 +60,16 @@ void DestroyRenderer(Renderer* renderer)
 {
     // Clear the renderer's linked lists. These functions cannot reasonably
     // fail.
-    DestroyLinkedList(renderer->shader_list);
-    DestroyLinkedList(renderer->texture_list);
+    DestroyLinkedList(RendererShaderList);
+    DestroyLinkedList(RendererTextureList);
 }
 
 u8 CheckRendererValidity(Renderer* renderer)
 {
     // Check if the renderer, its shader list head, or texture list head is
     // null. If none are, return a success code.
-    if (renderer != NULL || renderer->shader_list != NULL ||
-        renderer->texture_list != NULL)
+    if (renderer != NULL || RendererShaderList != NULL ||
+        RendererTextureList != NULL)
         return SUCCESS;
 
     // Otherwise, print an error message and exit the function. Note that, due
@@ -89,16 +87,15 @@ void RenderWindowContent(Renderer* renderer)
 
     // I'm not gonna bother documenting this function since its current state is
     // highly temporary.
-    u32 basic_shader = GetNode(renderer->shader_list, "basic")->shader_contents;
+    u32 basic_shader = GetShaderNode(RendererShaderList, "basic");
     if (!UseShader(basic_shader)) exit(-1);
 
     SetInteger(basic_shader, "in_texture", 0);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,
-                  renderer->texture_list->list_head_texture.inner);
+    glBindTexture(GL_TEXTURE_2D, RendererTextureListHead.inner);
 
-    glBindVertexArray(renderer->texture_list->list_head_texture.vao);
+    glBindVertexArray(RendererTextureListHead.vao);
 
     mat4 model = GLM_MAT4_IDENTITY_INIT;
     glm_translate(model, (vec3){0.0f, 0.0f, 0.0f}); // pos transform
