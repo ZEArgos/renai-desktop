@@ -20,10 +20,10 @@ u8 _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
 
     // In order to set the uniform, we need to set the basic shader to be
     // current. That's what we do here, if it fails, fail the application.
-    if (!UseShader(shader->contents.shader)) return FAILURE;
+    if (!UseShader(shader->shader_contents)) return FAILURE;
     // Set the matrix inside the shader and print any error that may have
     // happened.
-    SetMat4(shader->contents.shader, "projection", projection);
+    SetMat4(shader->shader_contents, "projection", projection);
     if (!PrintGLError()) return FAILURE;
 
     // Return that nothing went wrong.
@@ -47,9 +47,6 @@ Renderer CreateRenderer(f32 swidth, f32 sheight, u32 uid)
         texture,
         CreateTextureNode(texture, "light_floorboard_1.jpg", swidth, sheight));
 
-    // if (!StartShaderList(&renderer, "basic") ||
-    //     !StartTextureList(&renderer, "light_floorboard_1.jpg", swidth,
-    //     sheight)) return RENDERER_EMPTY_INIT;
     // Try to create the projection matrix of the renderer. If something goes
     // wrong, kill the function, just as for each of the linked lists.
     if (!_CreateProjectionMatrix(GetNode(renderer.shader_list, "basic"), swidth,
@@ -92,16 +89,16 @@ void RenderWindowContent(Renderer* renderer)
 
     // I'm not gonna bother documenting this function since its current state is
     // highly temporary.
-    u32 basic_shader = GetNode(renderer->shader_list, "basic")->contents.shader;
+    u32 basic_shader = GetNode(renderer->shader_list, "basic")->shader_contents;
     if (!UseShader(basic_shader)) exit(-1);
 
     SetInteger(basic_shader, "in_texture", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,
-                  renderer->texture_list->first_node->contents.texture.inner);
+                  renderer->texture_list->list_head_texture.inner);
 
-    glBindVertexArray(renderer->texture_list->first_node->contents.texture.vao);
+    glBindVertexArray(renderer->texture_list->list_head_texture.vao);
 
     mat4 model = GLM_MAT4_IDENTITY_INIT;
     glm_translate(model, (vec3){0.0f, 0.0f, 0.0f}); // pos transform
