@@ -137,7 +137,7 @@ __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
             "\"Renai ran into an error. Caller: %s on line %d. Message: '",
             caller, line) < 0)
     {
-        system(
+        (void)system(
             "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "
             "\"The Renai error reporter failed. Something is either seriously "
             "wrong with your computer, or this program. Please report ASAP.\"");
@@ -154,7 +154,7 @@ __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
     // if this, somehow, fails, we're screwed.
     if (vsnprintf(msg + strlen(msg), 512 - strlen(msg), message, args) < 0)
     {
-        system(
+        (void)system(
             "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "
             "\"The Renai error reporter failed. Something is either seriously "
             "wrong with your computer, or this program. Please report ASAP.\"");
