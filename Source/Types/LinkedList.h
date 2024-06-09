@@ -10,19 +10,44 @@
 #ifndef _RENAI_LINKED_LIST_
 #define _RENAI_LINKED_LIST_
 
+// Provides the various type definitions used in this file.
 #include <Declarations.h>
+// Provides shader loading and management functionality.
 #include <Shader.h>
+// Provides data structures and functionality needed to create and handle
+// textures.
 #include <Texture.h>
 
+/**
+ * @brief The possible types of node, each corresponding to its respective @ref
+ * NodeContents counterpart.
+ */
 typedef enum NodeType
 {
+    /**
+     * @brief The node contains a compiled OpenGL shader.
+     */
     shader,
+    /**
+     * @brief The node contains an OpenGL texture object, and all information
+     * associated with it.
+     */
     texture
 } NodeType;
 
+/**
+ * @brief The contents of a node. This can only be one content or the other, two
+ * of these objects may not exist on one node at the same time.
+ */
 typedef union NodeContents
 {
+    /**
+     * @brief An OpenGL shader ID.
+     */
     u32 shader;
+    /**
+     * @brief A texture image and all the information associated with it.
+     */
     Texture texture;
 } NodeContents;
 
@@ -49,7 +74,12 @@ Node* __CreateNode(NodeType type, const char* name, NodeContents contents);
 
 LinkedList* CreateLinkedList(NodeType type, Node* head);
 
-#define DestroyNode(node)       FreeItem(node)
-#define DestroyLinkedList(list) FreeItem(list)
+#define DestroyNode(node) FreeItem(node)
+void DestroyLinkedList(LinkedList* list);
+
+u8 VerifyNodeContents(NodeType type, NodeContents* contents);
+u8 AddNode(LinkedList* list, NodeType type, Node* node);
+
+Node* GetNode(LinkedList* list, const char* name);
 
 #endif // _RENAI_LINKED_LIST_

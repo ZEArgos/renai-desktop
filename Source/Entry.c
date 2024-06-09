@@ -5,7 +5,7 @@
 /**
  * @brief Start the application. This function does very little but begin the
  * application and make certain all systems are running.
- * @return A 32-bit integer flag, typically only >0 for failure and 0 for
+ * @return A 32-bit integer flag, typically only <0 for failure and 0 for
  * success.
  */
 i32 main(void)
@@ -17,6 +17,9 @@ i32 main(void)
 
     LinkedList* list = CreateLinkedList(
         shader, CreateNode(shader, "basic", LoadShader("basic")));
+    AddNode(list, shader, CreateNode(shader, "basic2", LoadShader("basic")));
+
+    printf("%s", GetNode(list, "basic2")->name);
     DestroyLinkedList(list);
 
     // Destroy/free all allocated memory and get ready to exit the application
