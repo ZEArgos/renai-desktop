@@ -1,13 +1,15 @@
 #include "LinkedList.h"
 #include <Logger.h>
 
-Node* __CreateNode(NodeType type, const char* name, NodeContents contents)
+Node* __CreateNode(NodeType type, const char* name, u32 shader, Texture texture)
 {
     Node* created_node = malloc(sizeof(struct Node));
     created_node->next = NULL;
     created_node->name = name;
     created_node->type = type;
-    created_node->contents = contents;
+
+    if (shader == 0) created_node->contents.texture = texture;
+    else created_node->contents.shader = shader;
 
     return created_node;
 }

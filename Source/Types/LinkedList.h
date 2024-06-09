@@ -68,9 +68,13 @@ typedef struct LinkedList
     Node* last_node;
 } LinkedList;
 
-#define CreateNode(type, name, contents)                                       \
-    __CreateNode(type, name, (NodeContents){contents})
-Node* __CreateNode(NodeType type, const char* name, NodeContents contents);
+#define CreateShaderNode(type, name)                                           \
+    __CreateNode(type, name, LoadShader(name), TEXTURE_EMPTY_INIT)
+#define CreateTextureNode(type, name, swidth, sheight)                         \
+    __CreateNode(type, name, 0, LoadTextureFromFile(name, swidth, sheight))
+// stupid fucking solution
+Node* __CreateNode(NodeType type, const char* name, u32 shader,
+                   Texture texture);
 
 LinkedList* CreateLinkedList(NodeType type, Node* head);
 

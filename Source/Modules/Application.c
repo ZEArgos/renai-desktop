@@ -94,7 +94,7 @@ void InitializeApplication(void)
     // self-destruct.
     _application.renderer = CreateRenderer(
         resolution->width / 1.25, resolution->height / 1.25, RENDERER_MAIN_UID);
-    if (_application.renderer.shader_list_head == NULL) exit(-1);
+    if (_application.renderer.shader_list == NULL) exit(-1);
 
     // Set the initialization flag of the application to true, so this
     // function is not called twice.
