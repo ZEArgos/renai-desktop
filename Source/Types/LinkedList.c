@@ -51,17 +51,16 @@ u8 VerifyNodeContents(NodeType type, NodeContents* contents)
     return FAILURE;
 }
 
-u8 AddNode(LinkedList* list, NodeType type, Node* node)
+void AppendNode(LinkedList* list, NodeType type, Node* node)
 {
-    if (!VerifyNodeContents(type, &node->contents)) return FAILURE;
-
-    Node* current_node = list->first_node;
-    while (current_node->next != NULL) current_node = current_node->next;
-
-    current_node->next = node;
-    list->last_node = current_node->next;
-
-    return SUCCESS;
+    list->last_node->next = node;
+    list->last_node = list->last_node->next;
+}
+void InsertNode(LinkedList* list, NodeType type, Node* node)
+{
+    Node* last_head = list->first_node;
+    list->first_node = node;
+    list->first_node->next = last_head;
 }
 
 Node* GetNode(LinkedList* list, const char* name)

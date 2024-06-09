@@ -192,7 +192,7 @@ void* FindNode(Renderer* renderer, NodeType type, const char* name);
  * @param type The type of list to look through.
  * @param node The node to append.
  */
-void AppendNode(Renderer* renderer, NodeType type, void* node);
+void AddNode(Renderer* renderer, NodeType type, void* node);
 
 /**
  * @brief Append specifically a shader node to the given renderer.

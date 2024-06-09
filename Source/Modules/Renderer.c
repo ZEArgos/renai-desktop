@@ -140,7 +140,7 @@ void* FindNode(Renderer* renderer, NodeType type, const char* name)
     return NULL;
 }
 
-void AppendNode(Renderer* renderer, NodeType type, void* node)
+void AddNode(Renderer* renderer, NodeType type, void* node)
 {
     // Iterate through the node list until we hit a node that doesn't exist yet.
     void* current_node = GetListHead(renderer, type);

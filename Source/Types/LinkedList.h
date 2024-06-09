@@ -78,7 +78,9 @@ LinkedList* CreateLinkedList(NodeType type, Node* head);
 void DestroyLinkedList(LinkedList* list);
 
 u8 VerifyNodeContents(NodeType type, NodeContents* contents);
-u8 AddNode(LinkedList* list, NodeType type, Node* node);
+
+void AppendNode(LinkedList* list, NodeType type, Node* node);
+void InsertNode(LinkedList* list, NodeType type, Node* node);
 
 Node* GetNode(LinkedList* list, const char* name);
 

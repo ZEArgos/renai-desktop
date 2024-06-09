@@ -17,9 +17,9 @@ i32 main(void)
 
     LinkedList* list = CreateLinkedList(
         shader, CreateNode(shader, "basic", LoadShader("basic")));
-    AddNode(list, shader, CreateNode(shader, "basic2", LoadShader("basic")));
+    AppendNode(list, shader, CreateNode(shader, "basic2", LoadShader("basic")));
 
-    printf("%s", GetNode(list, "basic2")->name);
+    printf("%s", list->last_node->name);
     DestroyLinkedList(list);
 
     // Destroy/free all allocated memory and get ready to exit the application
