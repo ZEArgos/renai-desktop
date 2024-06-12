@@ -30,7 +30,11 @@ Map* CreateMap(AmbiguousTypeSpecifier key_type,
 void DestroyMap(Map* map);
 
 #define AppendMapItem(map, key, value)                                         \
-    __AppendMapItem(map, (void*)&key, (void*)&value)
+    {                                                                          \
+        char keyval = key;                                                     \
+        u32 valueval = value;                                                  \
+        __AppendMapItem(map, (void*)&keyval, (void*)&valueval);                \
+    }
 void __AppendMapItem(Map* map, void* key, void* value);
 
 #define GetMapItemValue(map, key_value)                                        \
