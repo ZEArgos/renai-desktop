@@ -16,10 +16,11 @@ i32 main(void)
     RunApplication();
 
     Map* created_map = CreateMap(character, unsigned32, 10);
-    AppendMapItem(created_map, 'c', 23);
 
-    // u32 val = *((u32*)GetMapItemValueChar(created_map, 'c'));
-    // printf("%d\n", val);
+    u32 value = 23;
+    char key = 'c';
+    AppendMapItem(created_map, key, value);
+    printf("%d\n", GetMapItemValueU32(created_map, key));
 
     DestroyMap(created_map);
 

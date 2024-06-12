@@ -98,6 +98,32 @@ typedef enum Typenames
         Texture: t_texturep,                                                   \
         default: t_unknown)
 
+typedef enum AmbiguousTypeSpecifier
+{
+    character,
+    unsigned32,
+    unsigned64,
+    signed32,
+    signed64
+} AmbiguousTypeSpecifier;
+
+typedef union AmbiguousType
+{
+    char character;
+    u32 unsigned32;
+    u64 unsigned64;
+    i32 signed32;
+    i64 signed64;
+} AmbiguousType;
+
+void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
+                         void* value);
+
+void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member);
+
+u8 CompareAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
+                        void* value);
+
 void FreeItem(void* item);
 
 /**

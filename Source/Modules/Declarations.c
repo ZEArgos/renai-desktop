@@ -128,3 +128,53 @@ void FreeItem(void* item)
     }
     free(item);
 }
+
+void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
+                         void* value)
+{
+    switch (member)
+    {
+        case character:  affected->character = *((char*)value); return;
+        case unsigned32: affected->unsigned32 = *((u32*)value); return;
+        case unsigned64: affected->unsigned64 = *((u64*)value); return;
+        case signed32:   affected->signed32 = *((i32*)value); return;
+        case signed64:   affected->signed64 = *((i64*)value); return;
+    }
+}
+
+void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member)
+{
+    switch (member)
+    {
+        case character:  return (void*)&affected->character;
+        case unsigned32: return (void*)&affected->unsigned32;
+        case unsigned64: return (void*)&affected->unsigned64;
+        case signed32:   return (void*)&affected->signed32;
+        case signed64:   return (void*)&affected->signed64;
+    }
+    return NULL;
+}
+
+u8 CompareAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
+                        void* value)
+{
+    switch (member)
+    {
+        case character:
+            if (affected->character == *((char*)value)) return SUCCESS;
+            return FAILURE;
+        case unsigned32:
+            if (affected->unsigned32 == *((u32*)value)) return SUCCESS;
+            return FAILURE;
+        case unsigned64:
+            if (affected->unsigned64 == *((u64*)value)) return SUCCESS;
+            return FAILURE;
+        case signed32:
+            if (affected->signed32 == *((i32*)value)) return SUCCESS;
+            return FAILURE;
+        case signed64:
+            if (affected->signed64 == *((i64*)value)) return SUCCESS;
+            return FAILURE;
+    }
+    return FAILURE;
+}
