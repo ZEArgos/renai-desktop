@@ -19,4 +19,30 @@ void DestroyMap(Map* map)
     free(map);
 }
 
-void CreateMapItem(Map* map, void* key, void* value) {}
+void __AppendMapItem(Map* map, void* key, void* value)
+{
+    for (u32 index = 0; index < map->max_size; index++)
+    {
+        // if (map->map_values[index].set != FAILURE) continue;
+        printf("e\n");
+        map->map_values[index] =
+            CreateKeyPair(map->key_type, map->value_type, key, value);
+        return;
+    }
+}
+
+#define TypeTransform(value_type, value)                                       \
+    {                                                                          \
+        (value_type == 0   ? *((char*)value)                                   \
+         : value_type == 1 ? *((u32*)value)                                    \
+         : value_type == 2 ? *((u64*)value)                                    \
+         : value_type == 3 ? *((i32*)value)                                    \
+                           : *((i64*)value))                                   \
+    }
+
+KeyPair CreateKeyPair(MapType key_type, MapType value_type, void* key,
+                      void* value)
+{
+    return (struct KeyPair){SUCCESS, TypeTransform(key_type, key),
+                            TypeTransform(value_type, value)};
+}
