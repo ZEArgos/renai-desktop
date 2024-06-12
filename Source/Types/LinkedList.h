@@ -88,6 +88,7 @@ typedef struct LinkedList
 Node* __CreateNode(NodeType type, const char* name, u32 shader,
                    Texture texture);
 
+//??!!!! brother why am i take both type and node?? type is stored in node?? fix
 LinkedList* CreateLinkedList(NodeType type, Node* head);
 
 #define DestroyNode(node) FreeItem(node)

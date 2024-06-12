@@ -2,6 +2,7 @@
 #include "Libraries.h" // Provides functions to initialize the various used libraries.
 #include "Logger.h" // Provides the debug logger functionality.
 #include "Renderer.h" // Include the various functions and data structures needed to render objects.
+#include "Updater.h"
 #include "Window.h" // Includes the various structures/functions needed to create and manage windows.
 
 /**
@@ -35,6 +36,7 @@ typedef struct Application
      * @brief The application's renderer.
      */
     Renderer renderer;
+    KeyBuffer keybuffer;
 } Application;
 
 /**
@@ -127,6 +129,7 @@ void RunApplication(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glDisable(GL_SCISSOR_TEST);
 
+        HandleInput(&_application.keybuffer, _application.window.inner_window);
         // Render the window's actual content, beyond its background.
         RenderWindowContent(&_application.renderer);
 

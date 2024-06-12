@@ -2,6 +2,7 @@
 #include "Libraries.h"
 #include "Logger.h"
 #include "Renderer.h"
+#include "Updater.h"
 #include <math.h>
 
 /**
@@ -14,6 +15,7 @@ extern struct
     f32 screen_width, screen_height;
     Window window;
     Renderer renderer;
+    KeyBuffer keybuffer;
 } _application;
 
 void _framebuffer_callback(GLFWwindow* win, i32 width, i32 height)

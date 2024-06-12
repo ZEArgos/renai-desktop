@@ -1,5 +1,6 @@
 #include "Texture.h"
 #include "Renderer.h"
+#include "Updater.h"
 #include "Window.h"
 #include <cglm/cglm.h>
 #include <stbi/stb_image.h>
@@ -14,6 +15,7 @@ extern struct
     f32 screen_width, screen_height;
     Window window;
     Renderer renderer;
+    KeyBuffer keybuffer;
 } _application;
 
 Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)

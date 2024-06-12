@@ -1,6 +1,6 @@
 #include "Application.h" // Provides literally the entire engine.
 
-#include <LinkedList.h>
+#include <Map.h>
 
 /**
  * @brief Start the application. This function does very little but begin the
@@ -14,6 +14,9 @@ i32 main(void)
     // the process will self-destruct, so don't worry about error checking.
     InitializeApplication();
     RunApplication();
+
+    Map* created_map = CreateMap(character, unsigned32, 10);
+    DestroyMap(created_map);
 
     // Destroy/free all allocated memory and get ready to exit the application
     // entirely.
