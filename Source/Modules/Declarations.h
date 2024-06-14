@@ -100,7 +100,6 @@ typedef enum Typenames
 
 typedef enum AmbiguousTypeSpecifier
 {
-    character,
     unsigned32,
     unsigned64,
     signed32,
@@ -109,7 +108,6 @@ typedef enum AmbiguousTypeSpecifier
 
 typedef union AmbiguousType
 {
-    char character;
     u32 unsigned32;
     u64 unsigned64;
     i32 signed32;
