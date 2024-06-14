@@ -31,9 +31,9 @@ void DestroyMap(Map* map);
 
 #define AppendMapItem(map, key, value)                                         \
     {                                                                          \
-        char keyval = key;                                                     \
-        u32 valueval = value;                                                  \
-        __AppendMapItem(map, (void*)&keyval, (void*)&valueval);                \
+        __typeof__(key) key_value = key;                                       \
+        __typeof__(value) value_value = value;                                 \
+        __AppendMapItem(map, (void*)&key_value, (void*)&value_value);          \
     }
 void __AppendMapItem(Map* map, void* key, void* value);
 
