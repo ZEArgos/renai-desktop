@@ -12,19 +12,20 @@
 #define _RENAI_UPDATER_
 
 #include "Declarations.h"
+#include "Window.h"
+#include <Map.h>
 
 typedef struct KeyBuffer
 {
     /**
-     * @brief An array of all the keys pressed in the last 50 milliseconds. Note
-     * that this is only 256 characters long because Renai only has a handful of
-     * keybinds.
+     * @brief A map of all the key cooldowns recorded. Note that the cooldowns
+     * are indexed by character value minus 32.
      */
-    char pressed_keys[256];
-    u8 cooldown_left[256];
-    i64 cooldown_start[256];
+    Map* cooldown_map;
 } KeyBuffer;
 
-void HandleInput(KeyBuffer* buffer, GLFWwindow* window);
+KeyBuffer CreateKeyBuffer(void);
+
+void HandleInput(KeyBuffer* buffer, Window* window);
 
 #endif // _RENAI_UPDATER

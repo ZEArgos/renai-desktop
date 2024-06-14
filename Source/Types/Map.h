@@ -46,10 +46,21 @@ void __AppendMapItem(Map* map, void* key, void* value);
 
 void* __GetMapItemValue(Map* map, void* key_value);
 
-#define GetMapItemValueUnsigned32(map, key) *((u32*)GetMapItemValue(map, key))
-#define GetMapItemValueUnsigned64(map, key) *((u64*)GetMapItemValue(map, key))
-#define GetMapItemValueSigned32(map, key)   *((i32*)GetMapItemValue(map, key))
-#define GetMapItemValueSigned64(map, key)   *((i64*)GetMapItemValue(map, key))
+#define RemoveMapItem(map, key)                                                \
+    _Generic((key),                                                            \
+        u32: __RemoveMapItem(map, (void*)&(u32){key}),                         \
+        u64: __RemoveMapItem(map, (void*)&(u64){key}),                         \
+        i32: __RemoveMapItem(map, (void*)&(i32){key}),                         \
+        i64: __RemoveMapItem(map, (void*)&(i64){key}))
+void __RemoveMapItem(Map* map, void* key);
+
+#define GetMapKeyPair(map, key)                                                \
+    _Generic((key),                                                            \
+        u32: __GetMapKeyPair(map, (void*)&(u32){key}),                         \
+        u64: __GetMapKeyPair(map, (void*)&(u64){key}),                         \
+        i32: __GetMapKeyPair(map, (void*)&(i32){key}),                         \
+        i64: __GetMapKeyPair(map, (void*)&(i64){key}))
+KeyPair* __GetMapKeyPair(Map* map, void* key);
 
 KeyPair CreateKeyPair(AmbiguousTypeSpecifier key_type,
                       AmbiguousTypeSpecifier value_type, void* key,

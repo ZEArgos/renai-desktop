@@ -15,13 +15,6 @@ i32 main(void)
     InitializeApplication();
     RunApplication();
 
-    Map* created_map = CreateMap(signed32, unsigned32, 10);
-
-    AppendMapItem(created_map, 'c', 23);
-    printf("%d\n", GetMapItemValueUnsigned32(created_map, 'c'));
-
-    DestroyMap(created_map);
-
     // Destroy/free all allocated memory and get ready to exit the
     // application entirely.
     DestroyApplication();

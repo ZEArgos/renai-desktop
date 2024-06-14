@@ -106,3 +106,24 @@ void KillWindow(Window* win)
     // Warn the user about the window's destruction.
     PrintWarning("Killed window '%s'.", win->title);
 }
+
+void SetWindowFullscreenState(Window* win, WindowFullscreenState state)
+{
+    switch (state)
+    {
+        case windowed:
+            glfwSetWindowMonitor(win->inner_window, NULL, 0, 0,
+                                 win->window_width, win->window_height, -1);
+            glfwRestoreWindow(win->inner_window);
+            return;
+        case maximized:
+            glfwSetWindowMonitor(win->inner_window, NULL, 0, 0,
+                                 win->window_width, win->window_height, -1);
+            glfwMaximizeWindow(win->inner_window);
+            return;
+        case borderless:
+            glfwSetWindowMonitor(win->inner_window, glfwGetPrimaryMonitor(), 0,
+                                 0, win->window_width, win->window_height, -1);
+            return;
+    }
+}

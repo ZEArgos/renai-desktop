@@ -65,4 +65,13 @@ Window CreateKeyWindow(void);
  */
 void KillWindow(Window* win);
 
+typedef enum WindowFullscreenState
+{
+    windowed,
+    maximized,
+    borderless
+} WindowFullscreenState;
+
+void SetWindowFullscreenState(Window* win, WindowFullscreenState state);
+
 #endif // _RENAI_WINDOW_

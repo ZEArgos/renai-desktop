@@ -98,6 +98,8 @@ void InitializeApplication(void)
         resolution->width / 1.25, resolution->height / 1.25, RENDERER_MAIN_UID);
     if (_application.renderer.shader_list == NULL) exit(-1);
 
+    _application.keybuffer = CreateKeyBuffer();
+
     // Set the initialization flag of the application to true, so this
     // function is not called twice.
     _application.initialized = 1;
@@ -129,7 +131,7 @@ void RunApplication(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glDisable(GL_SCISSOR_TEST);
 
-        HandleInput(&_application.keybuffer, _application.window.inner_window);
+        HandleInput(&_application.keybuffer, &_application.window);
         // Render the window's actual content, beyond its background.
         RenderWindowContent(&_application.renderer);
 

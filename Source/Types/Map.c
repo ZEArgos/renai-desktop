@@ -56,3 +56,30 @@ void* __GetMapItemValue(Map* map, void* key_value)
     }
     return NULL;
 }
+
+void __RemoveMapItem(Map* map, void* key)
+{
+    for (u32 index = 0; index < map->max_size; index++)
+    {
+        if (!CompareAmbiguousType(&map->map_values[index].key, map->key_type,
+                                  key))
+            continue;
+
+        for (u32 inner_index = index; inner_index < map->max_size - 1;
+             inner_index++)
+            map->map_values[inner_index] = map->map_values[inner_index + 1];
+    }
+}
+
+KeyPair* __GetMapKeyPair(Map* map, void* key)
+{
+    for (u32 index = 0; index < map->max_size; index++)
+    {
+        if (!CompareAmbiguousType(&map->map_values[index].key, map->key_type,
+                                  key))
+            continue;
+
+        return &map->map_values[index];
+    }
+    return NULL;
+}
