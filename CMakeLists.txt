@@ -41,7 +41,7 @@ macro(setup_project)
     message(STATUS "Verified project information.")
 
     set(CMAKE_C_STANDARD 11)
-    add_compile_options(-Os -g -Wall -Werror -Wpedantic -Wno-unused-result) # sigh...i really would rather keep unused-result but gcc hates system()
+    add_compile_options(-Os -Wall -Werror -Wpedantic -Wno-unused-result) # sigh...i really would rather keep unused-result but gcc hates system()
     message(STATUS "Set compile options for the project. Using the ISO C${CMAKE_C_STANDARD} standard.")
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
@@ -68,7 +68,7 @@ macro(create_application)
     message(STATUS "Got operating system '${CMAKE_SYSTEM_NAME}'.")
 
     file(COPY ${CMAKE_SOURCE_DIR}/Source/Assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    target_compile_definitions(${PROJECT_NAME} PRIVATE TITLE="${PROJECT_NAME} | v${PROJECT_VERSION_STRING}")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE NAME="${PROJECT_NAME}" TITLE="${PROJECT_NAME} | v${PROJECT_VERSION_STRING}")
     if(PROJECT_DEBUG_MODE)
         file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Logs/debug_log_location "renai_debug_log_directory")
         target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_MODE=1)

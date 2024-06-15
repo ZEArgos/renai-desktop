@@ -19,8 +19,8 @@
     renderer->texture_list->first_node->texture_contents
 #define RendererShaderListHead                                                 \
     renderer->shader_list->first_node->shader_contents
-#define RendererTextureListHeadNode renderer.texture_list->first_node
-#define RendererShaderListHeadNode  renderer.shader_list->first_node
+#define RendererTextureListHeadNode renderer->texture_list->first_node
+#define RendererShaderListHeadNode  renderer->shader_list->first_node
 
 /**
  * @brief The renderer structure of the application. Includes all the data
@@ -46,13 +46,6 @@ typedef struct Renderer
 #define RENDERER_MAIN_UID 0x1283A
 
 /**
- * @brief An empty initializer for the @ref Renderer struct. This simply just
- * makes sure everything is NULL.
- */
-#define RENDERER_EMPTY_INIT                                                    \
-    (struct Renderer) { NULL, NULL, 0 }
-
-/**
  * @brief Create a renderer object. This mainly initializes the linked lists of
  * the renderer.
  * @param swidth The width of the primary monitor, to be used in texture and
@@ -64,13 +57,13 @@ typedef struct Renderer
  * @return The renderer we've just created, or a renderer filled with NULL if
  * something went wrong.
  */
-Renderer CreateRenderer(f32 swidth, f32 sheight, u32 uid);
+__CREATE_STRUCTURE(Renderer) CreateRenderer(f32 swidth, f32 sheight, u32 uid);
 
 /**
  * @brief Destroy a renderer and its contents.
  * @param renderer The renderer we are destroying.
  */
-void DestroyRenderer(Renderer* renderer);
+void KillRenderer(Renderer* renderer);
 
 /**
  * @brief Check the validity of the given renderer. This basically just checks

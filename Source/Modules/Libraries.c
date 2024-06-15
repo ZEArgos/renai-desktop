@@ -16,15 +16,15 @@ void InitializeGLFW(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    PrintSuccess("Initialized GLFW successfully. Version: '%s'.",
-                 glfwGetVersionString());
+    // PrintSuccess("Initialized GLFW successfully. Version: '%s'.",
+    //              glfwGetVersionString());
 }
 
 void KillGLFW(void)
 {
     // Kill GLFW and warn of the execution.
     glfwTerminate();
-    PrintWarning("Terminated GLFW.");
+    // PrintWarning("Terminated GLFW.");
 }
 
 void InitializeGLAD(void)
@@ -40,6 +40,6 @@ void InitializeGLAD(void)
     // functions.
     glEnable(GL_DEPTH_TEST);
 
-    PrintSuccess("Initialized GLAD and loaded OpenGL. Version: '%s'.",
-                 glGetString(GL_VERSION));
+    // PrintSuccess("Initialized GLAD and loaded OpenGL. Version: '%s'.",
+    //              glGetString(GL_VERSION));
 }

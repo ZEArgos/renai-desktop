@@ -11,17 +11,19 @@
 #ifndef _RENAI_LIBRARIES_
 #define _RENAI_LIBRARIES_
 
+#include "Declarations.h"
+
 /**
  * @brief Initializes the GLFW library, providing window management
  * functionality. This kills the application on failure.
  */
-void InitializeGLFW(void);
+__KILLFAIL InitializeGLFW(void);
 
 /**
  * @brief Initializes the GLAD library and fetches OpenGL for use in the
  * application. Terminates the application on failure.
  */
-void InitializeGLAD(void);
+__KILLFAIL InitializeGLAD(void);
 
 /**
  * @brief A message-logging wrapper around the @ref glfwTerminate function.

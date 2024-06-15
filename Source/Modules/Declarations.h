@@ -58,7 +58,17 @@ typedef long double f128;
  * @brief Indicates a function that will @b always kill the process on
  * completion. This is used nearly exclusively by the error-handling interface.
  */
-#define __KILL void
+#define __KILL _Noreturn void
+
+#define __CREATE_STRUCTURE(structure) structure*
+
+#define __CREATE_STRUCTURE_KILLFAIL(structure) structure*
+
+#define __STRUCT(name, contents) typedef struct name contents name
+
+#define __INLINE static inline
+
+#define __GET_STRUCT(name) name*
 
 typedef enum Typenames
 {

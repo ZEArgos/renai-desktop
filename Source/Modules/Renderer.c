@@ -27,41 +27,43 @@ u8 _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
     if (!PrintGLError()) return FAILURE;
 
     // Return that nothing went wrong.
-    PrintSuccess("Set a projection matrix inside shader '%s'.", shader->name);
+    // PrintSuccess("Set a projection matrix inside shader '%s'.",
+    // shader->name);
     return SUCCESS;
 }
 
-Renderer CreateRenderer(f32 swidth, f32 sheight, u32 uid)
+__CREATE_STRUCTURE(Renderer) CreateRenderer(f32 swidth, f32 sheight, u32 uid)
 {
     // Initialize the renderer as empty right off the bat, and then assign a UID
     // to it.
-    Renderer renderer = RENDERER_EMPTY_INIT;
-    renderer.uid = uid;
+    Renderer* renderer = malloc(sizeof(Renderer));
+    renderer->uid = uid;
 
     // Try to start the linked lists inside the renderer. If something goes
     // wrong, kill the function and return the equivalent of NULL. Otherwise,
     // print our success.
-    renderer.shader_list =
+    renderer->shader_list =
         CreateLinkedList(shader, CreateShaderNode(shader, "basic"));
-    renderer.texture_list = CreateLinkedList(
+    renderer->texture_list = CreateLinkedList(
         texture,
         CreateTextureNode(texture, "light_floorboard_1.jpg", swidth, sheight));
     // Try to create the projection matrix of the renderer. If something goes
     // wrong, kill the function, just as for each of the linked lists.
     if (!_CreateProjectionMatrix(RendererShaderListHeadNode, swidth, sheight))
-        return RENDERER_EMPTY_INIT;
+        return NULL;
 
     // Print our success and exit the function.
-    PrintSuccess("Initialized the renderer %d successfully.", uid);
+    // PrintSuccess("Initialized the renderer %d successfully.", uid);
     return renderer;
 }
 
-void DestroyRenderer(Renderer* renderer)
+void KillRenderer(Renderer* renderer)
 {
     // Clear the renderer's linked lists. These functions cannot reasonably
     // fail.
     DestroyLinkedList(RendererShaderList);
     DestroyLinkedList(RendererTextureList);
+    free(renderer);
 }
 
 u8 CheckRendererValidity(Renderer* renderer)

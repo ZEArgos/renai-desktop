@@ -11,37 +11,66 @@
 #ifndef _RENAI_APPLICATION_
 #define _RENAI_APPLICATION_
 
-// Includes the various typedefs and utility functions needed to run the game.
-#include "Declarations.h"
+// Provides the functionality and data structures needed to render content onto
+// a given window.
+#include "Renderer.h"
+// Provides the functionality needed to poll for keypresses and handle them
+// accordingly.
+#include "Updater.h"
+// Provides the data structures and functionality needed to handle window
+// management.
+#include "Window.h"
 
 /**
- * @brief Get the inner_window object of the application's key window. This is
- * simply a getter. Returns NULL if the application hasn't been initialized.
- * @return A pointer to the GLFW interface window within the key window.
+ * @brief A structuring for all the data needed by an application. This is 64
+ * bytes large.
  */
-GLFWwindow* GetKeyWindow(void);
+__STRUCT(Application, {
+    /**
+     * @brief The width of the user's primary monitor, for use in many
+     * calculations and borderless fullscreening the window.
+     */
+    const i32 screen_width;
+    /**
+     * @brief The height of the user's primary monitor, for use in many
+     * calculations and borderless fullscreen toggling of the window.
+     */
+    const i32 screen_height;
+    /**
+     * @brief The application's window, onto which the game will be rendered.
+     */
+    Window* window;
+    /**
+     * @brief The application's renderer, to take care of the whole "rendering
+     * onto the window" thing.
+     */
+    Renderer* renderer;
+    /**
+     * @brief The keybuffer of the application, which stores what keys were
+     * pressed in the last 50 cycles and how long until they're free again.
+     */
+    KeyBuffer* keybuffer;
+});
 
 /**
- * @brief Initialize the application class and start the game's functionality
- * loop. The game doesn't *run* until @ref RunApplication is called, but this
- * sets everything up to run, as if lining up runners before a track meet. This
- * function kills the application on failure, so no error checking against it is
- * needed.
+ * @brief Create an application and initialize its starting processes. This
+ * should really only be called once. Kills the process on failure.
  */
-void InitializeApplication(void);
+__CREATE_STRUCTURE_KILLFAIL(Application) CreateApplication(void);
 
 /**
- * @brief Run the application's main gameplay loop. This should be the last
- * function call from the application's entrypoint, unless it's @ref
- * DestroyApplication. This function will kill the application on failure.
+ * @brief Run an application's main loop methods until the key window is
+ * closed. This includes rendering, keyboard polling, and more.
+ * @param application The application to run.
  */
-void RunApplication(void);
+__KILLFAIL RunApplication(Application* application);
 
 /**
- * @brief Kill the application. This should be the LAST function call from the
- * application's entrypoint. Nothing else needs to be called beyond this point,
- * as all data in my control has been freed.
+ * @brief Destroy an application and all of its innards. This function @b always
+ * exits the process on completion, regardless of anything--positive or
+ * negative--that may have occurred.
+ * @param application The application to destroy.
  */
-void DestroyApplication(void);
+__KILL DestroyApplication(Application* application);
 
 #endif // _RENAI_APPLICATION_

@@ -175,7 +175,7 @@ u32 LoadShader(const char* name)
         glDeleteShader(fragment);
 
         // Gloat upon our success.
-        PrintSuccess("Compiled the shader '%s' successfully.", name);
+        // PrintSuccess("Compiled the shader '%s' successfully.", name);
         return final;
     }
 

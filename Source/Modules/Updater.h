@@ -24,7 +24,8 @@ typedef struct KeyBuffer
     Map* cooldown_map;
 } KeyBuffer;
 
-KeyBuffer CreateKeyBuffer(void);
+KeyBuffer* CreateKeyBuffer(void);
+void KillKeyBuffer(KeyBuffer* buffer);
 
 void HandleInput(KeyBuffer* buffer, Window* window);
 

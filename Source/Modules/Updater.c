@@ -1,8 +1,16 @@
 #include "Updater.h"
 
-KeyBuffer CreateKeyBuffer(void)
+KeyBuffer* CreateKeyBuffer(void)
 {
-    return (struct KeyBuffer){CreateMap(signed32, unsigned32, 301)};
+    KeyBuffer* buffer = malloc(sizeof(KeyBuffer));
+    buffer->cooldown_map = CreateMap(signed32, unsigned32, 301);
+    return buffer;
+}
+
+void KillKeyBuffer(KeyBuffer* buffer)
+{
+    DestroyMap(buffer->cooldown_map);
+    free(buffer);
 }
 
 #define CastVoidPointerToType(type, pointer) *((type*)pointer)
@@ -42,5 +50,25 @@ void HandleInput(KeyBuffer* buffer, Window* key_window)
             GetMapKeyPair(buffer->cooldown_map, GLFW_KEY_F12)
                 ->value.unsigned32 -= 1;
         else RemoveMapItem(buffer->cooldown_map, GLFW_KEY_F12);
+    }
+
+    void* backslash_keybuffer_value =
+        GetMapItemValue(buffer->cooldown_map, GLFW_KEY_BACKSLASH);
+    if (glfwGetKey(key_window->inner_window, GLFW_KEY_BACKSLASH) ==
+            GLFW_PRESS &&
+        backslash_keybuffer_value == NULL)
+    {
+        if (glfwGetWindowMonitor(key_window->inner_window) == NULL)
+            SetWindowFullscreenState(key_window, borderless);
+        else SetWindowFullscreenState(key_window, maximized);
+
+        AppendMapItem(buffer->cooldown_map, GLFW_KEY_BACKSLASH, 50);
+    }
+    else if (backslash_keybuffer_value != NULL)
+    {
+        if (CastVoidPointerToType(u32, backslash_keybuffer_value) > 0)
+            GetMapKeyPair(buffer->cooldown_map, GLFW_KEY_BACKSLASH)
+                ->value.unsigned32 -= 1;
+        else RemoveMapItem(buffer->cooldown_map, GLFW_KEY_BACKSLASH);
     }
 }
