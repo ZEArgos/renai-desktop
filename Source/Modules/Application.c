@@ -2,6 +2,17 @@
 #include "Libraries.h" // Include the various functions to do with initializing libraries.
 #include "Logger.h" // Include the logic needed to output information, either to the standard output or error output.
 
+extern Application* renai;
+
+u64 time_since_last_press = 0;
+void _key_callback(GLFWwindow* window, int key, int scancode, int action,
+                   int mods)
+{
+    HandleInput(renai->keybuffer, renai->window, key, action,
+                time_since_last_press);
+    time_since_last_press = 1;
+}
+
 __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
 {
     // Allocate enough space for 64 characters, more than enough room to store
@@ -19,7 +30,9 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
         PrintError(
             "Failed to properly allocate space for the application. Code: %d.",
             errno);
-    PrintSuccess("Allocated memory for the main application structure.");
+    PrintSuccess(
+        "Allocated memory for the main application structure: %d bytes.",
+        sizeof(Application));
 
     // Initialize GLFW. This method kills the process on failure, so we
     // don't check for any errors.
@@ -51,13 +64,16 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
     // Create the application window, exiting the process if/when a process
     // occurs.
     application->window = CreateWindow(default_width, default_height, __func__);
-    if (GetInnerWindow(application->window) == NULL) exit(-1);
+    if (!CheckWindowValidity(application->window)) exit(-1);
+
+    glfwSetKeyCallback(GetInnerWindow(application->window), _key_callback);
 
     // Create the renderer for the application, using the window's width and
     // height to cook up the projection matrix. If this fails, kill the
     // application.
-    application->renderer = CreateRenderer(default_width, default_height);
-    if (!CheckRendererValidity(application->renderer)) exit(-1);
+    application->renderer =
+        CreateRenderer(default_width, default_height, __func__);
+    if (!CheckRendererValidity(application->renderer, __func__)) exit(-1);
 
     // Create the keybuffer, where we'll store the keys that have been
     // pressed in the last 50 cycles and are awaiting their time to be
@@ -70,18 +86,28 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
 
 __KILLFAIL RunApplication(Application* application)
 {
+    // While the application's window shouldn't be closed, run through the
+    // render loop.
     while (!GetWindowShouldClose(application->window))
     {
+        // Clear the background of the window to black.
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        // Clear the color and depth buffers.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Now, clear the background of the rendering area to red.
+        //! This is temporary until I build the SceneRenderer.
         glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
+        // Enable the OpenGL scissor mechanics.
         glEnable(GL_SCISSOR_TEST);
+        // Clear the color buffer from the sides of the scissor box, cutting
+        // down our rendering area to a 1:1 box in the center.
         glClear(GL_COLOR_BUFFER_BIT);
+        // Disable the scissor mechanics.
         glDisable(GL_SCISSOR_TEST);
 
-        HandleInput(application->keybuffer, application->window);
         RenderWindowContent(application->renderer);
+        time_since_last_press++;
 
         glfwPollEvents();
         glfwSwapBuffers(application->window->inner_window);

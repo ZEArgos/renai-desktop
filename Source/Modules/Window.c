@@ -30,7 +30,9 @@ __CREATE_STRUCT(Window) CreateWindow(i32 width, i32 height, const char* caller)
         PrintError(
             "Failed to allocate the space for a window object. Code: %d.",
             errno);
-    PrintSuccess("Allocated memory for the main window of the application.");
+    PrintSuccess(
+        "Allocated memory for the main window of the application: %d bytes.",
+        sizeof(Window));
 
     // Set the stored default dimensions for the windows. These are fallen back
     // upon when the window is reset from maximized borderless mode.
@@ -55,7 +57,9 @@ __CREATE_STRUCT(Window) CreateWindow(i32 width, i32 height, const char* caller)
     glfwSetFramebufferSizeCallback(GetInnerWindow(window),
                                    _framebuffer_callback);
     _framebuffer_callback(GetInnerWindow(window), width, height);
+    PrintSuccess("Set the framebuffer callback of the window.");
 
+    // Return the allocated window to the caller.
     return window;
 }
 

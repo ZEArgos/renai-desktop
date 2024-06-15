@@ -27,6 +27,7 @@ typedef struct KeyBuffer
 KeyBuffer* CreateKeyBuffer(void);
 void KillKeyBuffer(KeyBuffer* buffer);
 
-void HandleInput(KeyBuffer* buffer, Window* window);
+void HandleInput(KeyBuffer* buffer, Window* window, i32 key, i32 action,
+                 u32 time_since_last);
 
 #endif // _RENAI_UPDATER
