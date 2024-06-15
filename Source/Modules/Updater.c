@@ -3,7 +3,7 @@
 KeyBuffer* CreateKeyBuffer(void)
 {
     KeyBuffer* buffer = malloc(sizeof(KeyBuffer));
-    buffer->cooldown_map = CreateMap(signed32, unsigned32, 269);
+    buffer->cooldown_map = CreateMap(signed32, unsigned32, 179);
     return buffer;
 }
 
@@ -39,19 +39,19 @@ void HandleInput(KeyBuffer* buffer, Window* key_window, i32 key, i32 action,
     switch (key)
     {
         case GLFW_KEY_F11:
-            if (HandleKey(buffer, GLFW_KEY_F11, action, time_since_last))
+            if (HandleKey(buffer, GLFW_KEY_F11 - 123, action, time_since_last))
                 SetWindowFullscreenState(
                     key_window, !glfwGetWindowAttrib(key_window->inner_window,
                                                      GLFW_MAXIMIZED));
 
             return;
         case GLFW_KEY_F12:
-            if (HandleKey(buffer, GLFW_KEY_F12, action, time_since_last))
+            if (HandleKey(buffer, GLFW_KEY_F12 - 123, action, time_since_last))
                 glfwSetWindowShouldClose(key_window->inner_window, 1);
 
             return;
         case GLFW_KEY_BACKSLASH:
-            if (HandleKey(buffer, GLFW_KEY_F11, action, time_since_last))
+            if (HandleKey(buffer, GLFW_KEY_BACKSLASH, action, time_since_last))
             {
                 if (glfwGetWindowMonitor(key_window->inner_window) == NULL)
                     SetWindowFullscreenState(key_window, borderless);
