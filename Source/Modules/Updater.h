@@ -17,10 +17,6 @@
 
 typedef struct KeyBuffer
 {
-    /**
-     * @brief A map of all the key cooldowns recorded. Note that the cooldowns
-     * are indexed by character value minus 32.
-     */
     Map* cooldown_map;
 } KeyBuffer;
 

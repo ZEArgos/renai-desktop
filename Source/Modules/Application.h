@@ -47,7 +47,7 @@ __STRUCT(Application, {
     Renderer* renderer;
     /**
      * @brief The keybuffer of the application, which stores what keys were
-     * pressed in the last 50 cycles and how long until they're free again.
+     * pressed in the last 25 cycles and how long until they're free again.
      */
     KeyBuffer* keybuffer;
 });

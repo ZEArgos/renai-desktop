@@ -66,4 +66,6 @@ KeyPair CreateKeyPair(AmbiguousTypeSpecifier key_type,
                       AmbiguousTypeSpecifier value_type, void* key,
                       void* value);
 
+void ClearMap(Map* map);
+
 #endif // _RENAI_MAP_

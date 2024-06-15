@@ -3,7 +3,7 @@
 KeyBuffer* CreateKeyBuffer(void)
 {
     KeyBuffer* buffer = malloc(sizeof(KeyBuffer));
-    buffer->cooldown_map = CreateMap(signed32, unsigned32, 301);
+    buffer->cooldown_map = CreateMap(signed32, unsigned32, 269);
     return buffer;
 }
 
@@ -16,19 +16,19 @@ void KillKeyBuffer(KeyBuffer* buffer)
 #define CastVoidPointerToType(type, pointer) *((type*)pointer)
 u8 HandleKey(KeyBuffer* buffer, i32 key, i32 action, u32 time_since_last)
 {
-    void* keybuffer_value = GetMapItemValue(buffer->cooldown_map, key);
+    void* keybuffer_value = GetMapItemValue(buffer->cooldown_map, key - 32);
 
     if (keybuffer_value == NULL)
     {
-        AppendMapItem(buffer->cooldown_map, key, 50);
+        AppendMapItem(buffer->cooldown_map, key - 32, 25);
         return SUCCESS;
     }
     else if ((i32)CastVoidPointerToType(u32, keybuffer_value) -
                  (i32)time_since_last >
              0)
-        GetMapKeyPair(buffer->cooldown_map, key)->value.unsigned32 -=
+        GetMapKeyPair(buffer->cooldown_map, key - 32)->value.unsigned32 -=
             time_since_last;
-    else RemoveMapItem(buffer->cooldown_map, key);
+    else RemoveMapItem(buffer->cooldown_map, key - 32);
 
     return FAILURE;
 }
@@ -59,6 +59,6 @@ void HandleInput(KeyBuffer* buffer, Window* key_window, i32 key, i32 action,
             }
 
             return;
-        default: return;
+        default: break;
     }
 }

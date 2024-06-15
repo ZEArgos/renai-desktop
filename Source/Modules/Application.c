@@ -4,13 +4,13 @@
 
 extern Application* renai;
 
-u64 time_since_last_press = 0;
+u64 cycles_since_last_key = 0;
 void _key_callback(GLFWwindow* window, int key, int scancode, int action,
                    int mods)
 {
     HandleInput(renai->keybuffer, renai->window, key, action,
-                time_since_last_press);
-    time_since_last_press = 1;
+                cycles_since_last_key);
+    cycles_since_last_key = 1;
 }
 
 __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
@@ -65,7 +65,9 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
     // occurs.
     application->window = CreateWindow(default_width, default_height, __func__);
     if (!CheckWindowValidity(application->window)) exit(-1);
-
+    // Set the window's key press callback, so we don't have to call a function
+    // redundantly every render call, and can instead rely on GLFW to tell us
+    // when keys are pressed.
     glfwSetKeyCallback(GetInnerWindow(application->window), _key_callback);
 
     // Create the renderer for the application, using the window's width and
@@ -76,7 +78,7 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
     if (!CheckRendererValidity(application->renderer, __func__)) exit(-1);
 
     // Create the keybuffer, where we'll store the keys that have been
-    // pressed in the last 50 cycles and are awaiting their time to be
+    // pressed in the last 25 cycles and are awaiting their time to be
     // pressed again.
     application->keybuffer = CreateKeyBuffer();
 
@@ -96,7 +98,7 @@ __KILLFAIL RunApplication(Application* application)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Now, clear the background of the rendering area to red.
         //! This is temporary until I build the SceneRenderer.
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+        // glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
         // Enable the OpenGL scissor mechanics.
         glEnable(GL_SCISSOR_TEST);
@@ -106,10 +108,15 @@ __KILLFAIL RunApplication(Application* application)
         // Disable the scissor mechanics.
         glDisable(GL_SCISSOR_TEST);
 
+        // Render the contents of the window.
         RenderWindowContent(application->renderer);
-        time_since_last_press++;
+        // Increment the number of render cycles it's been since the last time a
+        // key was pressed.
+        cycles_since_last_key++;
 
+        // Poll for events like key pressing, resizing, and the like.
         glfwPollEvents();
+        // Swap the front and back buffers of the application.
         glfwSwapBuffers(application->window->inner_window);
     }
 }

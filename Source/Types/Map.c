@@ -83,3 +83,9 @@ KeyPair* __GetMapKeyPair(Map* map, void* key)
     }
     return NULL;
 }
+
+void ClearMap(Map* map)
+{
+    free(map->map_values);
+    map->map_values = calloc(map->max_size, sizeof(KeyPair));
+}
