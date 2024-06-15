@@ -36,11 +36,11 @@ void DestroyLinkedList(LinkedList* list)
     while (current_node != NULL)
     {
         Node* next_node = current_node->next;
-        FreeItem(current_node);
+        free(current_node);
         current_node = next_node;
     }
 
-    FreeItem(list);
+    free(list);
 }
 
 u8 VerifyNodeContents(NodeType type, NodeContents* contents)

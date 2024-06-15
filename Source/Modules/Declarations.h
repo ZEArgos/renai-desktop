@@ -49,7 +49,7 @@ typedef long double f128;
 #define FAILURE 0
 
 /**
- * @brief Indicates a function that kills the application on fail. This is
+ * @brief Indicates a function that kills the process on fail. This is
  * simply a distinguisher between actual void-return functions and error-kill
  * functions.
  */
@@ -59,71 +59,65 @@ typedef long double f128;
  * completion. This is used nearly exclusively by the error-handling interface.
  */
 #define __KILL _Noreturn void
-
+/**
+ * @brief Indicates a function that creates a structure.
+ */
 #define __CREATE_STRUCT(structure) structure*
-
+/**
+ * @brief Indicates a function that creates a structure but kills the process on
+ * fialure.
+ */
 #define __CREATE_STRUCT_KILLFAIL(structure) structure*
-
-#define __STRUCT(name, contents) typedef struct name contents name
-
+/**
+ * @brief Indicates a structure getter function.
+ */
+#define __GET_STRUCT(name) name*
+/**
+ * @brief Indicates an inline function.
+ */
 #define __INLINE static inline
 
-#define __GET_STRUCT(name) name*
+/**
+ * @brief Syntactic sugar to create a struct. All this really does is prevent me
+ * from having to write "typedef" every time I need to create a struct; I find
+ * it @b really annoying.
+ */
+#define __STRUCT(name, contents) typedef struct name contents name
+/**
+ * @brief Much the same as @ref __STRUCT, syntactic sugar to create a union,
+ * mostly letting me forget about having to type "typedef" every union.
+ */
+#define __UNION(name, contents) typedef union name contents name
+/**
+ * @brief Much the same as @ref __STRUCT & @ref __UNION, syntactic sugar to
+ * create an enum, mostly letting me forget about having to type "typedef" every
+ * enum.
+ */
+#define __ENUM(name, ...) typedef enum name __VA_ARGS__ name
 
-typedef enum Typenames
-{
-    t_u8,
-    t_i8,
-    t_u16,
-    t_i16,
-    t_u32,
-    t_i32,
-    t_u64,
-    t_i64,
-    t_f32,
-    t_f64,
-    t_f128,
-    t_charp,
-    t_voidp,
-    t_texturep,
-    t_unknown
-} Typenames;
+/**
+ * @brief The types possible of for an ambiguous type to be (u32, u64, i32,
+ * i64).
+ */
+__ENUM(AmbiguousTypeSpecifier, {unsigned32, unsigned64, signed32, signed64});
 
-#define typename(x)                                                            \
-    _Generic((x),                                                              \
-        unsigned char: t_u8,                                                   \
-        char: t_i8,                                                            \
-        signed char: t_i8,                                                     \
-        short int: t_i16,                                                      \
-        unsigned short int: t_u16,                                             \
-        int: t_i32,                                                            \
-        unsigned int: t_u32,                                                   \
-        long int: t_i64,                                                       \
-        unsigned long int: t_u64,                                              \
-        float: t_f32,                                                          \
-        double: t_f64,                                                         \
-        long double: t_f128,                                                   \
-        char*: t_charp,                                                        \
-        void*: t_voidp,                                                        \
-        Texture: t_texturep,                                                   \
-        default: t_unknown)
-
-typedef enum AmbiguousTypeSpecifier
-{
-    unsigned32,
-    unsigned64,
-    signed32,
-    signed64
-} AmbiguousTypeSpecifier;
-
-typedef union AmbiguousType
-{
+/**
+ * @brief An ambiguous type. Its constraints are described by the @ref
+ * AmbiguousTypeSpecifier enum.
+ */
+__UNION(AmbiguousType, {
     u32 unsigned32;
     u64 unsigned64;
     i32 signed32;
     i64 signed64;
-} AmbiguousType;
+});
 
+/**
+ * @brief Assign a value to an ambiguous type.
+ * @param affected The affected variable.
+ * @param member What state are we making the ambiguous type into?
+ * @param value The value that state will have.
+ */
 void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
                          void* value);
 
@@ -131,8 +125,6 @@ void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member);
 
 u8 CompareAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
                         void* value);
-
-void FreeItem(void* item);
 
 /**
  * @brief Get a string representation of the current time in milliseconds.

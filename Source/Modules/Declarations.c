@@ -115,16 +115,6 @@ void GetTimeString(char* storage, u32 string_size)
              3 - CountDigits(m), "000", m);
 }
 
-void FreeItem(void* item)
-{
-    if (item == NULL)
-    {
-        PrintWarning("Attempted to free a nonexistant object.");
-        return;
-    }
-    free(item);
-}
-
 void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
                          void* value)
 {

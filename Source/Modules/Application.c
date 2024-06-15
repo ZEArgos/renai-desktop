@@ -112,9 +112,6 @@ __KILLFAIL RunApplication(Application* application)
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         // Clear the color and depth buffers.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // Now, clear the background of the rendering area to red.
-        //! This is temporary until I build the SceneRenderer.
-        // glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
         // Enable the OpenGL scissor mechanics.
         glEnable(GL_SCISSOR_TEST);
