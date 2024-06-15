@@ -21,33 +21,39 @@ void _framebuffer_callback(GLFWwindow* window, i32 width, i32 height)
               smallest_dimension);
 }
 
-__CREATE_STRUCTURE(Window) CreateKeyWindow(i32 width, i32 height)
+__CREATE_STRUCT(Window) CreateWindow(i32 width, i32 height, const char* caller)
 {
+    // Allocate the space for the window structure, failing the process if we
+    // cannot, and printing our success if we can.
     Window* window = malloc(sizeof(Window));
-    window->inner_window = glfwCreateWindow(width, height, TITLE, NULL, NULL);
+    if (window == NULL)
+        PrintError(
+            "Failed to allocate the space for a window object. Code: %d.",
+            errno);
+    PrintSuccess("Allocated memory for the main window of the application.");
+
+    // Set the stored default dimensions for the windows. These are fallen back
+    // upon when the window is reset from maximized borderless mode.
     window->window_width = width;
     window->window_height = height;
 
-    if (GetInnerWindow(window) == NULL)
-    {
-        PrintGLFWError();
-        return NULL;
-    }
+    // Create the underlying GLFW window of the application, using the
+    // cross-platform tools available. If the window is not valid upon
+    // completion of the function, print the error.
+    window->inner_window = glfwCreateWindow(width, height, TITLE, NULL, NULL);
+    if (!CheckWindowValidity(window)) PrintGLFWError(__func__);
+    PrintSuccess("Created the window with title '%s' successfully.", TITLE);
 
+    // Make the OpenGL context of the window current, and initialize my OpenGL
+    // wrangler of choice; GLAD.
+    glfwMakeContextCurrent(GetInnerWindow(window));
+    InitializeGLAD(__func__);
+
+    // Set the framebuffer callback of the window, or the function that will be
+    // called whenever the window is resized. Then, call the framebuffer
+    // callback, as we want the clip box to appear off the bat immediately.
     glfwSetFramebufferSizeCallback(GetInnerWindow(window),
                                    _framebuffer_callback);
-
-    glfwMakeContextCurrent(GetInnerWindow(window));
-
-#ifndef DEBUG_MODE
-    glfwMaximizeWindow(win.inner_window);
-#endif
-
-    // PrintSuccess("Successfully created and made current the window '%s'.",
-    //              TITLE);
-
-    InitializeGLAD();
-
     _framebuffer_callback(GetInnerWindow(window), width, height);
 
     return window;

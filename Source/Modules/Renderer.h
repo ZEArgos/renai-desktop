@@ -33,17 +33,7 @@ typedef struct Renderer
     LinkedList* shader_list;
 
     LinkedList* texture_list;
-    /**
-     * @brief The name of the renderer. This is really only used for
-     * identification purposes.
-     */
-    u32 uid;
 } Renderer;
-
-/**
- * @brief The identifier of the main rendering interface.
- */
-#define RENDERER_MAIN_UID 0x1283A
 
 /**
  * @brief Create a renderer object. This mainly initializes the linked lists of
@@ -57,7 +47,7 @@ typedef struct Renderer
  * @return The renderer we've just created, or a renderer filled with NULL if
  * something went wrong.
  */
-__CREATE_STRUCTURE(Renderer) CreateRenderer(f32 swidth, f32 sheight, u32 uid);
+__CREATE_STRUCT(Renderer) CreateRenderer(f32 width, f32 height);
 
 /**
  * @brief Destroy a renderer and its contents.
@@ -65,6 +55,8 @@ __CREATE_STRUCTURE(Renderer) CreateRenderer(f32 swidth, f32 sheight, u32 uid);
  */
 void KillRenderer(Renderer* renderer);
 
+#define CheckRendererValidity(renderer)                                        \
+    __CheckRendererValidity(renderer, __func__)
 /**
  * @brief Check the validity of the given renderer. This basically just checks
  * to make sure nothing inside the renderer is uninitialized.
@@ -72,7 +64,7 @@ void KillRenderer(Renderer* renderer);
  * @return The success flag of the function. SUCCESS means the renderer is
  * valid, FAILURE means it's invalid.
  */
-u8 CheckRendererValidity(Renderer* renderer);
+u8 __CheckRendererValidity(Renderer* renderer, const char* caller);
 
 /**
  * @brief Render the contents of the game's window with the given renderer.

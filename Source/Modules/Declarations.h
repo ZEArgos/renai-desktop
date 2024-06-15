@@ -60,9 +60,9 @@ typedef long double f128;
  */
 #define __KILL _Noreturn void
 
-#define __CREATE_STRUCTURE(structure) structure*
+#define __CREATE_STRUCT(structure) structure*
 
-#define __CREATE_STRUCTURE_KILLFAIL(structure) structure*
+#define __CREATE_STRUCT_KILLFAIL(structure) structure*
 
 #define __STRUCT(name, contents) typedef struct name contents name
 
@@ -178,7 +178,7 @@ void GetDateString(char* buffer);
  * @return An 8-bit integer flag representing success state. The function fails
  * if it finds an error.
  */
-u8 PrintGLFWError(void);
+__KILLFAIL PrintGLFWError(const char* caller);
 
 /**
  * @brief Look for any potential OpenGL errors. If no errors are found, finish
@@ -186,6 +186,6 @@ u8 PrintGLFWError(void);
  * @return An 8-bit integer flag representing success state. The function fails
  * if it finds and error.
  */
-u8 PrintGLError(void);
+u8 PrintGLError(const char* caller);
 
 #endif // _RENAI_DECLARATIONS_

@@ -2,13 +2,10 @@
 #include "Declarations.h" // Provides the various type definitions, includes, and methods needed in this translation unit.
 #include "Logger.h" // Provides the functionality needed to log values to the terminal.
 
-void InitializeGLFW(void)
+__KILLFAIL InitializeGLFW(void)
 {
-    // Try to initialize GLFW, and if it fails, kill the process. If it doesn't,
-    // print success to the console, along with the GLFW version we're working
-    // with.
-    glfwInit();
-    if (!PrintGLFWError()) exit(-1);
+    // Try to initialize GLFW, and if it fails, kill the process.
+    if (!glfwInit()) PrintGLFWError(__func__);
 
     // Set all the needed window hints to tell GLFW what version of OpenGL we're
     // trying to take advantage of.
@@ -16,8 +13,9 @@ void InitializeGLFW(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // PrintSuccess("Initialized GLFW successfully. Version: '%s'.",
-    //              glfwGetVersionString());
+    // Print our success to the standard output.
+    PrintSuccess("Initialized GLFW successfully. Version: %.5s.",
+                 glfwGetVersionString());
 }
 
 void KillGLFW(void)
@@ -27,7 +25,7 @@ void KillGLFW(void)
     // PrintWarning("Terminated GLFW.");
 }
 
-void InitializeGLAD(void)
+void InitializeGLAD(const char* caller)
 {
     // Using the built-in GLAD initializer, load OpenGL using GLFW's procedure
     // address. If this fails, kill the application.

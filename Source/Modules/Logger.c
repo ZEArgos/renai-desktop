@@ -27,7 +27,7 @@ u16 terminal_width = 0;
  * Note that this function will only do something once, after that it just
  * returns.
  */
-void _GetTerminalWidth(void)
+void _GetTerminalWidth(const char* caller)
 {
     // Check to make sure this function has not been called already, and if it
     // has, return instantly.
@@ -59,12 +59,13 @@ void _GetTerminalWidth(void)
  */
 #define COLOR_MESSAGE(type) (type == success ? "\033[32m" : "\033[33m")
 
-__KILLFAIL PrintMessage(MessageState state, char* message, ...)
+__KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
+                        ...)
 {
     // If the terminal's width hasn't been grabbed yet, do it. If this function
     // fails the whole program is sent to hell, so we don't bother error
     // checking.
-    if (!terminal_width) _GetTerminalWidth();
+    if (!terminal_width) _GetTerminalWidth(caller);
     // Similarly, if the program's start time hasn't yet been grabbed, do that.
     // This function will, on first call, always return zero, so we cast it to
     // void as we explicitly do not care about this value.
@@ -122,7 +123,8 @@ __KILLFAIL PrintMessage(MessageState state, char* message, ...)
 }
 #endif
 
-__KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
+__KILL PrintErrorMessage(const char* caller_parent, const char* caller,
+                         i32 line, char* message, ...)
 {
     // Allocate enough space for the message we are going to print. This should
     // not exceed 512 characters, so we set a hard limit there.
@@ -134,8 +136,8 @@ __KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...)
     if (snprintf(
             msg, 512,
             "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "
-            "\"Renai ran into an error. Caller: %s on line %d. Message: '",
-            caller, line) < 0)
+            "\"Renai ran into an error. Caller: %s > %s on line %d. Message: '",
+            caller_parent, caller, line) < 0)
     {
         (void)system(
             "notify-send -u critical -a Renai -t 0 \"Renai Error Reporter\" "

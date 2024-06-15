@@ -41,7 +41,7 @@ macro(setup_project)
     message(STATUS "Verified project information.")
 
     set(CMAKE_C_STANDARD 11)
-    add_compile_options(-Os -Wall -Werror -Wpedantic -Wno-unused-result) # sigh...i really would rather keep unused-result but gcc hates system()
+    add_compile_options(-O3 -Wall -Werror -Wpedantic -Wno-unused-result) # sigh...i really would rather keep unused-result but gcc hates system()
     message(STATUS "Set compile options for the project. Using the ISO C${CMAKE_C_STANDARD} standard.")
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})

@@ -80,7 +80,7 @@ typedef struct LinkedList
 #define GetTextureListHead(list)   list->list_head_texture
 
 #define CreateShaderNode(type, name)                                           \
-    __CreateNode(type, name, LoadShader(name), TEXTURE_EMPTY_INIT)
+    __CreateNode(type, name, LoadShader(name, __func__), TEXTURE_EMPTY_INIT)
 #define CreateTextureNode(type, name, swidth, sheight)                         \
     __CreateNode(type, name, 0, LoadTextureFromFile(name, swidth, sheight))
 

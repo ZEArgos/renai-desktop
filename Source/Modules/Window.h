@@ -20,11 +20,21 @@ __STRUCT(Window, {
     i32 window_height;
 });
 
-__CREATE_STRUCTURE(Window) CreateKeyWindow(i32 width, i32 height);
+__CREATE_STRUCT(Window) CreateWindow(i32 width, i32 height, const char* caller);
 
 __INLINE __GET_STRUCT(GLFWwindow) GetInnerWindow(Window* window)
 {
     return window->inner_window;
+}
+
+__INLINE u8 CheckWindowValidity(Window* window)
+{
+    return window->inner_window != NULL;
+}
+
+__INLINE u8 GetWindowShouldClose(Window* window)
+{
+    return glfwWindowShouldClose(GetInnerWindow(window));
 }
 
 __INLINE void KillWindow(Window* window)

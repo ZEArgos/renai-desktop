@@ -22,7 +22,7 @@
 #include "Window.h"
 
 /**
- * @brief A structuring for all the data needed by an application. This is 64
+ * @brief A structuring for all the data needed by an application. This is 32
  * bytes large.
  */
 __STRUCT(Application, {
@@ -55,8 +55,9 @@ __STRUCT(Application, {
 /**
  * @brief Create an application and initialize its starting processes. This
  * should really only be called once. Kills the process on failure.
+ * @param caller The caller of the function, should be "main".
  */
-__CREATE_STRUCTURE_KILLFAIL(Application) CreateApplication(void);
+__CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller);
 
 /**
  * @brief Run an application's main loop methods until the key window is
@@ -70,7 +71,8 @@ __KILLFAIL RunApplication(Application* application);
  * exits the process on completion, regardless of anything--positive or
  * negative--that may have occurred.
  * @param application The application to destroy.
+ * @param caller The caller of the function, should be "main".
  */
-__KILL DestroyApplication(Application* application);
+__KILL DestroyApplication(Application* application, const char* caller);
 
 #endif // _RENAI_APPLICATION_

@@ -3,7 +3,7 @@
 #include <sys/time.h> // The system header for geting the current time and date.
 #include <time.h> // The C standard header for getting time and date formatting correct.
 
-u8 PrintGLFWError(void)
+__KILLFAIL PrintGLFWError(const char* caller)
 {
     // Get both the error code and human-readable description of the error.
     const char* description;
@@ -11,16 +11,12 @@ u8 PrintGLFWError(void)
 
     // If the code was not nothing, print the error and return failure.
     if (code != 0)
-    {
         // Try to print the message to console.
         PrintError("An error happened with GLFW. Code: %d. Message: '%s'.",
                    code, description);
-        return FAILURE;
-    }
-    return SUCCESS;
 }
 
-u8 PrintGLError(void)
+u8 PrintGLError(const char* caller)
 {
     // Try to get the error code, and if we find one, print it and return
     // failure.

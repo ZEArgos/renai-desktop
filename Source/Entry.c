@@ -10,10 +10,10 @@ i32 main(void)
 {
     // Initialize the application and try to run its loop. If the loop fails,
     // the process will self-destruct, so don't worry about error checking.
-    Application* renai = CreateApplication();
+    Application* renai = CreateApplication(__func__);
     RunApplication(renai);
 
     // Destroy/free all allocated memory and get ready to exit the
     // application entirely.
-    DestroyApplication(renai);
+    DestroyApplication(renai, __func__);
 }

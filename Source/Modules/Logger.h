@@ -48,17 +48,18 @@ typedef enum MessageState
  * in any of the @ref printf function family.
  * @param ... The arguments to concatenate into @param message.
  */
-__KILLFAIL PrintMessage(MessageState state, char* message, ...);
+__KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
+                        ...);
 
 /**
  * @brief Print A specifically success message, which is colored in green.
  */
-#define PrintSuccess(...) PrintMessage(success, __VA_ARGS__)
+#define PrintSuccess(...) PrintMessage(success, __func__, __VA_ARGS__)
 /**
  * @brief Print a warning message to the standard terminal. This message will be
  * colored yellow.
  */
-#define PrintWarning(...) PrintMessage(warning, __VA_ARGS__)
+#define PrintWarning(...) PrintMessage(warning, __func__, __VA_ARGS__)
 
 #else
 #define PrintSuccess(...)
@@ -74,12 +75,14 @@ __KILLFAIL PrintMessage(MessageState state, char* message, ...);
  * @param message The message to be printed.
  * @param ... Any variable arguments to be concatenated into @param message.
  */
-__KILL PrintErrorMessage(const char* caller, i32 line, char* message, ...);
+__KILL PrintErrorMessage(const char* caller_parent, const char* caller,
+                         i32 line, char* message, ...);
 
 /**
  * @brief Print an error to the secondary output. This macro makes calling the
  * function a whole lot easier and less cumbersome.
  */
-#define PrintError(...) PrintErrorMessage(__func__, __LINE__, __VA_ARGS__)
+#define PrintError(...)                                                        \
+    PrintErrorMessage(caller, __func__, __LINE__, __VA_ARGS__)
 
 #endif // _RENAI_LOGGER_

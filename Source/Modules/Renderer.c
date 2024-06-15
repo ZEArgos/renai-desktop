@@ -24,7 +24,7 @@ u8 _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
     // Set the matrix inside the shader and print any error that may have
     // happened.
     SetMat4(shader->shader_contents, "projection", projection);
-    if (!PrintGLError()) return FAILURE;
+    if (!PrintGLError(__func__)) return FAILURE;
 
     // Return that nothing went wrong.
     // PrintSuccess("Set a projection matrix inside shader '%s'.",
@@ -32,12 +32,11 @@ u8 _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
     return SUCCESS;
 }
 
-__CREATE_STRUCTURE(Renderer) CreateRenderer(f32 swidth, f32 sheight, u32 uid)
+__CREATE_STRUCT(Renderer) CreateRenderer(f32 swidth, f32 sheight)
 {
     // Initialize the renderer as empty right off the bat, and then assign a UID
     // to it.
     Renderer* renderer = malloc(sizeof(Renderer));
-    renderer->uid = uid;
 
     // Try to start the linked lists inside the renderer. If something goes
     // wrong, kill the function and return the equivalent of NULL. Otherwise,
@@ -66,7 +65,7 @@ void KillRenderer(Renderer* renderer)
     free(renderer);
 }
 
-u8 CheckRendererValidity(Renderer* renderer)
+u8 __CheckRendererValidity(Renderer* renderer, const char* caller)
 {
     // Check if the renderer, its shader list head, or texture list head is
     // null. If none are, return a success code.
@@ -76,10 +75,8 @@ u8 CheckRendererValidity(Renderer* renderer)
 
     // Otherwise, print an error message and exit the function. Note that, due
     // to the fact that the renderer could be null, we don't give a certain UID.
-    PrintError(
-        "The given renderer (maybe %d?) is not valid. Please report this "
-        "bug ASAP.",
-        renderer->uid);
+    PrintError("The given renderer is not valid. Please report this "
+               "bug ASAP.");
     return FAILURE;
 }
 

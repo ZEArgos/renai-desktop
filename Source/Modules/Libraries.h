@@ -23,7 +23,7 @@ __KILLFAIL InitializeGLFW(void);
  * @brief Initializes the GLAD library and fetches OpenGL for use in the
  * application. Terminates the application on failure.
  */
-__KILLFAIL InitializeGLAD(void);
+__KILLFAIL InitializeGLAD(const char* caller);
 
 /**
  * @brief A message-logging wrapper around the @ref glfwTerminate function.
