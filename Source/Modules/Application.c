@@ -2,14 +2,30 @@
 #include "Libraries.h" // Include the various functions to do with initializing libraries.
 #include "Logger.h" // Include the logic needed to output information, either to the standard output or error output.
 
+// The application defined within the entry file. This is here since we need its
+// members for the key callback.
 extern Application* renai;
 
-u64 cycles_since_last_key = 0;
+// A count of the number of render cycles since the last key press. This is only
+// available within this file.
+static u64 cycles_since_last_key = 1;
+
+/**
+ * @brief The key callback of the application; this fires every single time a
+ * key is pressed/actioned upon.
+ * @param window The window that was focused when the key was pressed.
+ * @param key The key pressed.
+ * @param scancode The scancode of the key (unused).
+ * @param action The action taken upon the key.
+ * @param mods Modifiers to the key action.
+ */
 void _key_callback(GLFWwindow* window, int key, int scancode, int action,
                    int mods)
 {
+    // Send the key to our handling function.
     HandleInput(renai->keybuffer, renai->window, key, action,
                 cycles_since_last_key);
+    // Reset the cycles since the last key press.
     cycles_since_last_key = 1;
 }
 
