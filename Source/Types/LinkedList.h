@@ -94,7 +94,7 @@ LinkedList* CreateLinkedList(NodeType type, Node* head);
 #define DestroyNode(node) FreeItem(node)
 void DestroyLinkedList(LinkedList* list);
 
-u8 VerifyNodeContents(NodeType type, NodeContents* contents);
+__BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents);
 
 void AppendNode(LinkedList* list, NodeType type, Node* node);
 void InsertNode(LinkedList* list, NodeType type, Node* node);

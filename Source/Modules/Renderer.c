@@ -2,20 +2,20 @@
 #include "Logger.h" // Provides wrapper functions for logging to the standard output.
 #include <cglm/cglm.h> // Provides the math functions and data structures needed to run complex graphical calculations.
 
-u8 _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
+__BOOLEAN _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
 {
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
 
     glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
 
-    if (!UseShader(shader->shader_contents)) return FAILURE;
+    if (!UseShader(shader->shader_contents)) return failure;
 
     SetMat4(shader->shader_contents, "projection", projection);
-    if (!PrintGLError(__func__)) return FAILURE;
+    if (!PrintGLError(__func__)) return failure;
     PrintSuccess("Successfully set up the projection matrix on shader '%s'.",
                  shader->name);
 
-    return SUCCESS;
+    return success;
 }
 
 __CREATE_STRUCT_KILLFAIL(Renderer)
@@ -49,12 +49,12 @@ void KillRenderer(Renderer* renderer)
     free(renderer);
 }
 
-u8 CheckRendererValidity(Renderer* renderer, const char* caller)
+__BOOLEAN CheckRendererValidity(Renderer* renderer, const char* caller)
 {
     if (renderer != NULL || RendererShaderList != NULL ||
         RendererTextureList != NULL)
-        return SUCCESS;
-    return FAILURE;
+        return success;
+    return failure;
 }
 
 void RenderWindowContent(Renderer* renderer)

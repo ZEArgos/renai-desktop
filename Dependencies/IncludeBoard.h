@@ -18,6 +18,12 @@
  */
 #include <stdint.h>
 /**
+ * @file stdbool.h
+ * @brief Provides boolean functionality to C.
+ * @see The C standard library/manual
+ */
+#include <stdbool.h>
+/**
  * @file errno.h
  * @brief Provides the ERRNO global variable, for diagnosing problems with
  * system calls.

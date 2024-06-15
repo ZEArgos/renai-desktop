@@ -25,7 +25,7 @@ void __AppendMapItem(Map* map, void* key, void* value)
 {
     for (u32 index = 0; index < map->max_size; index++)
     {
-        if (map->map_values[index].set == SUCCESS) continue;
+        if (map->map_values[index].set == true) continue;
         map->map_values[index] =
             CreateKeyPair(map->key_type, map->value_type, key, value);
         map->filled_size++;
@@ -37,7 +37,7 @@ void __AppendMapItem(Map* map, void* key, void* value)
 KeyPair CreateKeyPair(AmbiguousTypeSpecifier key_type,
                       AmbiguousTypeSpecifier value_type, void* key, void* value)
 {
-    KeyPair created = {SUCCESS};
+    KeyPair created = {true};
     AssignAmbiguousType(&created.key, key_type, key);
     AssignAmbiguousType(&created.value, value_type, value);
 

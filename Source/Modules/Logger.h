@@ -17,22 +17,6 @@
 // definitions.
 #include "Declarations.h"
 
-/**
- * @brief An enum to represent the various states logged messages can be.
- */
-typedef enum MessageState
-{
-    /**
-     * @brief An operation was a success. Printed in green.
-     */
-    success,
-    /**
-     * @brief Something went vaguely wrong, or at least there's something the
-     * user should know. Printed in yellow.
-     */
-    warning
-} MessageState;
-
 // As to prevent unnecessary bloat--however small it may be--inside the
 // production binaries, add/remove this code althogether depending on the
 // application's state.
@@ -48,18 +32,17 @@ typedef enum MessageState
  * in any of the @ref printf function family.
  * @param ... The arguments to concatenate into @param message.
  */
-__KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
-                        ...);
+__KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...);
 
 /**
  * @brief Print A specifically success message, which is colored in green.
  */
-#define PrintSuccess(...) PrintMessage(success, __func__, __VA_ARGS__)
+#define PrintSuccess(...) PrintMessage(1, __func__, __VA_ARGS__)
 /**
  * @brief Print a warning message to the standard terminal. This message will be
  * colored yellow.
  */
-#define PrintWarning(...) PrintMessage(warning, __func__, __VA_ARGS__)
+#define PrintWarning(...) PrintMessage(0, __func__, __VA_ARGS__)
 
 #else
 #define PrintSuccess(...)

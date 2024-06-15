@@ -40,13 +40,22 @@ typedef double f64;
 typedef long double f128;
 
 /**
- * @brief Syntactic sugar for the value 'true.'
+ * @brief Syntactic sugar to create a struct. All this really does is prevent me
+ * from having to write "typedef" every time I need to create a struct; I find
+ * it @b really annoying.
  */
-#define SUCCESS 1
+#define __STRUCT(name, contents) typedef struct name contents name
 /**
- * @brief Syntactic sugar for the value 'false.'
+ * @brief Much the same as @ref __STRUCT, syntactic sugar to create a union,
+ * mostly letting me forget about having to type "typedef" every union.
  */
-#define FAILURE 0
+#define __UNION(name, contents) typedef union name contents name
+/**
+ * @brief Much the same as @ref __STRUCT & @ref __UNION, syntactic sugar to
+ * create an enum, mostly letting me forget about having to type "typedef" every
+ * enum.
+ */
+#define __ENUM(name, ...) typedef enum name __VA_ARGS__ name
 
 /**
  * @brief Indicates a function that kills the process on fail. This is
@@ -59,6 +68,10 @@ typedef long double f128;
  * completion. This is used nearly exclusively by the error-handling interface.
  */
 #define __KILL _Noreturn void
+/**
+ * @brief Indicates that the marked function only returns 1 or 0.
+ */
+#define __BOOLEAN Boolean
 /**
  * @brief Indicates a function that creates a structure.
  */
@@ -78,22 +91,15 @@ typedef long double f128;
 #define __INLINE static inline
 
 /**
- * @brief Syntactic sugar to create a struct. All this really does is prevent me
- * from having to write "typedef" every time I need to create a struct; I find
- * it @b really annoying.
+ * @brief Convert a void pointer to the given type.
  */
-#define __STRUCT(name, contents) typedef struct name contents name
+#define VPTT(type, value) *((type*)value)
 /**
- * @brief Much the same as @ref __STRUCT, syntactic sugar to create a union,
- * mostly letting me forget about having to type "typedef" every union.
+ * @brief Convert the given value to a void pointer.
  */
-#define __UNION(name, contents) typedef union name contents name
-/**
- * @brief Much the same as @ref __STRUCT & @ref __UNION, syntactic sugar to
- * create an enum, mostly letting me forget about having to type "typedef" every
- * enum.
- */
-#define __ENUM(name, ...) typedef enum name __VA_ARGS__ name
+#define TTVP(value) (void*)&value
+
+__ENUM(Boolean, {failure, success});
 
 /**
  * @brief The types possible of for an ambiguous type to be (u32, u64, i32,
@@ -115,16 +121,22 @@ __UNION(AmbiguousType, {
 /**
  * @brief Assign a value to an ambiguous type.
  * @param affected The affected variable.
- * @param member What state are we making the ambiguous type into?
+ * @param member What state are we making the ambiguous type?
  * @param value The value that state will have.
  */
 void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
                          void* value);
 
+/**
+ * @brief Get the current value of the specified ambiguous type.
+ * @param affected
+ * @param member
+ * @return void*
+ */
 void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member);
 
-u8 CompareAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
-                        void* value);
+__BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
+                               AmbiguousTypeSpecifier member, void* value);
 
 /**
  * @brief Get a string representation of the current time in milliseconds.
@@ -155,7 +167,7 @@ i64 GetCurrentTime(void);
  * @return A 16-bit unsigned integer that represents the size of the number, or
  * 0 if something went wrong.
  */
-u8 CountDigits(u32 number);
+__BOOLEAN CountDigits(u32 number);
 
 /**
  * @brief Get a string representation of the current time and date, and
@@ -178,6 +190,6 @@ __KILLFAIL PrintGLFWError(const char* caller);
  * @return An 8-bit integer flag representing success state. The function fails
  * if it finds and error.
  */
-u8 PrintGLError(const char* caller);
+__BOOLEAN PrintGLError(const char* caller);
 
 #endif // _RENAI_DECLARATIONS_

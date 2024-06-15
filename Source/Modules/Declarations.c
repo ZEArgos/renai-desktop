@@ -16,7 +16,7 @@ __KILLFAIL PrintGLFWError(const char* caller)
                    code, description);
 }
 
-u8 PrintGLError(const char* caller)
+__BOOLEAN PrintGLError(const char* caller)
 {
     // Try to get the error code, and if we find one, print it and return
     // failure.
@@ -24,10 +24,10 @@ u8 PrintGLError(const char* caller)
     if (err != 0)
     {
         PrintError("Ran into an error with OpenGL. Code: %d", err);
-        return FAILURE;
+        return failure;
     }
     // Return that nothing has yet gone amiss.
-    return SUCCESS;
+    return success;
 }
 
 void GetDateString(char* buffer)
@@ -45,7 +45,7 @@ void GetDateString(char* buffer)
              time_full.tm_hour, time_full.tm_min, time_full.tm_sec);
 }
 
-u8 CountDigits(u32 number)
+__BOOLEAN CountDigits(u32 number)
 {
     // Allocate some space in which we will store the number in string form.
     char string[255];
@@ -55,11 +55,11 @@ u8 CountDigits(u32 number)
     {
         PrintWarning("Failed to get the number of digits in number %d.",
                      number);
-        return FAILURE;
+        return failure;
     }
     // Return the length of the number-string, cast to an unsigned, 16-bit
     // integer as the numbers we deal with will not be longer.
-    return (u8)strlen(string);
+    return (__BOOLEAN)strlen(string);
 }
 
 // Initialize the application's start time to zero, to prevent any garbage data
@@ -120,10 +120,10 @@ void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
 {
     switch (member)
     {
-        case unsigned32: affected->unsigned32 = *((u32*)value); return;
-        case unsigned64: affected->unsigned64 = *((u64*)value); return;
-        case signed32:   affected->signed32 = *((i32*)value); return;
-        case signed64:   affected->signed64 = *((i64*)value); return;
+        case unsigned32: affected->unsigned32 = VPTT(u32, value); return;
+        case unsigned64: affected->unsigned64 = VPTT(u64, value); return;
+        case signed32:   affected->signed32 = VPTT(i32, value); return;
+        case signed64:   affected->signed64 = VPTT(i64, value); return;
     }
 }
 
@@ -131,31 +131,31 @@ void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member)
 {
     switch (member)
     {
-        case unsigned32: return (void*)&affected->unsigned32;
-        case unsigned64: return (void*)&affected->unsigned64;
-        case signed32:   return (void*)&affected->signed32;
-        case signed64:   return (void*)&affected->signed64;
+        case unsigned32: return TTVP(affected->unsigned32);
+        case unsigned64: return TTVP(affected->unsigned64);
+        case signed32:   return TTVP(affected->signed32);
+        case signed64:   return TTVP(affected->signed64);
+        default:         return NULL;
     }
-    return NULL;
 }
 
-u8 CompareAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
-                        void* value)
+__BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
+                               AmbiguousTypeSpecifier member, void* value)
 {
     switch (member)
     {
         case unsigned32:
-            if (affected->unsigned32 == *((u32*)value)) return SUCCESS;
-            return FAILURE;
+            if (affected->unsigned32 == *((u32*)value)) return success;
+            return failure;
         case unsigned64:
-            if (affected->unsigned64 == *((u64*)value)) return SUCCESS;
-            return FAILURE;
+            if (affected->unsigned64 == *((u64*)value)) return success;
+            return failure;
         case signed32:
-            if (affected->signed32 == *((i32*)value)) return SUCCESS;
-            return FAILURE;
+            if (affected->signed32 == *((i32*)value)) return success;
+            return failure;
         case signed64:
-            if (affected->signed64 == *((i64*)value)) return SUCCESS;
-            return FAILURE;
+            if (affected->signed64 == *((i64*)value)) return success;
+            return failure;
     }
-    return FAILURE;
+    return failure;
 }

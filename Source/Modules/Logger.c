@@ -59,8 +59,7 @@ void _GetTerminalWidth(const char* caller)
  */
 #define COLOR_MESSAGE(type) (type == success ? "\033[32m" : "\033[33m")
 
-__KILLFAIL PrintMessage(MessageState state, const char* caller, char* message,
-                        ...)
+__KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
 {
     // If the terminal's width hasn't been grabbed yet, do it. If this function
     // fails the whole program is sent to hell, so we don't bother error

@@ -36,7 +36,7 @@ CreateRenderer(f32 width, f32 height, const char* caller);
 
 void KillRenderer(Renderer* renderer);
 
-u8 CheckRendererValidity(Renderer* renderer, const char* caller);
+__BOOLEAN CheckRendererValidity(Renderer* renderer, const char* caller);
 
 void RenderWindowContent(Renderer* renderer);
 

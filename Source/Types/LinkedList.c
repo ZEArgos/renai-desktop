@@ -43,14 +43,14 @@ void DestroyLinkedList(LinkedList* list)
     free(list);
 }
 
-u8 VerifyNodeContents(NodeType type, NodeContents* contents)
+__BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents)
 {
-    if (type == shader && contents->shader != 0) return SUCCESS;
+    if (type == shader && contents->shader != 0) return success;
     else if (type == texture && contents->texture.inner != 0 &&
              contents->texture.vao != 0)
-        return SUCCESS;
+        return success;
 
-    return FAILURE;
+    return failure;
 }
 
 void AppendNode(LinkedList* list, NodeType type, Node* node)
