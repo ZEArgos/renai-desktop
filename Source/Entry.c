@@ -1,5 +1,9 @@
 #include "Application.h" // Provides literally the entire engine.
 
+/**
+ * @brief A variable in which is stored every bit of consistent data the
+ * application needs during its runtime. Initialized within @ref main.
+ */
 Application* renai;
 
 /**
