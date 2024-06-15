@@ -25,9 +25,4 @@ __KILLFAIL InitializeGLFW(void);
  */
 __KILLFAIL InitializeGLAD(const char* caller);
 
-/**
- * @brief A message-logging wrapper around the @ref glfwTerminate function.
- */
-void KillGLFW(void);
-
 #endif // _RENAI_LIBRARIES_

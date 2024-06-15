@@ -18,13 +18,6 @@ __KILLFAIL InitializeGLFW(void)
                  glfwGetVersionString());
 }
 
-void KillGLFW(void)
-{
-    // Kill GLFW and warn of the execution.
-    glfwTerminate();
-    // PrintWarning("Terminated GLFW.");
-}
-
 void InitializeGLAD(const char* caller)
 {
     // Using the built-in GLAD initializer, load OpenGL using GLFW's procedure

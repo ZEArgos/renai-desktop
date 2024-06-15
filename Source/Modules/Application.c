@@ -135,6 +135,7 @@ __KILLFAIL RunApplication(Application* application)
         // Swap the front and back buffers of the application.
         glfwSwapBuffers(application->window->inner_window);
     }
+    PrintSuccess("Got through the application's main loop successfully.");
 }
 
 __KILL DestroyApplication(Application* application, const char* caller)
@@ -153,12 +154,13 @@ __KILL DestroyApplication(Application* application, const char* caller)
     KillWindow(application->window);
     KillRenderer(application->renderer);
     KillKeyBuffer(application->keybuffer);
-    KillGLFW();
     // Print the task we've just completed.
-    // PrintWarning("Killed the application '%s's resources.", NAME);
+    PrintWarning("Killed the application '%s's resources.", NAME);
 
-    // Free the memory shell associated with the application structure.
+    // Free the memory shell associated with the application structure and print
+    // what we did.
     free(application);
+    PrintWarning("Freed the memory of application '%s'.", NAME);
     // Exit the process with a success code.
     exit(0);
 }

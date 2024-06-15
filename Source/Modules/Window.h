@@ -42,6 +42,7 @@ __INLINE void KillWindow(Window* window)
     glfwDestroyWindow(window->inner_window);
     free(window);
     // PrintWarning("Killed window '%s'.", TITLE);
+    glfwTerminate();
 }
 
 typedef enum WindowFullscreenState
