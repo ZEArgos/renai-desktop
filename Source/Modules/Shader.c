@@ -12,16 +12,16 @@ __BOOLEAN _FileRead(FILE* file, char* buffer, i64 length, const char* caller)
         if (err != 0)
         {
             PrintError("Failed to read a shader file. Code: %d.", err);
-            return failure;
+            return false;
         }
         PrintError("Ran into an error while reading a shader file, but "
                    "couldn't diagnose it.");
-        return failure;
+        return false;
     }
 
     // Since fread doesn't add a termination character, we've gotta ourselves.
     buffer[length] = '\0';
-    return success;
+    return true;
 }
 __BOOLEAN _SetShaderSource(u32* shader, const char* source)
 {
@@ -29,10 +29,10 @@ __BOOLEAN _SetShaderSource(u32* shader, const char* source)
     glShaderSource(*shader, 1, &source, NULL);
 
     // If it fails, print the error and exit the method.
-    if (!PrintGLError(__func__)) return failure;
+    if (!PrintGLError(__func__)) return false;
 
     // Print that everything went swimingly.
-    return success;
+    return true;
 }
 __BOOLEAN _GetCompilationError(u32 program, u8 type, const char* caller)
 {
@@ -65,9 +65,9 @@ __BOOLEAN _GetCompilationError(u32 program, u8 type, const char* caller)
                    type, info_log);
 
         // Return that we failed :(.
-        return failure;
+        return false;
     }
-    return success;
+    return true;
 }
 
 u32 LoadShader(const char* name, const char* caller)
@@ -85,7 +85,7 @@ u32 LoadShader(const char* name, const char* caller)
         PrintError(
             "Failed to construct a full shader path for the shader '%s'.",
             name);
-        return failure;
+        return false;
     }
 
     // Open the needed files in "read binary" mode, since we're going to just
@@ -105,7 +105,7 @@ u32 LoadShader(const char* name, const char* caller)
             PrintError("Failed to set a file pointer's location in a shader "
                        "file.. Code: %d.",
                        errno);
-            return failure;
+            return false;
         }
 
         // Use ftell to try and get the length of the file in bytes. We'll use
@@ -116,7 +116,7 @@ u32 LoadShader(const char* name, const char* caller)
         {
             PrintError("Failed to read the length of shader files. Code: %d.",
                        errno);
-            return failure;
+            return false;
         }
 
         // Use fseek to reset the file's location pointer to the beginning of
@@ -127,7 +127,7 @@ u32 LoadShader(const char* name, const char* caller)
             PrintError("Failed to reset the file location pointer's location "
                        "in a shader file. Code: %d.",
                        errno);
-            return failure;
+            return false;
         }
 
         // Create an array with enough characters to hold the file buffer (+ a
@@ -140,7 +140,7 @@ u32 LoadShader(const char* name, const char* caller)
         if (!_FileRead(vertex_file, vertex_buffer, vertex_length, __func__) ||
             !_FileRead(fragment_file, fragment_buffer, fragment_length,
                        __func__))
-            return failure;
+            return false;
 
         // Close the shader files, as we don't need them anymore. We don't give
         // a damn if this fails.
@@ -155,12 +155,12 @@ u32 LoadShader(const char* name, const char* caller)
         // Set the source char* of the shaders, and fail if we can't.
         if (!_SetShaderSource(&vertex, vertex_raw) ||
             !_SetShaderSource(&fragment, fragment_raw))
-            return failure;
+            return false;
 
         // Try to compile each shader. If that fails, grab the error codes.
         if (!_GetCompilationError(vertex, 1, __func__) ||
             !_GetCompilationError(fragment, 1, __func__))
-            return failure;
+            return false;
 
         // Create the final program. This is basically just mashing the shaders
         // together in a special way so they work together in a pipeline.
@@ -169,7 +169,7 @@ u32 LoadShader(const char* name, const char* caller)
         glAttachShader(final, vertex);
         glAttachShader(final, fragment);
         // Try to compile the final program. If that fails, kill the function.
-        if (!_GetCompilationError(final, 0, __func__)) return failure;
+        if (!_GetCompilationError(final, 0, __func__)) return false;
 
         // Delete the now useless individual shader programs.
         glDeleteShader(vertex);
@@ -183,7 +183,7 @@ u32 LoadShader(const char* name, const char* caller)
     PrintError("Failed to open vertex and/or fragment shader file for shader "
                "'%s'. Code: %d",
                name, errno);
-    return failure;
+    return false;
 }
 
 __BOOLEAN UseShader(u32 shader)
@@ -191,8 +191,8 @@ __BOOLEAN UseShader(u32 shader)
     // Try to use the program. Afterward, run the PrintOpenGLError function,
     // which checks to see if there are any errors and prints them if so.
     glUseProgram(shader);
-    if (!PrintGLError(__func__)) return failure;
-    return success;
+    if (!PrintGLError(__func__)) return false;
+    return true;
 }
 
 void SetBoolean(u32 shader, const char* name, i8 value)

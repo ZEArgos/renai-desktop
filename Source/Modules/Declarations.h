@@ -71,7 +71,7 @@ typedef long double f128;
 /**
  * @brief Indicates that the marked function only returns 1 or 0.
  */
-#define __BOOLEAN Boolean
+#define __BOOLEAN _Bool
 /**
  * @brief Indicates a function that creates a structure.
  */
@@ -98,8 +98,6 @@ typedef long double f128;
  * @brief Convert the given value to a void pointer.
  */
 #define TTVP(value) (void*)&value
-
-__ENUM(Boolean, {failure, success});
 
 /**
  * @brief The types possible of for an ambiguous type to be (u32, u64, i32,
@@ -167,7 +165,7 @@ i64 GetCurrentTime(void);
  * @return A 16-bit unsigned integer that represents the size of the number, or
  * 0 if something went wrong.
  */
-__BOOLEAN CountDigits(u32 number);
+u16 CountDigits(u32 number);
 
 /**
  * @brief Get a string representation of the current time and date, and

@@ -9,7 +9,7 @@ __KILLFAIL PrintGLFWError(const char* caller)
     const char* description;
     i32 code = glfwGetError(&description);
 
-    // If the code was not nothing, print the error and return failure.
+    // If the code was not nothing, print the error and return false.
     if (code != 0)
         // Try to print the message to console.
         PrintError("An error happened with GLFW. Code: %d. Message: '%s'.",
@@ -24,10 +24,10 @@ __BOOLEAN PrintGLError(const char* caller)
     if (err != 0)
     {
         PrintError("Ran into an error with OpenGL. Code: %d", err);
-        return failure;
+        return false;
     }
     // Return that nothing has yet gone amiss.
-    return success;
+    return true;
 }
 
 void GetDateString(char* buffer)
@@ -45,21 +45,21 @@ void GetDateString(char* buffer)
              time_full.tm_hour, time_full.tm_min, time_full.tm_sec);
 }
 
-__BOOLEAN CountDigits(u32 number)
+u16 CountDigits(u32 number)
 {
     // Allocate some space in which we will store the number in string form.
     char string[255];
     // Try to print the number into the string. If this, for some reason, fails,
-    // print a warning in the terminal and return failure.
+    // print a warning in the terminal and return false.
     if (snprintf(string, 255, "%d", number) < 0)
     {
         PrintWarning("Failed to get the number of digits in number %d.",
                      number);
-        return failure;
+        return false;
     }
     // Return the length of the number-string, cast to an unsigned, 16-bit
     // integer as the numbers we deal with will not be longer.
-    return (__BOOLEAN)strlen(string);
+    return (u16)strlen(string);
 }
 
 // Initialize the application's start time to zero, to prevent any garbage data
@@ -145,17 +145,17 @@ __BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
     switch (member)
     {
         case unsigned32:
-            if (affected->unsigned32 == *((u32*)value)) return success;
-            return failure;
+            if (affected->unsigned32 == *((u32*)value)) return true;
+            return false;
         case unsigned64:
-            if (affected->unsigned64 == *((u64*)value)) return success;
-            return failure;
+            if (affected->unsigned64 == *((u64*)value)) return true;
+            return false;
         case signed32:
-            if (affected->signed32 == *((i32*)value)) return success;
-            return failure;
+            if (affected->signed32 == *((i32*)value)) return true;
+            return false;
         case signed64:
-            if (affected->signed64 == *((i64*)value)) return success;
-            return failure;
+            if (affected->signed64 == *((i64*)value)) return true;
+            return false;
     }
-    return failure;
+    return false;
 }

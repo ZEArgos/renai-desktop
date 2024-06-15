@@ -52,12 +52,12 @@ void _GetTerminalWidth(const char* caller)
  * is always a string.
  */
 #define STATUS_MESSAGE(type)                                                   \
-    (type == success ? "\033[32m[  SUCCESS  ]" : "\033[33m[  WARNING  ]")
+    (type == 1 ? "\033[32m[  SUCCESS  ]" : "\033[33m[  WARNING  ]")
 /**
  * @brief Get a color to go along with whatever status we've been passed. This
  * is always an ANSI color escape code.
  */
-#define COLOR_MESSAGE(type) (type == success ? "\033[32m" : "\033[33m")
+#define COLOR_MESSAGE(type) (type == 1 ? "\033[32m" : "\033[33m")
 
 __KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
 {

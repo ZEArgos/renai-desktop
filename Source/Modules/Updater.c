@@ -20,14 +20,14 @@ __BOOLEAN HandleKey(KeyBuffer* buffer, i32 key, i32 action, u32 time_since_last)
     if (keybuffer_value == NULL)
     {
         AppendMapItem(buffer->cooldown_map, key - 32, 25);
-        return success;
+        return true;
     }
     else if ((i32)VPTT(u32, keybuffer_value) - (i32)time_since_last > 0)
         GetMapKeyPair(buffer->cooldown_map, key - 32)->value.unsigned32 -=
             time_since_last;
     else RemoveMapItem(buffer->cooldown_map, key - 32);
 
-    return failure;
+    return false;
 }
 
 void HandleInput(KeyBuffer* buffer, Window* key_window, i32 key, i32 action,

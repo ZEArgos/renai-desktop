@@ -8,14 +8,14 @@ __BOOLEAN _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
 
     glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
 
-    if (!UseShader(shader->shader_contents)) return failure;
+    if (!UseShader(shader->shader_contents)) return false;
 
     SetMat4(shader->shader_contents, "projection", projection);
-    if (!PrintGLError(__func__)) return failure;
+    if (!PrintGLError(__func__)) return false;
     PrintSuccess("Successfully set up the projection matrix on shader '%s'.",
                  shader->name);
 
-    return success;
+    return true;
 }
 
 __CREATE_STRUCT_KILLFAIL(Renderer)
@@ -53,8 +53,8 @@ __BOOLEAN CheckRendererValidity(Renderer* renderer, const char* caller)
 {
     if (renderer != NULL || RendererShaderList != NULL ||
         RendererTextureList != NULL)
-        return success;
-    return failure;
+        return true;
+    return false;
 }
 
 void RenderWindowContent(Renderer* renderer)
