@@ -23,14 +23,13 @@ void InitializeGLAD(const char* caller)
     // Using the built-in GLAD initializer, load OpenGL using GLFW's procedure
     // address. If this fails, kill the application.
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        PrintError("Failed to initialize GLAD. Code: %d.", glGetError());
-        exit(-1);
-    }
+        PollOpenGLErrors(__func__);
+
     // Set the OpenGL hint to indicate that we will be using various depth-based
     // functions.
     glEnable(GL_DEPTH_TEST);
 
-    // PrintSuccess("Initialized GLAD and loaded OpenGL. Version: '%s'.",
-    //              glGetString(GL_VERSION));
+    // Print our success.
+    PrintSuccess("Initialized GLAD and loaded OpenGL. Version: %.18s.",
+                 glGetString(GL_VERSION));
 }

@@ -11,6 +11,8 @@
 #ifndef _RENAI_LIBRARIES_
 #define _RENAI_LIBRARIES_
 
+// Provides the type definitions and utility functions needed to run these
+// functions.
 #include "Declarations.h"
 
 /**
