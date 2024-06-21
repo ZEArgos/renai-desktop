@@ -106,7 +106,7 @@ __PROVIDEDBUFFER GetTimeString(char* storage, u32 string_size)
     // Set the storage string to a formatted time string, using some string
     // formats so esoteric-lookin' I'd think Cthulu would be nervous around
     // them.
-    snprintf(storage, string_size, "%.*s%ldms %.*s%lds %.*s%ldm",
+    snprintf(storage + strlen(storage), string_size, "%.*s%ld:%.*s%ld:%.*s%ld",
              3 - CountDigits(ms), "000", ms, 2 - CountDigits(s), "00", s,
              3 - CountDigits(m), "000", m);
 }

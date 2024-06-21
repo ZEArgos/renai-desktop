@@ -51,8 +51,7 @@ void _GetTerminalWidth(const char* caller)
  * @brief Get a message to go along with whatever status we've been passed.
  * This is always a string.
  */
-#define STATUS_MESSAGE(type)                                                   \
-    (type == 1 ? "\033[32m[  SUCCESS  ]" : "\033[33m[  WARNING  ]")
+#define STATUS_MESSAGE(type) (type == 1 ? "\033[32m[ " : "\033[33m[ ")
 /**
  * @brief Get a color to go along with whatever status we've been passed.
  * This is always an ANSI color escape code.
@@ -80,55 +79,70 @@ __KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
         start_time_initialized = true;
     }
 
-    // A variable to store the total line length printed thus far, for some
-    // space-printing calculations at the end.
-    u32 line_length = 0;
+    char* log_message = calloc(terminal_width, sizeof(char));
 
-    // Print the message status to the console, using the given color and string
-    // label. If this, for some reason, fails, print the error and fail the
-    // process.
-    if ((line_length = printf("%s MESSAGE:\033[0m ", STATUS_MESSAGE(state))) <
-        0)
-    {
-        PrintError(
-            "An input/output error has occurred. Please report this bug ASAP.");
-        exit(-1);
-    }
+    strncat(log_message, STATUS_MESSAGE(state),
+            terminal_width - strlen(log_message));
+    GetTimeString(log_message, terminal_width - strlen(log_message));
 
-    // Collect the variable arguments. If there are none provided, this is
-    // simply initialized to NULL and each function that uses it will ignore it.
+    printf("%s ] ", log_message);
+
     va_list args;
     va_start(args, message);
+    vprintf(message, args);
+    printf("\033[0m\n");
+    free(log_message);
+}
+#endif
 
-    // Try to print out a string formatted with the variable args. If this, for
-    // some reason, fails, kill the process.
-    u32 variable_arg_print_length = 0;
-    if ((variable_arg_print_length = vprintf(message, args)) < 0)
-    {
-        PrintError("An input/output error has occurred. Please report this bug "
-                   "ASAP. ");
-        exit(-1);
-    }
-    // Add the amount of characters we just printed to the line length.
-    line_length += variable_arg_print_length;
+#ifndef linux
+// A variable to store the total line length printed thus far, for some
+// space-printing calculations at the end.
+u32 line_length = 0;
 
-    // Get the time string. Note that we define its max length as the terminal
-    // width minus the length of whatever we've already printed.
-    char time_string[terminal_width - line_length];
-    GetTimeString(time_string, terminal_width - line_length);
-    // Create the final "line length", or really, the distance we will need to
-    // go until we print the time string on the right side of the output.
-    line_length = terminal_width - line_length - strlen(time_string) + 7;
+// Print the message status to the console, using the given color and string
+// label. If this, for some reason, fails, print the error and fail the
+// process.
+if ((line_length = printf("%s MESSAGE:\033[0m ", STATUS_MESSAGE(state))) < 0)
+{
+    PrintError(
+        "An input/output error has occurred. Please report this bug ASAP.");
+    exit(-1);
+}
 
-    // Try to print the time string. If this, for some ungodly reason, fails,
-    // kill the process in a panic.
-    if (printf("%*sTIME:\033[0m %s\n", line_length, COLOR_MESSAGE(state),
-               time_string) < 0)
-    {
-        PrintError(
-            "An input/output error has occurred. Please report this bug ASAP.");
-        exit(-1);
-    }
+// Collect the variable arguments. If there are none provided, this is
+// simply initialized to NULL and each function that uses it will ignore it.
+va_list args;
+va_start(args, message);
+
+// Try to print out a string formatted with the variable args. If this, for
+// some reason, fails, kill the process.
+u32 variable_arg_print_length = 0;
+if ((variable_arg_print_length = vprintf(message, args)) < 0)
+{
+    PrintError("An input/output error has occurred. Please report this bug "
+               "ASAP. ");
+    exit(-1);
+}
+// Add the amount of characters we just printed to the line length.
+line_length += variable_arg_print_length;
+
+// Get the time string. Note that we define its max length as the terminal
+// width minus the length of whatever we've already printed.
+char time_string[terminal_width - line_length];
+GetTimeString(time_string, terminal_width - line_length);
+// Create the final "line length", or really, the distance we will need to
+// go until we print the time string on the right side of the output.
+line_length = terminal_width - line_length - strlen(time_string) + 7;
+
+// Try to print the time string. If this, for some ungodly reason, fails,
+// kill the process in a panic.
+if (printf("%*sTIME:\033[0m %s\n", line_length, COLOR_MESSAGE(state),
+           time_string) < 0)
+{
+    PrintError(
+        "An input/output error has occurred. Please report this bug ASAP.");
+    exit(-1);
 }
 #endif
 
