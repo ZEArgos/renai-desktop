@@ -5,7 +5,7 @@
 __KILLFAIL InitializeGLFW(void)
 {
     // Try to initialize GLFW, and if it fails, kill the process.
-    if (!glfwInit()) PrintGLFWError(__func__);
+    if (!glfwInit()) PollGLFWErrors(__func__);
 
     // Set all the needed window hints to tell GLFW what version of OpenGL we're
     // trying to take advantage of.

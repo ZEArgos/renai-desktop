@@ -33,9 +33,8 @@ u32 LoadShader(const char* name, const char* caller);
 /**
  * @brief Use the specified shader. Wrapper around @ref glUseProgram.
  * @param shader The shader to use.
- * @return An integer flag representing either success or failure.
  */
-__BOOLEAN UseShader(u32 shader);
+__KILLFAIL UseShader(u32 shader);
 
 //! check for glerror in each fo these!
 

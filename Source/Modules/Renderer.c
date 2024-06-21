@@ -8,10 +8,11 @@ __BOOLEAN _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
 
     glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
 
-    if (!UseShader(shader->shader_contents)) return false;
+    UseShader(shader->shader_contents);
 
     SetMat4(shader->shader_contents, "projection", projection);
-    if (!PrintGLError(__func__)) return false;
+    PollOpenGLErrors(__func__);
+
     PrintSuccess("Successfully set up the projection matrix on shader '%s'.",
                  shader->name);
 
@@ -62,7 +63,7 @@ void RenderWindowContent(Renderer* renderer)
     if (!CheckRendererValidity(renderer, __func__)) exit(-1);
 
     u32 basic_shader = GetShaderNode(RendererShaderList, "basic");
-    if (!UseShader(basic_shader)) exit(-1);
+    UseShader(basic_shader);
 
     SetInteger(basic_shader, "in_texture", 0);
 

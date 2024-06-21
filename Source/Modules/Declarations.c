@@ -3,7 +3,7 @@
 #include <sys/time.h> // The system header for geting the current time and date.
 #include <time.h> // The C standard header for getting time and date formatting correct.
 
-__KILLFAIL PrintGLFWError(const char* caller)
+__KILLFAIL PollGLFWErrors(const char* caller)
 {
     // Get both the error code and human-readable description of the error.
     const char* description;
@@ -16,21 +16,14 @@ __KILLFAIL PrintGLFWError(const char* caller)
                    code, description);
 }
 
-__BOOLEAN PrintGLError(const char* caller)
+__KILLFAIL PollOpenGLErrors(const char* caller)
 {
-    // Try to get the error code, and if we find one, print it and return
-    // failure.
+    // Try to get the error code, and if we find one, print it.
     i32 err = glGetError();
-    if (err != 0)
-    {
-        PrintError("Ran into an error with OpenGL. Code: %d", err);
-        return false;
-    }
-    // Return that nothing has yet gone amiss.
-    return true;
+    if (err != 0) PrintError("Ran into an error with OpenGL. Code: %d", err);
 }
 
-void GetDateString(char* buffer)
+__PROVIDEDBUFFER GetDateString(char* buffer)
 {
     // Get the raw time, and then the full, local time as reported by the user's
     // computer.
@@ -62,9 +55,12 @@ u16 CountDigits(u32 number)
     return (u16)strlen(string);
 }
 
-// Initialize the application's start time to zero, to prevent any garbage data
-// being parsed as an actual time.
+/**
+ * @brief The exact amount of milliseconds it had been since the beginning of
+ * the epoch when the application began.
+ */
 i64 start_time = 0;
+
 i64 GetCurrentTime(void)
 {
     // Use the gettimeofday function to grab the current time information
@@ -85,7 +81,7 @@ i64 GetCurrentTime(void)
     return (i64)time.tv_sec * 1000 + time.tv_usec / 1000 - start_time;
 }
 
-void GetTimeString(char* storage, u32 string_size)
+__PROVIDEDBUFFER GetTimeString(char* storage, u32 string_size)
 {
     // Get the distance between the start of the application's runtime and right
     // now.
@@ -115,44 +111,41 @@ void GetTimeString(char* storage, u32 string_size)
              3 - CountDigits(m), "000", m);
 }
 
-#define TYPENAME_i(size)   CONCAT(signed, size)
-#define TYPENAME_u(size)   CONCAT(unsigned, size)
-#define FIELD(state, size) CONCAT(TYPENAME_, state)(size)
-
-#define ASSIGN(state, size)                                                    \
-    affected->FIELD(state, size) = VPTT(__CONCAT(state, size), value);
-#define READ(state, size) return TTVP(affected->FIELD(state, size));
-#define COMPARE(state, size)                                                   \
-    if (affected->FIELD(state, size) == VPTT(__CONCAT(state, size), value))    \
-        return true;                                                           \
-    return false;
-
-#define __AMBIGUOUS_BODY(TYPE, BODY)                                           \
-    switch (TYPE)                                                              \
-    {                                                                          \
-        case FIELD(u, 32): BODY(u, 32) break;                                  \
-        case FIELD(i, 32): BODY(i, 32) break;                                  \
-        case FIELD(u, 64): BODY(u, 64) break;                                  \
-        case FIELD(i, 64): BODY(i, 64) break;                                  \
-        default:           break;                                                        \
-    }
-#define FIELD(state, size) CONCAT(TYPENAME_, state)(size)
-
 void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
                          void* value)
 {
+    // Define the body expression of the switch statement. In this case, we
+    // simply assign a value to the given member.
+#define ASSIGN(state, size)                                                    \
+    affected->__FIELD(state, size) = VPTT(state##size, value);
+    // Construct the switch statement using our funky little macro.
     __AMBIGUOUS_BODY(member, ASSIGN);
 }
 
-void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member)
+__AMBIGUOUS GetAmbiguousType(AmbiguousType* affected,
+                             AmbiguousTypeSpecifier member)
 {
+    // Define the body expression of this function's switch. Here, we simply
+    // return the member requested.
+#define READ(state, size) return TTVP(affected->__FIELD(state, size));
+    // Construct the switch statement using the above body.
     __AMBIGUOUS_BODY(member, READ);
+    // This part can't ever happen, but it's here to remove compiler warnings.
     return NULL;
 }
 
 __BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
                                AmbiguousTypeSpecifier member, void* value)
 {
+    // Define the body expression for this particular function's switch
+    // statement. Here, we compare the value given and the value of the given
+    // member, and return the result.
+#define COMPARE(state, size)                                                   \
+    if (affected->__FIELD(state, size) == VPTT(state##size, value))            \
+        return true;                                                           \
+    return false;
+    // Construct the switch statement.
     __AMBIGUOUS_BODY(member, COMPARE);
+    // This part can never happen, but it's here to assuage compiler concerns.
     return false;
 }

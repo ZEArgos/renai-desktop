@@ -43,7 +43,7 @@ __CREATE_STRUCT(Window) CreateWindow(i32 width, i32 height, const char* caller)
     // cross-platform tools available. If the window is not valid upon
     // completion of the function, print the error.
     window->inner_window = glfwCreateWindow(width, height, TITLE, NULL, NULL);
-    if (!CheckWindowValidity(window)) PrintGLFWError(__func__);
+    if (!CheckWindowValidity(window)) PollGLFWErrors(__func__);
     PrintSuccess("Created the window with title '%s' successfully.", TITLE);
 
     // Make the OpenGL context of the window current, and initialize my OpenGL

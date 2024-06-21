@@ -7,8 +7,8 @@
 // define a section for debug-only code and production-only code.
 #ifdef DEBUG_MODE
 
-// Provides the IO control tool, which allows the program to poll the operating
-// system for information.
+// Provides the IO control tool, which allows the program to poll the
+// operating system for information.
 #include <sys/ioctl.h>
 // Provides the Linux time methods.
 #include <sys/time.h>
@@ -48,16 +48,22 @@ void _GetTerminalWidth(const char* caller)
 }
 
 /**
- * @brief Get a message to go along with whatever status we've been passed. This
- * is always a string.
+ * @brief Get a message to go along with whatever status we've been passed.
+ * This is always a string.
  */
 #define STATUS_MESSAGE(type)                                                   \
     (type == 1 ? "\033[32m[  SUCCESS  ]" : "\033[33m[  WARNING  ]")
 /**
- * @brief Get a color to go along with whatever status we've been passed. This
- * is always an ANSI color escape code.
+ * @brief Get a color to go along with whatever status we've been passed.
+ * This is always an ANSI color escape code.
  */
 #define COLOR_MESSAGE(type) (type == 1 ? "\033[32m" : "\033[33m")
+
+/**
+ * @brief A boolean value that tells the application if its start time has been
+ * recorded or not.
+ */
+bool start_time_initialized = false;
 
 __KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
 {
@@ -68,7 +74,11 @@ __KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
     // Similarly, if the program's start time hasn't yet been grabbed, do that.
     // This function will, on first call, always return zero, so we cast it to
     // void as we explicitly do not care about this value.
-    if (!start_time) (void)GetCurrentTime();
+    if (!start_time_initialized)
+    {
+        (void)GetCurrentTime();
+        start_time_initialized = true;
+    }
 
     // A variable to store the total line length printed thus far, for some
     // space-printing calculations at the end.

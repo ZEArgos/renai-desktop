@@ -73,9 +73,10 @@ typedef long double f128;
  */
 #define __BOOLEAN _Bool
 /**
- * @brief Indicates that the marked function does not ever return anything.
+ * @brief Indicates that the marked function makes use of a caller-provided
+ * buffer object, and as such does not return anything.
  */
-#define __CANTRETURN void
+#define __PROVIDEDBUFFER void
 /**
  * @brief Indicates that the function returns an ambiguously-types value.
  */
@@ -107,9 +108,6 @@ typedef long double f128;
  */
 #define TTVP(value) (void*)&value
 
-// __CONCAT defined in cdefs.h
-#define CONCAT(a, b) __CONCAT(a, b)
-
 /**
  * @brief The types possible of for an ambiguous type to be (u32, u64, i32,
  * i64).
@@ -128,6 +126,33 @@ __UNION(AmbiguousType, {
 });
 
 /**
+ * @brief A macro used to get the enum typename of a signed value.
+ */
+#define __TYPENAME_i(size) signed##size
+/**
+ * @brief The sister function of @ref __TYPENAME_i, a macro used to get
+ * the enum typename of an unsigned value.
+ */
+#define __TYPENAME_u(size) unsigned##size
+/**
+ * @brief A macro to get the field of an ambiguous type.
+ */
+#define __FIELD(state, size) __TYPENAME_##state(size)
+
+/**
+ * @brief The body of an ambiguous function. Defined here purely to remove the
+ * repetition of having to type this expression out for each ambiguous function.
+ */
+#define __AMBIGUOUS_BODY(variable, expression)                                 \
+    switch (variable)                                                          \
+    {                                                                          \
+        case __FIELD(u, 32): expression(u, 32) break;                          \
+        case __FIELD(i, 32): expression(i, 32) break;                          \
+        case __FIELD(u, 64): expression(u, 64) break;                          \
+        case __FIELD(i, 64): expression(i, 64) break;                          \
+    }
+
+/**
  * @brief Assign a value to an ambiguous type.
  * @param affected The affected variable.
  * @param member What state are we making the ambiguous type?
@@ -142,8 +167,17 @@ void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
  * @param member The member of the type we're trying to get.
  * @return The value of the member.
  */
-void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member);
+__AMBIGUOUS GetAmbiguousType(AmbiguousType* affected,
+                             AmbiguousTypeSpecifier member);
 
+/**
+ * @brief A helper function to compare two ambiguous types.
+ * @param affected The affected ambiguous type.
+ * @param member The member of the ambiguous type we're accessing.
+ * @param value The value to compare against.
+ * @return A boolean value that represents the state of the comparison; true for
+ * similarity, false for difference.
+ */
 __BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
                                AmbiguousTypeSpecifier member, void* value);
 
@@ -152,13 +186,7 @@ __BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
  * @param storage The string which will become the host of the current time.
  * @param string_size The size of the given string.
  */
-void GetTimeString(char* storage, u32 string_size);
-
-/**
- * @brief The exact amount of milliseconds it had been since the beginning of
- * the epoch when the application began.
- */
-extern i64 start_time;
+__PROVIDEDBUFFER GetTimeString(char* storage, u32 string_size);
 
 /**
  * @brief Get the current time, based off of @ref start_time and the @b current
@@ -183,22 +211,18 @@ u16 CountDigits(u32 number);
  * concatenate it into the given string buffer.
  * @param buffer The buffer into which we're copying the time and date.
  */
-void GetDateString(char* buffer);
+__PROVIDEDBUFFER GetDateString(char* buffer);
 
 /**
- * @brief Look for any potential GLFW errors. If none are found, simply finish
- * the function with a success code.
- * @return An 8-bit integer flag representing success state. The function fails
- * if it finds an error.
+ * @brief A function to poll the application's runtime for any GLFW errors.
+ * @param caller The caller of the function.
  */
-__KILLFAIL PrintGLFWError(const char* caller);
+__KILLFAIL PollGLFWErrors(const char* caller);
 
 /**
- * @brief Look for any potential OpenGL errors. If no errors are found, finish
- * the function.
- * @return An 8-bit integer flag representing success state. The function fails
- * if it finds and error.
+ * @brief A function to poll the application's runtime for any OpenGL errors.
+ * @param caller The caller of the function.
  */
-__BOOLEAN PrintGLError(const char* caller);
+__KILLFAIL PollOpenGLErrors(const char* caller);
 
 #endif // _RENAI_DECLARATIONS_

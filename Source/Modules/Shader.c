@@ -23,18 +23,15 @@ __BOOLEAN _FileRead(FILE* file, char* buffer, i64 length, const char* caller)
     buffer[length] = '\0';
     return true;
 }
-__BOOLEAN _SetShaderSource(u32* shader, const char* source)
+__KILLFAIL _SetShaderSource(u32* shader, const char* source)
 {
     // Try to set the source of the shader.
     glShaderSource(*shader, 1, &source, NULL);
 
     // If it fails, print the error and exit the method.
-    if (!PrintGLError(__func__)) return false;
-
-    // Print that everything went swimingly.
-    return true;
+    PollOpenGLErrors(__func__);
 }
-__BOOLEAN _GetCompilationError(u32 program, u8 type, const char* caller)
+__KILLFAIL _GetCompilationError(u32 program, u8 type, const char* caller)
 {
     i32 success_flag = 0;
     // Try to compile/link the shader. Get the status of the operation, and if
@@ -63,11 +60,7 @@ __BOOLEAN _GetCompilationError(u32 program, u8 type, const char* caller)
         PrintError("There was an issue with the compilation of a shader (%d). "
                    "Log: '%s'.",
                    type, info_log);
-
-        // Return that we failed :(.
-        return false;
     }
-    return true;
 }
 
 u32 LoadShader(const char* name, const char* caller)
@@ -153,23 +146,22 @@ u32 LoadShader(const char* name, const char* caller)
         u32 vertex = glCreateShader(GL_VERTEX_SHADER),
             fragment = glCreateShader(GL_FRAGMENT_SHADER);
         // Set the source char* of the shaders, and fail if we can't.
-        if (!_SetShaderSource(&vertex, vertex_raw) ||
-            !_SetShaderSource(&fragment, fragment_raw))
-            return false;
+        _SetShaderSource(&vertex, vertex_raw);
+        _SetShaderSource(&fragment, fragment_raw);
 
         // Try to compile each shader. If that fails, grab the error codes.
-        if (!_GetCompilationError(vertex, 1, __func__) ||
-            !_GetCompilationError(fragment, 1, __func__))
-            return false;
+        _GetCompilationError(vertex, 1, __func__);
+        _GetCompilationError(fragment, 1, __func__);
 
-        // Create the final program. This is basically just mashing the shaders
-        // together in a special way so they work together in a pipeline.
+        // Create the final program. This is basically just mashing the
+        // shaders together in a special way so they work together in a
+        // pipeline.
         u32 final = glCreateProgram();
         // Attach each shader to the final program, ready to be compiled.
         glAttachShader(final, vertex);
         glAttachShader(final, fragment);
         // Try to compile the final program. If that fails, kill the function.
-        if (!_GetCompilationError(final, 0, __func__)) return false;
+        _GetCompilationError(final, 0, __func__);
 
         // Delete the now useless individual shader programs.
         glDeleteShader(vertex);
@@ -186,13 +178,12 @@ u32 LoadShader(const char* name, const char* caller)
     return false;
 }
 
-__BOOLEAN UseShader(u32 shader)
+__KILLFAIL UseShader(u32 shader)
 {
     // Try to use the program. Afterward, run the PrintOpenGLError function,
     // which checks to see if there are any errors and prints them if so.
     glUseProgram(shader);
-    if (!PrintGLError(__func__)) return false;
-    return true;
+    PollOpenGLErrors(__func__);
 }
 
 void SetBoolean(u32 shader, const char* name, i8 value)
