@@ -85,12 +85,12 @@ __KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
             terminal_width - strlen(log_message));
     GetTimeString(log_message, terminal_width - strlen(log_message));
 
-    printf("%s ] ", log_message);
+    printf("%s ]\033[0m ", log_message);
 
     va_list args;
     va_start(args, message);
     vprintf(message, args);
-    printf("\033[0m\n");
+    printf("\n");
     free(log_message);
 }
 #endif
