@@ -81,7 +81,7 @@ i64 GetCurrentTime(void)
     return (i64)time.tv_sec * 1000 + time.tv_usec / 1000 - start_time;
 }
 
-__PROVIDEDBUFFER GetTimeString(char* storage, u32 string_size)
+__PROVIDEDBUFFER GetTimeString(char* storage)
 {
     // Get the distance between the start of the application's runtime and right
     // now.
@@ -106,9 +106,9 @@ __PROVIDEDBUFFER GetTimeString(char* storage, u32 string_size)
     // Set the storage string to a formatted time string, using some string
     // formats so esoteric-lookin' I'd think Cthulu would be nervous around
     // them.
-    snprintf(storage + strlen(storage), string_size, "%.*s%ld:%.*s%ld:%.*s%ld",
-             3 - CountDigits(ms), "000", ms, 2 - CountDigits(s), "00", s,
-             3 - CountDigits(m), "000", m);
+    sprintf(storage, "%.*s%hu:%.*s%hhu:%.*s%hu", 3 - CountDigits(m), "000",
+            (u16)m, 2 - CountDigits(s), "00", (u8)s, 3 - CountDigits(ms), "000",
+            (u16)ms);
 }
 
 void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,

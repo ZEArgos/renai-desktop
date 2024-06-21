@@ -17,48 +17,6 @@
 #include <unistd.h>
 
 /**
- * @brief The terminal width of the application, set with the @ref
- * _GetTerminalWidth method.
- */
-u16 terminal_width = 0;
-
-/**
- * @brief Get the width of the currently running terminal for the application.
- * Note that this function will only do something once, after that it just
- * returns.
- */
-void _GetTerminalWidth(const char* caller)
-{
-    // Check to make sure this function has not been called already, and if it
-    // has, return instantly.
-    if (terminal_width != 0) return;
-
-    // Setup a place to store the various terminal information.
-    struct winsize terminal_dimensions;
-    // Use the IO control tool to poll the terminal's dimensions, and if it
-    // fails, print to the current output and exit the process with an exit
-    // code.
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &terminal_dimensions) == -1)
-    {
-        PrintError("Failed to get terminal dimensions, code: %d.", errno);
-        exit(-1);
-    }
-    // Set the terminal width to the polled value, discarding the rest.
-    terminal_width = terminal_dimensions.ws_col;
-}
-
-/**
- * @brief Get a message to go along with whatever status we've been passed.
- * This is always a string.
- */
-#define STATUS_MESSAGE(type) (type == 1 ? "\033[32m[ " : "\033[33m[ ")
-/**
- * @brief Get a color to go along with whatever status we've been passed.
- * This is always an ANSI color escape code.
- */
-#define COLOR_MESSAGE(type) (type == 1 ? "\033[32m" : "\033[33m")
-
-/**
  * @brief A boolean value that tells the application if its start time has been
  * recorded or not.
  */
@@ -66,10 +24,6 @@ bool start_time_initialized = false;
 
 __KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
 {
-    // If the terminal's width hasn't been grabbed yet, do it. If this function
-    // fails the whole program is sent to hell, so we don't bother error
-    // checking.
-    if (!terminal_width) _GetTerminalWidth(caller);
     // Similarly, if the program's start time hasn't yet been grabbed, do that.
     // This function will, on first call, always return zero, so we cast it to
     // void as we explicitly do not care about this value.
@@ -79,70 +33,23 @@ __KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
         start_time_initialized = true;
     }
 
-    char* log_message = calloc(terminal_width, sizeof(char));
+    // Print the beginning of the message. The main purpose of this call is to
+    // setup the color.
+    printf("\n%s", (state == 1 ? "\033[32m[ " : "\033[33m[ "));
 
-    strncat(log_message, STATUS_MESSAGE(state),
-            terminal_width - strlen(log_message));
-    GetTimeString(log_message, terminal_width - strlen(log_message));
+    // Allocate a buffer of 11 characters to hold the 10-character time string
+    // and its null terminator.
+    char* log_time = malloc(11);
+    // Get the 10-character time string.
+    GetTimeString(log_time);
+    // Print it out, and make sure to close the color.
+    printf("%s ]\033[0m ", log_time);
 
-    printf("%s ]\033[0m ", log_message);
-
+    // Grab the variable arguments of the function call.
     va_list args;
     va_start(args, message);
+    // Print out the formatted message with the arguments.
     vprintf(message, args);
-    printf("\n");
-    free(log_message);
-}
-#endif
-
-#ifndef linux
-// A variable to store the total line length printed thus far, for some
-// space-printing calculations at the end.
-u32 line_length = 0;
-
-// Print the message status to the console, using the given color and string
-// label. If this, for some reason, fails, print the error and fail the
-// process.
-if ((line_length = printf("%s MESSAGE:\033[0m ", STATUS_MESSAGE(state))) < 0)
-{
-    PrintError(
-        "An input/output error has occurred. Please report this bug ASAP.");
-    exit(-1);
-}
-
-// Collect the variable arguments. If there are none provided, this is
-// simply initialized to NULL and each function that uses it will ignore it.
-va_list args;
-va_start(args, message);
-
-// Try to print out a string formatted with the variable args. If this, for
-// some reason, fails, kill the process.
-u32 variable_arg_print_length = 0;
-if ((variable_arg_print_length = vprintf(message, args)) < 0)
-{
-    PrintError("An input/output error has occurred. Please report this bug "
-               "ASAP. ");
-    exit(-1);
-}
-// Add the amount of characters we just printed to the line length.
-line_length += variable_arg_print_length;
-
-// Get the time string. Note that we define its max length as the terminal
-// width minus the length of whatever we've already printed.
-char time_string[terminal_width - line_length];
-GetTimeString(time_string, terminal_width - line_length);
-// Create the final "line length", or really, the distance we will need to
-// go until we print the time string on the right side of the output.
-line_length = terminal_width - line_length - strlen(time_string) + 7;
-
-// Try to print the time string. If this, for some ungodly reason, fails,
-// kill the process in a panic.
-if (printf("%*sTIME:\033[0m %s\n", line_length, COLOR_MESSAGE(state),
-           time_string) < 0)
-{
-    PrintError(
-        "An input/output error has occurred. Please report this bug ASAP.");
-    exit(-1);
 }
 #endif
 

@@ -182,11 +182,12 @@ __BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
                                AmbiguousTypeSpecifier member, void* value);
 
 /**
- * @brief Get a string representation of the current time in milliseconds.
+ * @brief Get a string representation of the current time in milliseconds. The
+ * output string will always be 11 characters (including the '\0'), it is up to
+ * the caller to make certain the string can hold that.
  * @param storage The string which will become the host of the current time.
- * @param string_size The size of the given string.
  */
-__PROVIDEDBUFFER GetTimeString(char* storage, u32 string_size);
+__PROVIDEDBUFFER GetTimeString(char* storage);
 
 /**
  * @brief Get the current time, based off of @ref start_time and the @b current

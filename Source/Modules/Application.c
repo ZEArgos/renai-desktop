@@ -157,7 +157,7 @@ __KILL DestroyApplication(Application* application, const char* caller)
     // Free the memory shell associated with the application structure and print
     // what we did.
     free(application);
-    PrintWarning("Freed the memory of application '%s'.", NAME);
+    PrintWarning("Freed the memory of application '%s'.\n\n", NAME);
     // Exit the process with a success code.
     exit(0);
 }
