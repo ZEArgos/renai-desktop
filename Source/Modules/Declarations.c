@@ -115,47 +115,44 @@ void GetTimeString(char* storage, u32 string_size)
              3 - CountDigits(m), "000", m);
 }
 
+#define TYPENAME_i(size)   CONCAT(signed, size)
+#define TYPENAME_u(size)   CONCAT(unsigned, size)
+#define FIELD(state, size) CONCAT(TYPENAME_, state)(size)
+
+#define ASSIGN(state, size)                                                    \
+    affected->FIELD(state, size) = VPTT(__CONCAT(state, size), value);
+#define READ(state, size) return TTVP(affected->FIELD(state, size));
+#define COMPARE(state, size)                                                   \
+    if (affected->FIELD(state, size) == VPTT(__CONCAT(state, size), value))    \
+        return true;                                                           \
+    return false;
+
+#define __AMBIGUOUS_BODY(TYPE, BODY)                                           \
+    switch (TYPE)                                                              \
+    {                                                                          \
+        case FIELD(u, 32): BODY(u, 32) break;                                  \
+        case FIELD(i, 32): BODY(i, 32) break;                                  \
+        case FIELD(u, 64): BODY(u, 64) break;                                  \
+        case FIELD(i, 64): BODY(i, 64) break;                                  \
+        default:           break;                                                        \
+    }
+#define FIELD(state, size) CONCAT(TYPENAME_, state)(size)
+
 void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
                          void* value)
 {
-    switch (member)
-    {
-        case unsigned32: affected->unsigned32 = VPTT(u32, value); return;
-        case unsigned64: affected->unsigned64 = VPTT(u64, value); return;
-        case signed32:   affected->signed32 = VPTT(i32, value); return;
-        case signed64:   affected->signed64 = VPTT(i64, value); return;
-    }
+    __AMBIGUOUS_BODY(member, ASSIGN);
 }
 
 void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member)
 {
-    switch (member)
-    {
-        case unsigned32: return TTVP(affected->unsigned32);
-        case unsigned64: return TTVP(affected->unsigned64);
-        case signed32:   return TTVP(affected->signed32);
-        case signed64:   return TTVP(affected->signed64);
-        default:         return NULL;
-    }
+    __AMBIGUOUS_BODY(member, READ);
+    return NULL;
 }
 
 __BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
                                AmbiguousTypeSpecifier member, void* value)
 {
-    switch (member)
-    {
-        case unsigned32:
-            if (affected->unsigned32 == *((u32*)value)) return true;
-            return false;
-        case unsigned64:
-            if (affected->unsigned64 == *((u64*)value)) return true;
-            return false;
-        case signed32:
-            if (affected->signed32 == *((i32*)value)) return true;
-            return false;
-        case signed64:
-            if (affected->signed64 == *((i64*)value)) return true;
-            return false;
-    }
+    __AMBIGUOUS_BODY(member, COMPARE);
     return false;
 }

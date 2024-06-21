@@ -73,6 +73,14 @@ typedef long double f128;
  */
 #define __BOOLEAN _Bool
 /**
+ * @brief Indicates that the marked function does not ever return anything.
+ */
+#define __CANTRETURN void
+/**
+ * @brief Indicates that the function returns an ambiguously-types value.
+ */
+#define __AMBIGUOUS void*
+/**
  * @brief Indicates a function that creates a structure.
  */
 #define __CREATE_STRUCT(structure) structure*
@@ -98,6 +106,9 @@ typedef long double f128;
  * @brief Convert the given value to a void pointer.
  */
 #define TTVP(value) (void*)&value
+
+// __CONCAT defined in cdefs.h
+#define CONCAT(a, b) __CONCAT(a, b)
 
 /**
  * @brief The types possible of for an ambiguous type to be (u32, u64, i32,
@@ -127,9 +138,9 @@ void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
 
 /**
  * @brief Get the current value of the specified ambiguous type.
- * @param affected
- * @param member
- * @return void*
+ * @param affected The ambiguous type to grab from.
+ * @param member The member of the type we're trying to get.
+ * @return The value of the member.
  */
 void* GetAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member);
 
