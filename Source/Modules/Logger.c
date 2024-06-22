@@ -7,15 +7,6 @@
 // define a section for debug-only code and production-only code.
 #ifdef DEBUG_MODE
 
-// Provides the IO control tool, which allows the program to poll the
-// operating system for information.
-#include <sys/ioctl.h>
-// Provides the Linux time methods.
-#include <sys/time.h>
-// Provides the Unix symbol constant definitions, such as various file
-// definitions and some methods to grab information about the process.
-#include <unistd.h>
-
 /**
  * @brief A boolean value that tells the application if its start time has been
  * recorded or not.
@@ -35,22 +26,28 @@ __KILLFAIL PrintMessage(u8 state, const char* caller, char* message, ...)
 
     // Print the beginning of the message. The main purpose of this call is to
     // setup the color.
-    printf("\n%s", (state == 1 ? "\033[32m[ " : "\033[33m[ "));
+    if (printf("\n%s", (state == 1 ? "\033[32m[ " : "\033[33m[ ")) < 0)
+        PrintError("An output error occurred. (1)");
 
     // Allocate a buffer of 11 characters to hold the 10-character time string
     // and its null terminator.
     char* log_time = malloc(11);
+    if (log_time == NULL)
+        PrintError("Failed to allocate space for the log string.");
     // Get the 10-character time string.
     GetTimeString(log_time);
+
     // Print it out, and make sure to close the color.
-    printf("%s ]\033[0m ", log_time);
+    if (printf("%s ]\033[0m ", log_time) < 0)
+        PrintError("An output error occurred. (2)");
 
     // Grab the variable arguments of the function call.
     va_list args;
     va_start(args, message);
     // Print out the formatted message with the arguments.
-    vprintf(message, args);
+    if (vprintf(message, args) < 0) PrintError("An output error occurred. (3)");
 }
+
 #endif
 
 __KILL PrintErrorMessage(const char* caller_parent, const char* caller,
@@ -94,14 +91,11 @@ __KILL PrintErrorMessage(const char* caller_parent, const char* caller,
     }
     (void)strncat(msg, "'\"", 512 - strlen(msg));
 
-#ifdef linux
     // If we're on linux, just syscall the command. This will execute the
     // notify-send. We...cannot fix any errors associated with this function, so
     // we just explicitly ignore them.
     (void)system(msg);
-#else
-    //! windows
-#endif
+
     // Kill the application with an error.
     exit(-1);
 }

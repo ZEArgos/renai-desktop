@@ -81,6 +81,11 @@ __KILLFAIL RunApplication(Application* application);
  */
 __KILL DestroyApplication(Application* application, const char* caller);
 
+/**
+ * @brief Swap the application's current state; from menu to gameplay or
+ * gameplay to menu.
+ * @param application The application to swap.
+ */
 void SwapApplicationType(Application* application);
 
 #endif // _RENAI_APPLICATION_

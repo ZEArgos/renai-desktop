@@ -167,4 +167,9 @@ __KILL DestroyApplication(Application* application, const char* caller)
     exit(0);
 }
 
-void SwapApplicationType(Application* application) {}
+void SwapApplicationType(Application* application)
+{
+    // Since we're working with a boolean value, just negate the previous value.
+    application->current_application_state =
+        !application->current_application_state;
+}
