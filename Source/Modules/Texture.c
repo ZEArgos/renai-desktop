@@ -38,6 +38,8 @@ Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
     strcat(path, name);
     u8* data = stbi_load(path, &image_width, &image_height, &image_channels, 0);
 
+    //! there is an issue here with texture renderering; the textures are not
+    //! the correct proportions/alignments
     if (data != NULL)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0,

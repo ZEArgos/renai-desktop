@@ -46,6 +46,10 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
         PrintError(
             "Failed to properly allocate space for the application. Code: %d.",
             errno);
+    // Since we assume that we're loading into a startup menu, set the startup
+    // state to "menu".
+    application->current_application_state = false;
+
     PrintSuccess(
         "Allocated memory for the main application structure: %d bytes.",
         sizeof(Application));
@@ -127,10 +131,11 @@ __KILLFAIL RunApplication(Application* application)
         // key was pressed.
         cycles_since_last_key++;
 
-        // Poll for events like key pressing, resizing, and the like.
-        glfwPollEvents();
         // Swap the front and back buffers of the application.
         glfwSwapBuffers(application->window->inner_window);
+        // Poll for events like key pressing, resizing, and the like.
+        if (application->current_application_state) glfwPollEvents();
+        else glfwWaitEvents();
     }
     PrintSuccess("Got through the application's main loop successfully.");
 }
@@ -161,3 +166,5 @@ __KILL DestroyApplication(Application* application, const char* caller)
     // Exit the process with a success code.
     exit(0);
 }
+
+void SwapApplicationType(Application* application) {}

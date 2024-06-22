@@ -27,6 +27,12 @@
  */
 __STRUCT(Application, {
     /**
+     * @brief This is a boolean flag representing the current state of the
+     * application; true for gameplay, false for menu. This decides how often
+     * the game calls the render function.
+     */
+    bool current_application_state;
+    /**
      * @brief The width of the user's primary monitor, for use in many
      * calculations and borderless fullscreening the window.
      */
@@ -74,5 +80,7 @@ __KILLFAIL RunApplication(Application* application);
  * @param caller The caller of the function, should be "main".
  */
 __KILL DestroyApplication(Application* application, const char* caller);
+
+void SwapApplicationType(Application* application);
 
 #endif // _RENAI_APPLICATION_
