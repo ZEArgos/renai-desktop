@@ -111,7 +111,7 @@ __KILLFAIL RunApplication(Application* application)
     // i64 last_frame_time = GetCurrentTime();
     f32 current_fps = 120.0f; //, delta_time = last_frame_time;
     char window_title[64];
-    u8 frames_past = 4;
+    u8 frames_past = 0;
 
     // While the application's window shouldn't be closed, run through the
     // render loop.

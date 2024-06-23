@@ -82,7 +82,8 @@ i64 GetCurrentTime(void)
 }
 
 #define MAXSAMPLES 50
-u32 current_tick_index, overall_tick_sum = 0;
+u32 current_tick_index = 0;
+f64 overall_tick_sum = 0.0;
 u32 tick_list[MAXSAMPLES] = {0};
 
 f64 CalculateFramerate(u32 new_value)
@@ -92,7 +93,7 @@ f64 CalculateFramerate(u32 new_value)
     tick_list[current_tick_index] = new_value;
     current_tick_index = (current_tick_index + 1) % MAXSAMPLES;
 
-    return (f64)overall_tick_sum / MAXSAMPLES;
+    return overall_tick_sum / MAXSAMPLES;
 }
 
 __PROVIDEDBUFFER GetTimeString(char* storage)
