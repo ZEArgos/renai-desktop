@@ -81,6 +81,20 @@ i64 GetCurrentTime(void)
     return (i64)time.tv_sec * 1000 + time.tv_usec / 1000 - start_time;
 }
 
+#define MAXSAMPLES 50
+u32 current_tick_index, overall_tick_sum = 0;
+u32 tick_list[MAXSAMPLES] = {0};
+
+f64 CalculateFramerate(u32 new_value)
+{
+    overall_tick_sum -= tick_list[current_tick_index];
+    overall_tick_sum += new_value;
+    tick_list[current_tick_index] = new_value;
+    current_tick_index = (current_tick_index + 1) % MAXSAMPLES;
+
+    return (f64)overall_tick_sum / MAXSAMPLES;
+}
+
 __PROVIDEDBUFFER GetTimeString(char* storage)
 {
     // Get the distance between the start of the application's runtime and right

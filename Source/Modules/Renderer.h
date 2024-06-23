@@ -13,21 +13,9 @@
 
 #include <LinkedList.h>
 
-//! working here
-
-//! make these into inlines
-#define RendererTextureListHead                                                \
-    renderer->texture_list->first_node->texture_contents
-#define RendererShaderListHead                                                 \
-    renderer->shader_list->first_node->shader_contents
-#define RendererTextureListHeadNode renderer->texture_list->first_node
-#define RendererShaderListHeadNode  renderer->shader_list->first_node
-
 typedef struct Renderer
 {
-
     LinkedList* shader_list;
-
     LinkedList* texture_list;
 } Renderer;
 
@@ -50,6 +38,13 @@ __INLINE Node* GetShaderListHead(Renderer* renderer)
 {
     return renderer->shader_list->first_node;
 }
+
+#define GetNodeContents(node, type) (*Get##type##Contents(node))
+__INLINE Texture* GetTextureContents(Node* node)
+{
+    return &node->contents.texture;
+}
+__INLINE u32* GetShaderContents(Node* node) { return &node->contents.shader; }
 
 __CREATE_STRUCT_KILLFAIL(Renderer)
 CreateRenderer(f32 width, f32 height, const char* caller);

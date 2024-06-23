@@ -10,9 +10,9 @@ __BOOLEAN _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
 
     glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
 
-    UseShader(shader->contents.shader);
+    UseShader(GetNodeContents(shader, Shader));
 
-    SetMat4(shader->contents.shader, "projection", projection);
+    SetMat4(GetNodeContents(shader, Shader), "projection", projection);
     PollOpenGLErrors(__func__);
 
     PrintSuccess("Successfully set up the projection matrix on shader '%s'.",
@@ -39,7 +39,8 @@ CreateRenderer(f32 swidth, f32 sheight, const char* caller)
         PrintError("Unable to create the linked lists for the application's "
                    "renderer.");
 
-    if (!_CreateProjectionMatrix(RendererShaderListHeadNode, swidth, sheight))
+    if (!_CreateProjectionMatrix(GetRendererHead(renderer, Shader), swidth,
+                                 sheight))
         PrintError("Failed to create the projection matrix of the renderer.");
 
     return renderer;
@@ -64,16 +65,19 @@ void RenderWindowContent(Renderer* renderer)
 {
     if (!CheckRendererValidity(renderer, __func__)) exit(-1);
 
-    u32 basic_shader = GetRendererHead(renderer, Shader)->contents.shader;
+    u32 basic_shader =
+        GetNodeContents(GetRendererHead(renderer, Shader), Shader);
     UseShader(basic_shader);
 
     SetInteger(basic_shader, "in_texture", 0);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,
-                  GetRendererHead(renderer, Texture)->contents.texture.inner);
+    glBindTexture(
+        GL_TEXTURE_2D,
+        GetNodeContents(GetRendererHead(renderer, Texture), Texture).inner);
 
-    glBindVertexArray(GetRendererHead(renderer, Texture)->contents.texture.vao);
+    glBindVertexArray(
+        GetNodeContents(GetRendererHead(renderer, Texture), Texture).vao);
 
     mat4 model = GLM_MAT4_IDENTITY_INIT;
     glm_translate(model, (vec3){0.0f, 0.0f, 0.0f}); // pos transform

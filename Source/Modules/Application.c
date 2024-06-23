@@ -48,7 +48,7 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
             errno);
     // Since we assume that we're loading into a startup menu, set the startup
     // state to "menu".
-    application->current_application_state = false;
+    application->current_application_state = true;
 
     PrintSuccess(
         "Allocated memory for the main application structure: %d bytes.",
@@ -108,6 +108,11 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
 
 __KILLFAIL RunApplication(Application* application)
 {
+    // i64 last_frame_time = GetCurrentTime();
+    f32 current_fps = 120.0f; //, delta_time = last_frame_time;
+    char window_title[64];
+    u8 frames_past = 4;
+
     // While the application's window shouldn't be closed, run through the
     // render loop.
     while (!GetWindowShouldClose(application->window))
@@ -133,9 +138,33 @@ __KILLFAIL RunApplication(Application* application)
 
         // Swap the front and back buffers of the application.
         glfwSwapBuffers(application->window->inner_window);
+
+        i64 current_frame_time;
         // Poll for events like key pressing, resizing, and the like.
-        if (application->current_application_state) glfwPollEvents();
-        else glfwWaitEvents();
+        if (application->current_application_state)
+        {
+            current_frame_time = GetCurrentTime();
+            // delta_time = current_frame_time - last_frame_time;
+            // last_frame_time = current_frame_time;
+
+            current_fps = CalculateFramerate(current_frame_time);
+            frames_past++;
+            if (frames_past == 5)
+            {
+                snprintf(window_title, 64, "%s -- %.2f FPS", TITLE,
+                         current_fps);
+                glfwSetWindowTitle(GetInnerWindow(application->window),
+                                   window_title);
+            }
+            glfwPollEvents();
+        }
+        else
+        {
+            // current_frame_time = GetCurrentTime();
+            // delta_time = current_frame_time - last_frame_time;
+            // last_frame_time = current_frame_time;
+            glfwWaitEvents();
+        }
     }
     PrintSuccess("Got through the application's main loop successfully.");
 }
