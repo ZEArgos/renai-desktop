@@ -41,6 +41,16 @@ __INLINE LinkedList* GetShaderList(Renderer* renderer)
     return renderer->shader_list;
 }
 
+#define GetRendererHead(renderer, list) Get##list##ListHead(renderer)
+__INLINE Node* GetTextureListHead(Renderer* renderer)
+{
+    return renderer->texture_list->first_node;
+}
+__INLINE Node* GetShaderListHead(Renderer* renderer)
+{
+    return renderer->shader_list->first_node;
+}
+
 __CREATE_STRUCT_KILLFAIL(Renderer)
 CreateRenderer(f32 width, f32 height, const char* caller);
 
