@@ -57,10 +57,10 @@ __STRUCT(Application, {
      */
     Renderer* renderer;
     /**
-     * @brief The keybuffer of the application, which stores what keys were
-     * pressed in the last 25 cycles and how long until they're free again.
+     * @brief This is the updater of the application; the structure that handles
+     * processing, keystrokes, and the like.
      */
-    KeyBuffer* keybuffer;
+    Updater* updater;
 });
 
 /**

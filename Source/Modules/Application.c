@@ -18,8 +18,7 @@ extern Application* renai;
 void _key_callback(GLFWwindow* window, int key, int scancode, int action,
                    int mods)
 {
-    HandleInput(renai->keybuffer, renai->window, renai->delta_time, key,
-                action);
+    HandleInput(renai->updater, renai->window, renai->delta_time, key, action);
 }
 
 __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
@@ -75,7 +74,7 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
     // Create the keybuffer, where we'll store the keys that have been
     // pressed in the last 25 cycles and are awaiting their time to be
     // pressed again.
-    application->keybuffer = CreateKeyBuffer();
+    application->updater = CreateUpdater(50);
 
     return application;
 }
@@ -105,8 +104,8 @@ __KILLFAIL RunApplication(Application* application)
         glClear(GL_COLOR_BUFFER_BIT);
         glDisable(GL_SCISSOR_TEST);
 
-        // Render the contents of the window.
         RenderWindowContent(application->renderer);
+        UpdateWindowContent(application->updater, application->delta_time);
 
         glfwSwapBuffers(application->window->inner_window);
 
@@ -162,7 +161,7 @@ __KILL DestroyApplication(Application* application, const char* caller)
 
     KillWindow(application->window);
     KillRenderer(application->renderer);
-    KillKeyBuffer(application->keybuffer);
+    KillUpdater(application->updater);
     PrintWarning("Killed the application '%s's resources.", NAME);
 
     // Free the memory shell associated with the application structure and print

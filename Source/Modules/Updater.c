@@ -1,40 +1,42 @@
 #include "Updater.h"
 
-KeyBuffer* CreateKeyBuffer(void)
+__CREATE_STRUCT(Updater) CreateUpdater(u8 tick_speed)
 {
-    KeyBuffer* buffer = malloc(sizeof(KeyBuffer));
+    Updater* buffer = malloc(sizeof(Updater));
     // Create the cooldown map with a maximum size of 156, since the highest
     // keycode we use is 347, and 347 - 159 - 32 = 156.
-    buffer->cooldown_map = CreateMap(signed32, signed64, 156);
+    buffer->key_buffer = CreateMap(signed32, signed64, 156);
+    buffer->tick_speed = tick_speed;
     return buffer;
 }
 
-void KillKeyBuffer(KeyBuffer* buffer)
+void KillUpdater(Updater* buffer)
 {
-    DestroyMap(buffer->cooldown_map);
+    DestroyMap(buffer->key_buffer);
     free(buffer);
 }
 
-__BOOLEAN HandleKey(KeyBuffer* buffer, i32 key, i32 action)
+__BOOLEAN HandleKey(Updater* buffer, i32 key, i32 action)
 {
     i32 key_number = (key >= GLFW_KEY_ESCAPE ? key - 159 : key) - 32;
-    void* keybuffer_value = GetMapItemValue(buffer->cooldown_map, key_number);
-
     i64 current_time = GetCurrentTime();
-    if (keybuffer_value == NULL)
+
+    void* Updater_value = GetMapItemValue(buffer->key_buffer, key_number);
+    if (Updater_value == NULL)
     {
-        AppendMapItem(buffer->cooldown_map, key_number, current_time);
+        AppendMapItem(buffer->key_buffer, key_number, current_time);
         return true;
     }
-    else if ((i32)VPTT(u32, keybuffer_value) - current_time > 0)
-        GetMapKeyPair(buffer->cooldown_map, key_number)->value.unsigned32 -=
+
+    if (VPTT(i64, Updater_value) - current_time > 0)
+        GetMapKeyPair(buffer->key_buffer, key_number)->value.unsigned32 -=
             current_time;
-    else RemoveMapItem(buffer->cooldown_map, key_number);
+    else RemoveMapItem(buffer->key_buffer, key_number);
 
     return false;
 }
 
-void HandleInput(KeyBuffer* buffer, Window* key_window, f32 delta_time, i32 key,
+void HandleInput(Updater* buffer, Window* key_window, f32 delta_time, i32 key,
                  i32 action)
 {
     switch (key)
@@ -63,3 +65,4 @@ void HandleInput(KeyBuffer* buffer, Window* key_window, f32 delta_time, i32 key,
         default: break;
     }
 }
+void UpdateWindowContent(Updater* updater, f32 delta_time) {}
