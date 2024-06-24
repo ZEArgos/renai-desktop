@@ -147,7 +147,7 @@ __KILLFAIL RunApplication(Application* application)
             // delta_time = current_frame_time - last_frame_time;
             // last_frame_time = current_frame_time;
 
-            current_fps = CalculateFramerate(current_frame_time);
+            current_fps = CalculatePossibleFramerate(current_frame_time);
             frames_past++;
             if (frames_past == 5)
             {

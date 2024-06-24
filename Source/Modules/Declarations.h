@@ -208,7 +208,7 @@ i64 GetCurrentTime(void);
 u16 CountDigits(u32 number);
 
 //!
-f64 CalculateFramerate(u32 new_value);
+f64 CalculatePossibleFramerate(u32 new_value);
 
 /**
  * @brief Get a string representation of the current time and date, and

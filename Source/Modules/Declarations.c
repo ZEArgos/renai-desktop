@@ -86,7 +86,7 @@ u32 current_tick_index = 0;
 f64 overall_tick_sum = 0.0;
 u32 tick_list[MAXSAMPLES] = {0};
 
-f64 CalculateFramerate(u32 new_value)
+f64 CalculatePossibleFramerate(u32 new_value)
 {
     overall_tick_sum -= tick_list[current_tick_index];
     overall_tick_sum += new_value;
