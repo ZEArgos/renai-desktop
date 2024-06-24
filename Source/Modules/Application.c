@@ -56,6 +56,8 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
     if (resolution == NULL)
         PrintError("Failed to get the user's primary monitor's resolution. "
                    "Please report this.");
+    // Set the application's frame cap to the monitor's refresh rate.
+    ChangeApplicationFrameCap(1);
 
     *(i32*)&application->screen_width = resolution->width;
     *(i32*)&application->screen_height = resolution->height;
