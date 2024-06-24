@@ -24,7 +24,7 @@ static u8 cycles_since_last_key = 1;
 void _key_callback(GLFWwindow* window, int key, int scancode, int action,
                    int mods)
 {
-    HandleInput(renai->keybuffer, renai->window, key, action,
+    HandleInput(renai->keybuffer, renai->window, renai->delta_time, key, action,
                 cycles_since_last_key);
     cycles_since_last_key = 1;
 }
@@ -96,7 +96,7 @@ __KILLFAIL RunApplication(Application* application)
         frames_past++;
 
         i64 current_frame_time = GetCurrentTime();
-        f32 delta_time = current_frame_time - last_frame_time;
+        application->delta_time = current_frame_time - last_frame_time;
         last_frame_time = current_frame_time;
 
         // Clear the background of the window to black and then clear the
@@ -110,7 +110,8 @@ __KILLFAIL RunApplication(Application* application)
         glClear(GL_COLOR_BUFFER_BIT);
         glDisable(GL_SCISSOR_TEST);
 
-        RenderWindowContent(application->renderer, delta_time);
+        // Render the contents of the window.
+        RenderWindowContent(application->renderer);
         // Increment the number of render cycles it's been since the last time a
         // key was pressed.
         cycles_since_last_key++;

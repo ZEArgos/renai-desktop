@@ -11,7 +11,7 @@
 #ifndef _RENAI_TEXTURE_
 #define _RENAI_TEXTURE_
 
-#include "Declarations.h"
+#include <Declarations.h>
 
 typedef struct Texture
 {
@@ -38,5 +38,12 @@ Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight);
 
 TextureInstance RegisterFullTexture(Texture* from, f32 brightness, f32 rotation,
                                     f32 x, f32 y, u8 z);
+
+__INLINE void BindTexture(Texture* texture)
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->inner);
+    glBindVertexArray(texture->vao);
+}
 
 #endif

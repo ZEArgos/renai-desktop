@@ -68,6 +68,13 @@ typedef struct LinkedList
     Node* last_node;
 } LinkedList;
 
+#define GetNodeContents(node, type) (*Get##type##Contents(node))
+__INLINE Texture* GetTextureContents(Node* node)
+{
+    return &node->contents.texture;
+}
+__INLINE u32* GetShaderContents(Node* node) { return &node->contents.shader; }
+
 // #define list_head_contents first_node->contents
 // #define list_head_texture  first_node->contents.texture
 // #define list_head_shader   first_node->contents.shader

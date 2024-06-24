@@ -1,22 +1,6 @@
 #include "Texture.h"
-#include "Renderer.h"
-#include "Updater.h"
-#include "Window.h"
 #include <cglm/cglm.h>
 #include <stbi/stb_image.h>
-
-/**
- * @brief The internal application structure. This is defined in Application.h,
- * so we just define it as external here and call it a day.
- */
-extern struct
-{
-    u8 initialized;
-    f32 screen_width, screen_height;
-    Window window;
-    Renderer renderer;
-    KeyBuffer keybuffer;
-} _application;
 
 Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
 {

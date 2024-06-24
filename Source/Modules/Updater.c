@@ -30,8 +30,8 @@ __BOOLEAN HandleKey(KeyBuffer* buffer, i32 key, i32 action, u32 time_since_last)
     return false;
 }
 
-void HandleInput(KeyBuffer* buffer, Window* key_window, i32 key, i32 action,
-                 u32 time_since_last)
+void HandleInput(KeyBuffer* buffer, Window* key_window, f32 delta_time, i32 key,
+                 i32 action, u32 time_since_last)
 {
     switch (key)
     {

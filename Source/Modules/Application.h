@@ -33,6 +33,11 @@ __STRUCT(Application, {
      */
     bool current_application_state;
     /**
+     * @brief The time difference it took to render the current frame and the
+     * last. This value to used to normalize updating.
+     */
+    f32 delta_time;
+    /**
      * @brief The width of the user's primary monitor, for use in many
      * calculations and borderless fullscreening the window.
      */

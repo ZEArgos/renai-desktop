@@ -12,7 +12,7 @@
 #define _RENAI_SHADER_
 
 // Again, gimme them typedefs
-#include "Declarations.h"
+#include <Declarations.h>
 #include <cglm/cglm.h>
 
 /**

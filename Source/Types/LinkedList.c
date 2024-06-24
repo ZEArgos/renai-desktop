@@ -16,12 +16,6 @@ Node* __CreateNode(NodeType type, const char* name, u32 shader, Texture texture)
 
 LinkedList* CreateLinkedList(NodeType type, Node* head)
 {
-    if (head == NULL)
-    {
-        PrintWarning("Cannot initialize linked list with a null head node.");
-        return NULL;
-    }
-
     LinkedList* created_list = malloc(sizeof(struct LinkedList));
     created_list->type = type;
     created_list->first_node = head;

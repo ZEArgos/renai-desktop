@@ -9,7 +9,6 @@
  * @copyright Copyright (c) 2024
  */
 
-// Include guard since this file is needed in many parts of the program.
 #ifndef _RENAI_LOGGER_
 #define _RENAI_LOGGER_
 

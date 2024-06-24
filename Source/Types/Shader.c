@@ -1,5 +1,5 @@
 #include "Shader.h"
-#include "Logger.h"
+#include <Logger.h>
 
 __BOOLEAN _FileRead(FILE* file, char* buffer, i64 length, const char* caller)
 {

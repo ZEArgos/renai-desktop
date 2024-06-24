@@ -1,25 +1,18 @@
-#include "Renderer.h" // The renderer mother header, declaring the various functions we define here.
-#include "Logger.h" // Provides wrapper functions for logging to the standard output.
-#include <cglm/cglm.h> // Provides the math functions and data structures needed to run complex graphical calculations.
+#include "Renderer.h"
+#include "Logger.h"
+#include <cglm/cglm.h>
 
-//! working here
-
-__BOOLEAN _CreateProjectionMatrix(Node* shader, f32 swidth, f32 sheight)
-{
-    mat4 projection = GLM_MAT4_IDENTITY_INIT;
-
-    glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
-
-    UseShader(GetNodeContents(shader, Shader));
-
-    SetMat4(GetNodeContents(shader, Shader), "projection", projection);
-    PollOpenGLErrors(__func__);
-
-    PrintSuccess("Successfully set up the projection matrix on shader '%s'.",
-                 shader->name);
-
-    return true;
-}
+/**
+ * @brief A small macro just used to initialize the given renderer's linked
+ * list. I've defined this solely to remove this ugly ass piece of code from the
+ * @ref CreateRenderer function.
+ */
+#define CREATE_LINKED_LISTS(renderer)                                          \
+    renderer->shader_list =                                                    \
+        CreateLinkedList(shader, CreateShaderNode(shader, "basic"));           \
+    renderer->texture_list = CreateLinkedList(                                 \
+        texture,                                                               \
+        CreateTextureNode(texture, "texture_missing.jpg", swidth, sheight))
 
 __CREATE_STRUCT_KILLFAIL(Renderer)
 CreateRenderer(f32 swidth, f32 sheight, const char* caller)
@@ -30,18 +23,22 @@ CreateRenderer(f32 swidth, f32 sheight, const char* caller)
     PrintSuccess("Allocated space for the application's renderer: %d bytes.",
                  sizeof(Renderer));
 
-    renderer->shader_list =
-        CreateLinkedList(shader, CreateShaderNode(shader, "basic"));
-    renderer->texture_list = CreateLinkedList(
-        texture,
-        CreateTextureNode(texture, "texture_missing.jpg", swidth, sheight));
-    if (!CheckRendererValidity(renderer, __func__))
-        PrintError("Unable to create the linked lists for the application's "
-                   "renderer.");
+    // Create the renderer's various linked lists. This also stands to load the
+    // base assets for the application.
+    CREATE_LINKED_LISTS(renderer);
 
-    if (!_CreateProjectionMatrix(GetRendererHead(renderer, Shader), swidth,
-                                 sheight))
-        PrintError("Failed to create the projection matrix of the renderer.");
+    Node* basic_shader = GetRendererHead(renderer, Shader);
+    // Create the projection matrix of the application, using a box with the
+    // dimensions swidth x sheight x 1000.
+    mat4 projection = GLM_MAT4_IDENTITY_INIT;
+    glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
+
+    // Slide the projection matrix into the shader.
+    UseShader(GetNodeContents(basic_shader, Shader));
+    SetMat4(GetNodeContents(basic_shader, Shader), "projection", projection);
+
+    PrintSuccess("Successfully set up the projection matrix on shader '%s'.",
+                 basic_shader->name);
 
     return renderer;
 }
@@ -53,36 +50,22 @@ void KillRenderer(Renderer* renderer)
     free(renderer);
 }
 
-__BOOLEAN CheckRendererValidity(Renderer* renderer, const char* caller)
+void RenderWindowContent(Renderer* renderer)
 {
-    if (renderer != NULL || GetRendererList(renderer, Shader) != NULL ||
-        GetRendererList(renderer, Texture) != NULL)
-        return true;
-    return false;
-}
-
-void RenderWindowContent(Renderer* renderer, f32 delta_time)
-{
-    if (!CheckRendererValidity(renderer, __func__)) exit(-1);
-
+    // Get the basic shader, the one we use to render plain textures, and slot
+    // it as our current one.
     u32 basic_shader =
         GetNodeContents(GetRendererHead(renderer, Shader), Shader);
     UseShader(basic_shader);
 
-    SetInteger(basic_shader, "in_texture", 0);
+    // Bind the "missing" texture to render as a placeholder.
+    BindTexture(&GetNodeContents(GetRendererHead(renderer, Texture), Texture));
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(
-        GL_TEXTURE_2D,
-        GetNodeContents(GetRendererHead(renderer, Texture), Texture).inner);
-
-    glBindVertexArray(
-        GetNodeContents(GetRendererHead(renderer, Texture), Texture).vao);
-
+    // Position transform the bound texture so it's within our viewport.
     mat4 model = GLM_MAT4_IDENTITY_INIT;
-    glm_translate(model, (vec3){0.0f, 0.0f, 0.0f}); // pos transform
-
+    glm_translate(model, (vec3){0.0f, 0.0f, 0.0f});
     SetMat4(basic_shader, "model", model);
 
+    // Draw the texture.
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
