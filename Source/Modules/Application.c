@@ -48,7 +48,7 @@ __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
             errno);
     // Since we assume that we're loading into a startup menu, set the startup
     // state to "menu".
-    application->current_application_state = true;
+    application->current_application_state = false;
 
     PrintSuccess(
         "Allocated memory for the main application structure: %d bytes.",
@@ -139,16 +139,15 @@ __KILLFAIL RunApplication(Application* application)
         // Swap the front and back buffers of the application.
         glfwSwapBuffers(application->window->inner_window);
 
-        i64 current_frame_time;
+        i64 current_frame_time = GetCurrentTime();
+        // delta_time = current_frame_time - last_frame_time;
+        // last_frame_time = current_frame_time;
+
         // Poll for events like key pressing, resizing, and the like.
         if (application->current_application_state)
         {
-            current_frame_time = GetCurrentTime();
-            // delta_time = current_frame_time - last_frame_time;
-            // last_frame_time = current_frame_time;
-
-            current_fps = CalculatePossibleFramerate(current_frame_time);
             frames_past++;
+            current_fps = CalculatePossibleFramerate(current_frame_time);
             if (frames_past == 5)
             {
                 snprintf(window_title, 64, "%s -- %.2f FPS", TITLE,
@@ -160,9 +159,10 @@ __KILLFAIL RunApplication(Application* application)
         }
         else
         {
-            // current_frame_time = GetCurrentTime();
-            // delta_time = current_frame_time - last_frame_time;
-            // last_frame_time = current_frame_time;
+            if (strcmp(glfwGetWindowTitle(GetInnerWindow(application->window)),
+                       TITLE) != 0)
+                glfwSetWindowTitle(GetInnerWindow(application->window), TITLE);
+
             glfwWaitEvents();
         }
     }
