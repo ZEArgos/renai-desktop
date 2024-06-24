@@ -24,6 +24,6 @@ KeyBuffer* CreateKeyBuffer(void);
 void KillKeyBuffer(KeyBuffer* buffer);
 
 void HandleInput(KeyBuffer* buffer, Window* window, f32 delta_time, i32 key,
-                 i32 action, u32 time_since_last);
+                 i32 action);
 
 #endif // _RENAI_UPDATER

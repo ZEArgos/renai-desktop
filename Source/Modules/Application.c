@@ -7,12 +7,6 @@
 extern Application* renai;
 
 /**
- * @brief A count of the number of render cycles since the last key press. This
- * is only available within this file.
- */
-static u8 cycles_since_last_key = 1;
-
-/**
  * @brief The key callback of the application; this fires every single time a
  * key is pressed/actioned upon.
  * @param window The window that was focused when the key was pressed.
@@ -24,9 +18,8 @@ static u8 cycles_since_last_key = 1;
 void _key_callback(GLFWwindow* window, int key, int scancode, int action,
                    int mods)
 {
-    HandleInput(renai->keybuffer, renai->window, renai->delta_time, key, action,
-                cycles_since_last_key);
-    cycles_since_last_key = 1;
+    HandleInput(renai->keybuffer, renai->window, renai->delta_time, key,
+                action);
 }
 
 __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
@@ -114,9 +107,6 @@ __KILLFAIL RunApplication(Application* application)
 
         // Render the contents of the window.
         RenderWindowContent(application->renderer);
-        // Increment the number of render cycles it's been since the last time a
-        // key was pressed.
-        cycles_since_last_key++;
 
         glfwSwapBuffers(application->window->inner_window);
 

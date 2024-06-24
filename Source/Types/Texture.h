@@ -24,6 +24,7 @@ typedef struct TextureInstance
 {
     Texture* inherits;
     f32 brightness, rotation;
+    // add a scale option here
     f32 x, y;
     u8 z;
 } TextureInstance;
