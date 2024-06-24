@@ -53,6 +53,6 @@ void KillRenderer(Renderer* renderer);
 
 __BOOLEAN CheckRendererValidity(Renderer* renderer, const char* caller);
 
-void RenderWindowContent(Renderer* renderer);
+void RenderWindowContent(Renderer* renderer, f32 delta_time);
 
 #endif // _RENAI_RENDERER_

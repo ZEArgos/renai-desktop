@@ -21,7 +21,8 @@ void _framebuffer_callback(GLFWwindow* window, i32 width, i32 height)
               smallest_dimension);
 }
 
-__CREATE_STRUCT(Window) CreateWindow(i32 width, i32 height, const char* caller)
+__CREATE_STRUCT_KILLFAIL(Window)
+CreateWindow(i32 width, i32 height, const char* caller)
 {
     // Allocate the space for the window structure, failing the process if we
     // cannot, and printing our success if we can.

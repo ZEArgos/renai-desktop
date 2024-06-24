@@ -1,6 +1,6 @@
-#include "Libraries.h" // The Libraries mother header, provides the function declarations defined here.
-#include "Declarations.h" // Provides the various type definitions, includes, and methods needed in this translation unit.
-#include "Logger.h" // Provides the functionality needed to log values to the terminal.
+#include "Libraries.h"
+#include "Declarations.h"
+#include "Logger.h"
 
 __KILLFAIL InitializeGLFW(void)
 {
@@ -13,7 +13,6 @@ __KILLFAIL InitializeGLFW(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Print our success to the standard output.
     PrintSuccess("Initialized GLFW successfully. Version: %.5s.",
                  glfwGetVersionString());
 }
@@ -29,7 +28,6 @@ void InitializeGLAD(const char* caller)
     // functions.
     glEnable(GL_DEPTH_TEST);
 
-    // Print our success.
     PrintSuccess("Initialized GLAD and loaded OpenGL. Version: %.18s.",
                  glGetString(GL_VERSION));
 }

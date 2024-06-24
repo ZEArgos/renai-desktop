@@ -19,7 +19,8 @@ __STRUCT(Window, {
     i32 window_height;
 });
 
-__CREATE_STRUCT(Window) CreateWindow(i32 width, i32 height, const char* caller);
+__CREATE_STRUCT_KILLFAIL(Window)
+CreateWindow(i32 width, i32 height, const char* caller);
 
 __INLINE __GET_STRUCT(GLFWwindow) GetInnerWindow(Window* window)
 {

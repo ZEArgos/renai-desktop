@@ -84,8 +84,16 @@ __KILL DestroyApplication(Application* application, const char* caller);
 /**
  * @brief Swap the application's current state; from menu to gameplay or
  * gameplay to menu.
- * @param application The application to swap.
+ * @param application The application whose state to swap to swap.
  */
 void SwapApplicationType(Application* application);
+
+/**
+ * @brief Set the application frame cap, with the formula of monitor hertz /
+ * @param new_cap.
+ * @param new_cap The new value to divide the monitor refresh rate with for
+ * updating. A value of 0 turns off VSYNC / the frame cap entirely.
+ */
+void ChangeApplicationFrameCap(u8 new_cap);
 
 #endif // _RENAI_APPLICATION_

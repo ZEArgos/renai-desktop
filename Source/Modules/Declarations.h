@@ -182,42 +182,6 @@ __BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
                                AmbiguousTypeSpecifier member, void* value);
 
 /**
- * @brief Get a string representation of the current time in milliseconds. The
- * output string will always be 11 characters (including the '\0'), it is up to
- * the caller to make certain the string can hold that.
- * @param storage The string which will become the host of the current time.
- */
-__PROVIDEDBUFFER GetTimeString(char* storage);
-
-/**
- * @brief Get the current time, based off of @ref start_time and the @b current
- * number of milliseconds it's been since the beginning of the epoch.
- * @return A 64-bit integer representation of the milliseconds difference
- * between the two; the amount of time the application has been running.
- */
-i64 GetCurrentTime(void);
-
-/**
- * @brief Count the number of digits in the number passed to the function. Note
- * that this function's effectiveness cuts at 255 digits, as the situation I use
- * this function in does not necessitate any longer numbers.
- * @param number The number whose digits we want to count.
- * @return A 16-bit unsigned integer that represents the size of the number, or
- * 0 if something went wrong.
- */
-u16 CountDigits(u32 number);
-
-//!
-f64 CalculatePossibleFramerate(u32 new_value);
-
-/**
- * @brief Get a string representation of the current time and date, and
- * concatenate it into the given string buffer.
- * @param buffer The buffer into which we're copying the time and date.
- */
-__PROVIDEDBUFFER GetDateString(char* buffer);
-
-/**
  * @brief A function to poll the application's runtime for any GLFW errors.
  * @param caller The caller of the function.
  */
@@ -228,5 +192,47 @@ __KILLFAIL PollGLFWErrors(const char* caller);
  * @param caller The caller of the function.
  */
 __KILLFAIL PollOpenGLErrors(const char* caller);
+
+/**
+ * @brief Get a string representation of the current time in milliseconds.
+ * @param buffer The string which will become the host of the current time.
+ */
+__PROVIDEDBUFFER GetTimeString(char* buffer, u8 buffer_length);
+
+/**
+ * @brief Get a string representation of the current time and date, and
+ * concatenate it into the given string buffer.
+ * @param buffer The buffer into which we're copying the time and date.
+ * @param buffer_length The length of the buffer provided.
+ */
+__PROVIDEDBUFFER GetDateString(char* buffer, u8 buffer_length);
+
+/**
+ * @brief Get the current time, based off of @ref start_time and the @b current
+ * number of milliseconds it's been since the beginning of the epoch.
+ * @return A 64-bit integer representation of the milliseconds difference
+ * between the two; the amount of time the application has been running.
+ */
+i64 GetCurrentTime(void);
+
+/**
+ * @brief Calculate how well the application is running, in regards to how many
+ * frames it @b could render in a second. Note the 'possible' in this function's
+ * name. That is intentional, since the application is clamped to run at an
+ * arbitrary VSYNC value as specified by @ref ChangeApplicationFrameCap.
+ * @param new_value The newest time it's taken to render a frame.
+ * @return The possible framerate.
+ */
+f64 CalculatePossibleFramerate(u32 new_value);
+
+/**
+ * @brief Count the number of digits in the number passed to the function. Note
+ * that this function's effectiveness cuts at 255 digits, as the situation I use
+ * this function in does not necessitate any longer numbers.
+ * @param number The number whose digits we want to count.
+ * @return A 16-bit unsigned integer that represents the size of the number, or
+ * 0 if something went wrong.
+ */
+u16 CountDigits(u32 number);
 
 #endif // _RENAI_DECLARATIONS_

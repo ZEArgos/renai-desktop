@@ -61,7 +61,7 @@ __BOOLEAN CheckRendererValidity(Renderer* renderer, const char* caller)
     return false;
 }
 
-void RenderWindowContent(Renderer* renderer)
+void RenderWindowContent(Renderer* renderer, f32 delta_time)
 {
     if (!CheckRendererValidity(renderer, __func__)) exit(-1);
 
