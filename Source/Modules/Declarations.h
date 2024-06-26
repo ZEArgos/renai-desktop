@@ -109,20 +109,6 @@ typedef long double f128;
 #define TTVP(value) (void*)&value
 
 /**
- * @brief A macro used to get the enum typename of a signed value.
- */
-#define __TYPENAME_i(size) signed##size
-/**
- * @brief The sister function of @ref __TYPENAME_i, a macro used to get
- * the enum typename of an unsigned value.
- */
-#define __TYPENAME_u(size) unsigned##size
-/**
- * @brief A macro to get the field of an ambiguous type.
- */
-#define __FIELD(state, size) __TYPENAME_##state(size)
-
-/**
  * @brief A function to poll the application's runtime for any GLFW errors.
  * @param caller The caller of the function.
  */

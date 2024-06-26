@@ -3,16 +3,27 @@
 #include <cglm/cglm.h>
 
 /**
- * @brief A small macro just used to initialize the given renderer's linked
- * list. I've defined this solely to remove this ugly ass piece of code from the
- * @ref CreateRenderer function.
+ * @brief Create the renderer's linked lists, and load their base resources.
+ * @param renderer The renderer to write to.
+ * @param width The width of the screen.
+ * @param height The height of the screen.
+ * @param caller The caller of the function.
  */
-#define CREATE_LINKED_LISTS(renderer)                                          \
-    renderer->shader_list =                                                    \
-        CreateLinkedList(shader, CreateShaderNode(shader, "basic"));           \
-    renderer->texture_list = CreateLinkedList(                                 \
-        texture,                                                               \
-        CreateTextureNode(texture, "texture_missing.jpg", swidth, sheight))
+__INLINE __KILLFAIL _CreateLinkedLists(Renderer* renderer, f32 width,
+                                       f32 height, const char* caller)
+{
+    renderer->shader_list =
+        CreateLinkedList(shader, CreateShaderNode(shader, "basic"));
+    renderer->texture_list = CreateLinkedList(
+        texture,
+        CreateTextureNode(texture, "texture_missing.jpg", width, height));
+
+    // Make sure nothing went wrong.
+    if (GetTextureListHead(renderer) == NULL ||
+        GetShaderListHead(renderer) == NULL)
+        PrintError("Failed to create the base resources of the renderer (are "
+                   "files missing?).");
+}
 
 __CREATE_STRUCT_KILLFAIL(Renderer)
 CreateRenderer(f32 swidth, f32 sheight, const char* caller)
@@ -25,7 +36,7 @@ CreateRenderer(f32 swidth, f32 sheight, const char* caller)
 
     // Create the renderer's various linked lists. This also stands to load the
     // base assets for the application.
-    CREATE_LINKED_LISTS(renderer);
+    _CreateLinkedLists(renderer, swidth, sheight, __func__);
 
     Node* basic_shader = GetRendererHead(renderer, Shader);
     // Create the projection matrix of the application, using a box with the

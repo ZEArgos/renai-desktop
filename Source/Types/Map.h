@@ -73,6 +73,21 @@ KeyPair CreateKeyPair(AmbiguousTypeSpecifier key_type,
                       AmbiguousTypeSpecifier value_type, void* key,
                       void* value);
 
+__INLINE void EditMapValue(Map* map, AmbiguousTypeSpecifier key_type, void* key,
+                           AmbiguousTypeSpecifier value_type, void* new_value)
+{
+    for (u32 index = 0; index < map->max_size; index++)
+    {
+        if (!CompareAmbiguousType(&map->map_values[index].key, map->key_type,
+                                  key))
+            continue;
+
+        AssignAmbiguousType(&map->map_values[index].value, value_type,
+                            new_value);
+        return;
+    }
+}
+
 void ClearMap(Map* map);
 
 #endif // _RENAI_MAP_

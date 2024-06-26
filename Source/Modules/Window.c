@@ -84,3 +84,21 @@ void SetWindowFullscreenState(Window* win, WindowFullscreenState state)
             return;
     }
 }
+
+void ToggleWindowFullscreenState(Window* window, WindowFullscreenState state)
+{
+    switch (state)
+    {
+        case windowed:
+        case maximized:
+            SetWindowFullscreenState(
+                window,
+                !glfwGetWindowAttrib(window->inner_window, GLFW_MAXIMIZED));
+            return;
+        case borderless:
+            if (glfwGetWindowMonitor(window->inner_window) == NULL)
+                SetWindowFullscreenState(window, borderless);
+            else SetWindowFullscreenState(window, maximized);
+            return;
+    }
+}

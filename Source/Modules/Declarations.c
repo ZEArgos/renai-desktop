@@ -102,13 +102,13 @@ u16 CountDigits(u32 number)
  * @brief The total amount of samples allowed in the array before we go back to
  * the beginning.
  */
-#define SAMPLE_CAP 25
+#define __SAMPLE_CAP 25
 
 /**
  * @brief An array of frame lengths, @ref SAMPLE_CAP numbers wide. This is
  * explicitly initialized to 0.
  */
-static u32 tick_list[SAMPLE_CAP] = {0};
+static u32 tick_list[__SAMPLE_CAP] = {0};
 
 /**
  * @brief The current sample index we're accessing within the @ref tick_list
@@ -131,7 +131,7 @@ f64 CalculatePossibleFramerate(u32 new_value)
     tick_list[current_tick_index] = new_value;
 
     // If we've hit the sample cap, send us back to 0.
-    current_tick_index = (current_tick_index + 1) % SAMPLE_CAP;
+    current_tick_index = (current_tick_index + 1) % __SAMPLE_CAP;
 
-    return overall_tick_sum / SAMPLE_CAP;
+    return overall_tick_sum / __SAMPLE_CAP;
 }

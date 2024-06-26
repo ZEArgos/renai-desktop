@@ -37,6 +37,11 @@ __INLINE u8 GetWindowShouldClose(Window* window)
     return glfwWindowShouldClose(GetInnerWindow(window));
 }
 
+__INLINE void CloseWindow(Window* window)
+{
+    glfwSetWindowShouldClose(window->inner_window, 1);
+}
+
 __INLINE void KillWindow(Window* window)
 {
     glfwDestroyWindow(window->inner_window);
@@ -52,6 +57,18 @@ typedef enum WindowFullscreenState
     borderless
 } WindowFullscreenState;
 
-void SetWindowFullscreenState(Window* win, WindowFullscreenState state);
+void SetWindowFullscreenState(Window* window, WindowFullscreenState state);
+void ToggleWindowFullscreenState(Window* window, WindowFullscreenState state);
+
+#define RestoreWindow(window) SetWindowFullscreenState(window, windowed)
+#define MaximizeWindow(window) SetWindowFullscreenState(window, maximized)
+#define FullscreenWindow(window) SetWindowFullscreenState(window, borderless)
+
+#define ToggleRestoreWindow(window)                                            \
+    ToggleWindowFullscreenState(window, windowed)
+#define ToggleMaximizeWindow(window)                                           \
+    ToggleWindowFullscreenState(window, maximized)
+#define ToggleFullscreenWindow(window)                                         \
+    ToggleWindowFullscreenState(window, borderless)
 
 #endif // _RENAI_WINDOW_

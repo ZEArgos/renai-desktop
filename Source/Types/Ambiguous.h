@@ -50,6 +50,20 @@ __UNION(AmbiguousType, {
     }
 
 /**
+ * @brief A macro used to get the enum typename of a signed value.
+ */
+#define __TYPENAME_i(size) signed##size
+/**
+ * @brief The sister function of @ref __TYPENAME_i, a macro used to get
+ * the enum typename of an unsigned value.
+ */
+#define __TYPENAME_u(size) unsigned##size
+/**
+ * @brief A macro to get the field of an ambiguous type.
+ */
+#define __FIELD(state, size) __TYPENAME_##state(size)
+
+/**
  * @brief Assign a value to an ambiguous type.
  * @param affected The affected variable.
  * @param member What state are we making the ambiguous type?
