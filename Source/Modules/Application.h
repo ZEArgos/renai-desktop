@@ -13,13 +13,13 @@
 
 // Provides the functionality and data structures needed to render content onto
 // a given window.
-#include "Renderer.h"
+#include <Renderer.h>
 // Provides the functionality needed to poll for keypresses and handle them
 // accordingly.
-#include "Updater.h"
+#include <Updater.h>
 // Provides the data structures and functionality needed to handle window
 // management.
-#include "Window.h"
+#include <Window.h>
 
 /**
  * @brief A structuring for all the data needed by an application. This is 32

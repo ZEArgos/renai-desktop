@@ -10,6 +10,7 @@
 #ifndef _RENAI_MAP_
 #define _RENAI_MAP_
 
+#include <Ambiguous.h>
 #include <Declarations.h>
 
 typedef struct KeyPair
@@ -39,8 +40,10 @@ void __AppendMapItem(Map* map, void* key, void* value);
 
 #define GetMapItemValue(map, key_value)                                        \
     _Generic((key_value),                                                      \
+        u8: __GetMapItemValue(map, (void*)&(u8){key_value}),                   \
         u32: __GetMapItemValue(map, (void*)&(u32){key_value}),                 \
         u64: __GetMapItemValue(map, (void*)&(u64){key_value}),                 \
+        i8: __GetMapItemValue(map, (void*)&(i8){key_value}),                   \
         i32: __GetMapItemValue(map, (void*)&(i32){key_value}),                 \
         i64: __GetMapItemValue(map, (void*)&(i64){key_value}))
 
@@ -49,15 +52,19 @@ void* __GetMapItemValue(Map* map, void* key_value);
 #define RemoveMapItem(map, key)                                                \
     _Generic((key),                                                            \
         u32: __RemoveMapItem(map, (void*)&(u32){key}),                         \
+        u8: __RemoveMapItem(map, (void*)&(u8){key}),                           \
         u64: __RemoveMapItem(map, (void*)&(u64){key}),                         \
+        i8: __RemoveMapItem(map, (void*)&(i8){key}),                           \
         i32: __RemoveMapItem(map, (void*)&(i32){key}),                         \
         i64: __RemoveMapItem(map, (void*)&(i64){key}))
 void __RemoveMapItem(Map* map, void* key);
 
 #define GetMapKeyPair(map, key)                                                \
     _Generic((key),                                                            \
+        u8: __GetMapKeyPair(map, (void*)&(u8){key}),                           \
         u32: __GetMapKeyPair(map, (void*)&(u32){key}),                         \
         u64: __GetMapKeyPair(map, (void*)&(u64){key}),                         \
+        i8: __GetMapKeyPair(map, (void*)&(i8){key}),                           \
         i32: __GetMapKeyPair(map, (void*)&(i32){key}),                         \
         i64: __GetMapKeyPair(map, (void*)&(i64){key}))
 KeyPair* __GetMapKeyPair(Map* map, void* key);

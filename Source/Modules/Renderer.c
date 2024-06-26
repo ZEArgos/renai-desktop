@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "Logger.h"
+#include <Logger.h>
 #include <cglm/cglm.h>
 
 /**

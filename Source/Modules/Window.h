@@ -11,7 +11,7 @@
 #ifndef _RENAI_WINDOW_
 #define _RENAI_WINDOW_
 
-#include "Declarations.h"
+#include <Declarations.h>
 
 __STRUCT(Window, {
     GLFWwindow* inner_window;

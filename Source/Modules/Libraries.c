@@ -1,6 +1,5 @@
 #include "Libraries.h"
-#include "Declarations.h"
-#include "Logger.h"
+#include <Logger.h>
 
 __KILLFAIL InitializeGLFW(void)
 {

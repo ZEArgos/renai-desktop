@@ -13,7 +13,7 @@
 
 // Provides the type definitions and utility functions needed to run these
 // functions.
-#include "Declarations.h"
+#include <Declarations.h>
 
 /**
  * @brief Initializes the GLFW library, providing window management

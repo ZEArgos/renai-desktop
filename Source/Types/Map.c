@@ -15,8 +15,6 @@ Map* CreateMap(AmbiguousTypeSpecifier key_type,
 
 void DestroyMap(Map* map)
 {
-    // cheeky little trick
-    // https://stackoverflow.com/questions/11255869/free-delete-union-malloc-new-array-in-c-c
     free(map->map_values);
     free(map);
 }

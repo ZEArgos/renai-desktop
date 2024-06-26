@@ -1,6 +1,6 @@
 #include "Window.h"
-#include "Libraries.h"
-#include "Logger.h"
+#include <Libraries.h>
+#include <Logger.h>
 #include <math.h>
 
 void _framebuffer_callback(GLFWwindow* window, i32 width, i32 height)

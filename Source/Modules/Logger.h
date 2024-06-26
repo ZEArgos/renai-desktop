@@ -14,7 +14,7 @@
 
 // The Declarations header file, used in this context exclusively for its type
 // definitions.
-#include "Declarations.h"
+#include <Declarations.h>
 
 // As to prevent unnecessary bloat--however small it may be--inside the
 // production binaries, add/remove this code althogether depending on the

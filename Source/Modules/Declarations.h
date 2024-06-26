@@ -109,23 +109,6 @@ typedef long double f128;
 #define TTVP(value) (void*)&value
 
 /**
- * @brief The types possible of for an ambiguous type to be (u32, u64, i32,
- * i64).
- */
-__ENUM(AmbiguousTypeSpecifier, {unsigned32, unsigned64, signed32, signed64});
-
-/**
- * @brief An ambiguous type. Its constraints are described by the @ref
- * AmbiguousTypeSpecifier enum.
- */
-__UNION(AmbiguousType, {
-    u32 unsigned32;
-    u64 unsigned64;
-    i32 signed32;
-    i64 signed64;
-});
-
-/**
  * @brief A macro used to get the enum typename of a signed value.
  */
 #define __TYPENAME_i(size) signed##size
@@ -138,48 +121,6 @@ __UNION(AmbiguousType, {
  * @brief A macro to get the field of an ambiguous type.
  */
 #define __FIELD(state, size) __TYPENAME_##state(size)
-
-/**
- * @brief The body of an ambiguous function. Defined here purely to remove the
- * repetition of having to type this expression out for each ambiguous function.
- */
-#define __AMBIGUOUS_BODY(variable, expression)                                 \
-    switch (variable)                                                          \
-    {                                                                          \
-        case __FIELD(u, 32): expression(u, 32) break;                          \
-        case __FIELD(i, 32): expression(i, 32) break;                          \
-        case __FIELD(u, 64): expression(u, 64) break;                          \
-        case __FIELD(i, 64): expression(i, 64) break;                          \
-    }
-
-/**
- * @brief Assign a value to an ambiguous type.
- * @param affected The affected variable.
- * @param member What state are we making the ambiguous type?
- * @param value The value that state will have.
- */
-void AssignAmbiguousType(AmbiguousType* affected, AmbiguousTypeSpecifier member,
-                         void* value);
-
-/**
- * @brief Get the current value of the specified ambiguous type.
- * @param affected The ambiguous type to grab from.
- * @param member The member of the type we're trying to get.
- * @return The value of the member.
- */
-__AMBIGUOUS GetAmbiguousType(AmbiguousType* affected,
-                             AmbiguousTypeSpecifier member);
-
-/**
- * @brief A helper function to compare two ambiguous types.
- * @param affected The affected ambiguous type.
- * @param member The member of the ambiguous type we're accessing.
- * @param value The value to compare against.
- * @return A boolean value that represents the state of the comparison; true for
- * similarity, false for difference.
- */
-__BOOLEAN CompareAmbiguousType(AmbiguousType* affected,
-                               AmbiguousTypeSpecifier member, void* value);
 
 /**
  * @brief A function to poll the application's runtime for any GLFW errors.

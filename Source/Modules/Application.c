@@ -1,6 +1,6 @@
 #include "Application.h"
-#include "Libraries.h"
-#include "Logger.h"
+#include <Libraries.h>
+#include <Logger.h>
 
 // The application defined within the entry file. This is here since we need its
 // members for the key callback.
@@ -15,10 +15,11 @@ extern Application* renai;
  * @param action The action taken upon the key.
  * @param mods Modifiers to the key action.
  */
-void _key_callback(GLFWwindow* window, int key, int scancode, int action,
-                   int mods)
+void _key_callback(GLFWwindow* window, i32 key, i32 scancode, i32 action,
+                   i32 mods)
 {
-    HandleInput(renai->updater, renai->window, renai->delta_time, key, action);
+    if (action == GLFW_RELEASE) return;
+    HandleInput(renai->updater, renai->window, renai->delta_time, key);
 }
 
 __CREATE_STRUCT_KILLFAIL(Application) CreateApplication(const char* caller)
