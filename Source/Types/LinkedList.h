@@ -48,7 +48,7 @@ typedef union NodeContents
     /**
      * @brief A texture image and all the information associated with it.
      */
-    Texture texture;
+    Texture* texture;
 } NodeContents;
 
 typedef struct Node
@@ -68,10 +68,10 @@ typedef struct LinkedList
     Node* last_node;
 } LinkedList;
 
-#define GetNodeContents(node, type) (*Get##type##Contents(node))
+#define GetNodeContents(node, type) Get##type##Contents(node)
 __INLINE Texture* GetTextureContents(Node* node)
 {
-    return &node->contents.texture;
+    return node->contents.texture;
 }
 __INLINE u32* GetShaderContents(Node* node) { return &node->contents.shader; }
 
@@ -87,13 +87,13 @@ __INLINE u32* GetShaderContents(Node* node) { return &node->contents.shader; }
 // #define GetTextureListHead(list)   list->list_head_texture
 
 #define CreateShaderNode(type, name)                                           \
-    __CreateNode(type, name, LoadShader(name, __func__), TEXTURE_EMPTY_INIT)
+    __CreateNode(type, name, LoadShader(name, __func__), NULL)
 #define CreateTextureNode(type, name, swidth, sheight)                         \
     __CreateNode(type, name, 0, LoadTextureFromFile(name, swidth, sheight))
 
 // stupid fucking solution
 Node* __CreateNode(NodeType type, const char* name, u32 shader,
-                   Texture texture);
+                   Texture* texture);
 
 //??!!!! brother why am i take both type and node?? type is stored in node?? fix
 LinkedList* CreateLinkedList(NodeType type, Node* head);

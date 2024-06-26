@@ -1,7 +1,8 @@
 #include "LinkedList.h"
 #include <Logger.h>
 
-Node* __CreateNode(NodeType type, const char* name, u32 shader, Texture texture)
+Node* __CreateNode(NodeType type, const char* name, u32 shader,
+                   Texture* texture)
 {
     Node* created_node = malloc(sizeof(struct Node));
     created_node->next = NULL;
@@ -30,6 +31,8 @@ void DestroyLinkedList(LinkedList* list)
     while (current_node != NULL)
     {
         Node* next_node = current_node->next;
+        if (current_node->type == texture)
+            KillTexture(current_node->contents.texture);
         free(current_node);
         current_node = next_node;
     }
@@ -40,8 +43,8 @@ void DestroyLinkedList(LinkedList* list)
 __BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents)
 {
     if (type == shader && contents->shader != 0) return true;
-    else if (type == texture && contents->texture.inner != 0 &&
-             contents->texture.vao != 0)
+    else if (type == texture && contents->texture->texture != 0 &&
+             contents->texture->vao != 0)
         return true;
 
     return false;

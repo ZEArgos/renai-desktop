@@ -12,11 +12,12 @@
 #define _RENAI_TEXTURE_
 
 #include <Declarations.h>
+#include <Logger.h>
 
 typedef struct Texture
 {
-    u32 inner, vao;
-    f32 width, height;
+    u16 width, height;
+    u32 texture, vao;
     const char* name;
 } Texture;
 
@@ -24,7 +25,7 @@ typedef struct TextureInstance
 {
     Texture* inherits;
     f32 brightness, rotation;
-    // add a scale option here
+    u8 scale;
     f32 x, y;
     u8 z;
 } TextureInstance;
@@ -32,7 +33,12 @@ typedef struct TextureInstance
 #define TEXTURE_EMPTY_INIT                                                     \
     (struct Texture) { 0, 0, 0.0f, 0.0f, "" }
 
-Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight);
+Texture* LoadTextureFromFile(const char* name, f32 swidth, f32 sheight);
+__INLINE void KillTexture(Texture* texture)
+{
+    PrintWarning("Freed the texture '%s'.", texture->name);
+    free(texture);
+}
 
 #define RegisterTexture(from, x, y, z)                                         \
     RegisterFullTexture(from, 1.0f, 0.0f, x, y, z)
@@ -43,7 +49,7 @@ TextureInstance RegisterFullTexture(Texture* from, f32 brightness, f32 rotation,
 __INLINE void BindTexture(Texture* texture)
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->inner);
+    glBindTexture(GL_TEXTURE_2D, texture->texture);
     glBindVertexArray(texture->vao);
 }
 

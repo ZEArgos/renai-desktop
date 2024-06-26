@@ -2,14 +2,25 @@
 #include <cglm/cglm.h>
 #include <stbi/stb_image.h>
 
-Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
-{
-    u32 texture_identifier;
-    glGenTextures(1, &texture_identifier);
-    glBindTexture(GL_TEXTURE_2D, texture_identifier);
+#define __SQUARE_VAO(width, height)                                            \
+    {                                                                          \
+        width, 0.0f,   0.0f, 1.0f, 1.0f, /* top right */                       \
+        width, height, 0.0f, 1.0f, 0.0f, /* bottom right */                    \
+        0.0f,  height, 0.0f, 0.0f, 0.0f, /* bottom left */                     \
+        0.0f,  0.0f,   0.0f, 0.0f, 1.0f  /* top left */                        \
+    };
+#define __SQUARE_INDICES {0, 1, 3, 1, 2, 3};
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+Texture* LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
+{
+    Texture* texture = malloc(sizeof(struct Texture));
+    texture->name = name;
+
+    glGenTextures(1, &texture->texture);
+    glBindTexture(GL_TEXTURE_2D, texture->texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     GL_NEAREST_MIPMAP_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -34,25 +45,26 @@ Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
 
     stbi_image_free(data);
 
-    f32 vao_width = (swidth / image_width) * 4,
-        vao_height = (sheight / image_height) * 4;
-    float vertices[] = {
-        // positions                                  // texture coords
-        0.0f,       vao_height, 0.0f, 0.0f, 1.0f,      vao_width,  0.0f, 0.0f,
-        1.0f,       0.0f,       0.0f, 0.0f, 0.0f,      0.0f,       0.0f, 0.0f,
-        vao_height, 0.0f,       0.0f, 1.0f, vao_width, vao_height, 0.0f, 1.0f,
-        1.0f,       vao_width,  0.0f, 0.0f, 1.0f,      0.0f};
+    texture->width = (swidth / image_width) * 4;
+    texture->height = (sheight / image_height) * 4;
+    f32 vertices[] = __SQUARE_VAO(texture->width, texture->height);
+    u32 indices[] = __SQUARE_INDICES;
 
-    u32 VBO, VAO;
-    glGenVertexArrays(1, &VAO);
+    u32 VBO, EBO;
+    glGenVertexArrays(1, &texture->vao);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     // bind the Vertex Array Object first, then bind and set vertex buffer(s),
     // and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
+    glBindVertexArray(texture->vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+                 GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
@@ -62,8 +74,7 @@ Texture LoadTextureFromFile(const char* name, f32 swidth, f32 sheight)
                           (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    return (struct Texture){texture_identifier, VAO, vao_width, vao_height,
-                            name};
+    return texture;
 }
 
 TextureInstance RegisterFullTexture(Texture* from, f32 brightness, f32 rotation,
