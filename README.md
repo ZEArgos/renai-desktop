@@ -3,6 +3,8 @@
 
 ## Renai
 
+**Renai is an adult game. There is explicit content in Renai that is not safe for minor viewing. If you are under the age of majority in your area--or find such content unseemly--please find something else to occupy your time.**
+
 Renai is a high fantasy adult game set in the mystical world of Silre, where 'magic' and 'metal' are synonymous. As demons begin to spill from a crack in the gates to hell, a goddess bestows _you_ with the power to save humanity. Was her faith unfounded?
 
 This project is under the [Mozilla General Public License v2.0](LICENSE.md).
