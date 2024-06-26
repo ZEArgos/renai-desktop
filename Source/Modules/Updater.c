@@ -22,10 +22,25 @@ __INLINE u8 _GetKeyCode(i32 key)
                                            : 0);
 }
 
+/**
+ * @brief The delay, in milliseconds, each control key has to endure before
+ * their callback can be triggered again.
+ */
 #define __KEY_DELAY_MS 100
-__BOOLEAN _HandleKey(Updater* updater, u32 key)
+
+/**
+ * @brief Handle the given control key. This function should only be called for
+ * the 21 keys that need a cooldown.
+ * @param updater The updater to use for the operation.
+ * @param key The key pressed.
+ * @return A boolean value representing what should be done with the key's
+ * callback. True for call, false for wait.
+ */
+__BOOLEAN _HandleKey(Updater* updater, i32 key)
 {
     i64 current_time = GetCurrentTime();
+    // Translate the GLFW input key into the one we'll use within the cooldown
+    // buffer.
     u8 key_number = _GetKeyCode(key);
     void* stored_value = GetMapItemValue(updater->key_buffer, key_number);
 
@@ -35,16 +50,9 @@ __BOOLEAN _HandleKey(Updater* updater, u32 key)
         return true;
     }
 
-    if (VPTT(i64, stored_value) > 0 &&
-        current_time - VPTT(i64, stored_value) > __KEY_DELAY_MS)
-    {
-        i64 negated_time = -current_time;
-        EditMapValue(updater->key_buffer, unsigned8, TTVP(key_number), signed64,
-                     TTVP(negated_time));
-        return true;
-    }
-    else if (VPTT(i64, stored_value) < 0 &&
-             VPTT(i64, stored_value) + current_time > __KEY_DELAY_MS)
+    // If the key's already been hit, check to see if the proper amount of time
+    // has past, and reset the time limit and trigger its callback if it has.
+    if (current_time - VPTT(i64, stored_value) > __KEY_DELAY_MS)
     {
         EditMapValue(updater->key_buffer, unsigned8, TTVP(key_number), signed64,
                      TTVP(current_time));
@@ -79,6 +87,8 @@ void KillUpdater(Updater* updater)
 
 void HandleInput(Updater* updater, Window* key_window, f32 delta_time, i32 key)
 {
+    // We use a switch here both to properly carry out the functionality of
+    // control keys and filter out any non-control keys from this first flow.
     switch (key)
     {
         case GLFW_KEY_F11:
