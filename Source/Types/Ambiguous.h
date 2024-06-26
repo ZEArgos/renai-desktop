@@ -18,21 +18,29 @@
  * @brief The types possible of for an ambiguous type to be (u8, u32, u64, i8,
  * i32, i64).
  */
-__ENUM(AmbiguousTypeSpecifier,
-       {unsigned8, unsigned32, unsigned64, signed8, signed32, signed64});
+typedef enum AmbiguousTypeSpecifier
+{
+    unsigned8,
+    unsigned32,
+    unsigned64,
+    signed8,
+    signed32,
+    signed64
+} AmbiguousTypeSpecifier;
 
 /**
  * @brief An ambiguous type. Its constraints are described by the @ref
  * AmbiguousTypeSpecifier enum.
  */
-__UNION(AmbiguousType, {
+typedef union AmbiguousType
+{
     u8 unsigned8;
     u32 unsigned32;
     u64 unsigned64;
     i8 signed8;
     i32 signed32;
     i64 signed64;
-});
+} AmbiguousType;
 
 /**
  * @brief The body of an ambiguous function. Defined here purely to remove the

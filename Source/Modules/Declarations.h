@@ -40,24 +40,6 @@ typedef double f64;
 typedef long double f128;
 
 /**
- * @brief Syntactic sugar to create a struct. All this really does is prevent me
- * from having to write "typedef" every time I need to create a struct; I find
- * it @b really annoying.
- */
-#define __STRUCT(name, contents) typedef struct name contents name
-/**
- * @brief Much the same as @ref __STRUCT, syntactic sugar to create a union,
- * mostly letting me forget about having to type "typedef" every union.
- */
-#define __UNION(name, contents) typedef union name contents name
-/**
- * @brief Much the same as @ref __STRUCT & @ref __UNION, syntactic sugar to
- * create an enum, mostly letting me forget about having to type "typedef" every
- * enum.
- */
-#define __ENUM(name, ...) typedef enum name __VA_ARGS__ name
-
-/**
  * @brief Indicates a function that kills the process on fail. This is
  * simply a distinguisher between actual void-return functions and error-kill
  * functions.

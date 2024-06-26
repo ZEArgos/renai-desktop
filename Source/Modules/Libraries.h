@@ -27,4 +27,19 @@ __KILLFAIL InitializeGLFW(void);
  */
 __KILLFAIL InitializeGLAD(const char* caller);
 
+/**
+ * @brief A wrapper around the two functions @ref glViewport and @ref glScissor,
+ * since both take the same parameters in this application.
+ * @param lower_left_x The lower left corner's X coordinate.
+ * @param lower_left_y The lower left corner's Y coordinate.
+ * @param width The width of the box.
+ * @param height The height of the box.
+ */
+__INLINE void SetOpenGLViewport(i32 lower_left_x, i32 lower_left_y, i32 width,
+                                i32 height)
+{
+    glViewport(lower_left_x, lower_left_y, width, height);
+    glScissor(lower_left_x, lower_left_y, width, height);
+}
+
 #endif // _RENAI_LIBRARIES_

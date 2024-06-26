@@ -25,7 +25,8 @@
  * @brief A structuring for all the data needed by an application. This is 32
  * bytes large.
  */
-__STRUCT(Application, {
+typedef struct Application
+{
     /**
      * @brief This is a boolean flag representing the current state of the
      * application; true for gameplay, false for menu. This decides how often
@@ -61,7 +62,7 @@ __STRUCT(Application, {
      * processing, keystrokes, and the like.
      */
     Updater* updater;
-});
+} Application;
 
 /**
  * @brief Create an application and initialize its starting processes. This

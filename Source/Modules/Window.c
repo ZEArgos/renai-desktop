@@ -1,13 +1,17 @@
 #include "Window.h"
 #include <Libraries.h>
-#include <Logger.h>
 #include <math.h>
 
-void _framebuffer_callback(GLFWwindow* window, i32 width, i32 height)
+/**
+ * @brief The callback triggered by GLFW when the framebuffer's (image buffer)
+ * size changes.
+ * @param window The window whose size changed. (We don't use this variable.)
+ * @param width The new width of the window.
+ * @param height The new height of the window.
+ */
+void _FramebufferCallback(GLFWwindow* window, i32 width, i32 height)
 {
-    // code graciously stolen + adapted from
-    // https://diegomacario.github.io/2021/04/23/how-to-keep-the-aspect-ratio-of-an-opengl-window-constant.html
-
+    // Figure out which side we're going to be clamping the aspect ratio on.
     i32 smallest_dimension = fmin(width, height), lower_left_corner_x = 0,
         lower_left_corner_y = 0;
 
@@ -15,17 +19,14 @@ void _framebuffer_callback(GLFWwindow* window, i32 width, i32 height)
         lower_left_corner_x = (width - smallest_dimension) / 2.0f;
     else lower_left_corner_y = (height - smallest_dimension) / 2.0f;
 
-    glViewport(lower_left_corner_x, lower_left_corner_y, smallest_dimension,
-               smallest_dimension);
-    glScissor(lower_left_corner_x, lower_left_corner_y, smallest_dimension,
-              smallest_dimension);
+    // Set both the OpenGL viewport and scissor box.
+    SetOpenGLViewport(lower_left_corner_x, lower_left_corner_y,
+                      smallest_dimension, smallest_dimension);
 }
 
 __CREATE_STRUCT_KILLFAIL(Window)
 CreateWindow(i32 width, i32 height, const char* caller)
 {
-    // Allocate the space for the window structure, failing the process if we
-    // cannot, and printing our success if we can.
     Window* window = malloc(sizeof(Window));
     if (window == NULL)
         PrintError(
@@ -35,70 +36,57 @@ CreateWindow(i32 width, i32 height, const char* caller)
         "Allocated memory for the main window of the application: %d bytes.",
         sizeof(Window));
 
-    // Set the stored default dimensions for the windows. These are fallen back
-    // upon when the window is reset from maximized borderless mode.
     window->window_width = width;
     window->window_height = height;
 
-    // Create the underlying GLFW window of the application, using the
-    // cross-platform tools available. If the window is not valid upon
-    // completion of the function, print the error.
+    // Create the window with the given width, height, a title of whatever TITLE
+    // is defined as, bordered, and primary-monitored.
     window->inner_window = glfwCreateWindow(width, height, TITLE, NULL, NULL);
-    if (!CheckWindowValidity(window)) PollGLFWErrors(__func__);
+    if (GetInnerWindow(window) == NULL) PollGLFWErrors(__func__);
     PrintSuccess("Created the window with title '%s' successfully.", TITLE);
 
-    // Make the OpenGL context of the window current, and initialize my OpenGL
-    // wrangler of choice; GLAD.
     glfwMakeContextCurrent(GetInnerWindow(window));
     InitializeGLAD(__func__);
 
-    // Set the framebuffer callback of the window, or the function that will be
-    // called whenever the window is resized. Then, call the framebuffer
-    // callback, as we want the clip box to appear off the bat immediately.
+    // Call the new framebuffer callback as to set the scissor box correctly.
     glfwSetFramebufferSizeCallback(GetInnerWindow(window),
-                                   _framebuffer_callback);
-    _framebuffer_callback(GetInnerWindow(window), width, height);
+                                   _FramebufferCallback);
+    _FramebufferCallback(GetInnerWindow(window), width, height);
     PrintSuccess("Set the framebuffer callback of the window.");
 
-    // Return the allocated window to the caller.
     return window;
 }
 
-void SetWindowFullscreenState(Window* win, WindowFullscreenState state)
+void SetWindowFullscreenState(Window* window, WindowFullscreenState state)
 {
     switch (state)
     {
         case windowed:
-            glfwSetWindowMonitor(win->inner_window, NULL, 0, 0,
-                                 win->window_width, win->window_height, -1);
-            glfwRestoreWindow(win->inner_window);
+            // We unset the window monitor both here and on the "maximized" case
+            // simply because I believe it provides a more polished experience
+            // when we can switch between states seamlessly; without this call
+            // the window wouldn't become maximized/restored until borderless
+            // was unset.
+            UnsetWindowMonitor(window);
+            glfwRestoreWindow(GetInnerWindow(window));
             return;
         case maximized:
-            glfwSetWindowMonitor(win->inner_window, NULL, 0, 0,
-                                 win->window_width, win->window_height, -1);
-            glfwMaximizeWindow(win->inner_window);
+            UnsetWindowMonitor(window);
+            glfwMaximizeWindow(GetInnerWindow(window));
             return;
-        case borderless:
-            glfwSetWindowMonitor(win->inner_window, glfwGetPrimaryMonitor(), 0,
-                                 0, win->window_width, win->window_height, -1);
-            return;
+        case borderless: SetWindowMonitor(window); return;
     }
 }
 
 void ToggleWindowFullscreenState(Window* window, WindowFullscreenState state)
 {
-    switch (state)
-    {
-        case windowed:
-        case maximized:
-            SetWindowFullscreenState(
-                window,
-                !glfwGetWindowAttrib(window->inner_window, GLFW_MAXIMIZED));
-            return;
-        case borderless:
-            if (glfwGetWindowMonitor(window->inner_window) == NULL)
-                SetWindowFullscreenState(window, borderless);
-            else SetWindowFullscreenState(window, maximized);
-            return;
-    }
+    // A little blocky, but it's far more efficient to do this as an if chain
+    // than a switch.
+    if (state == windowed || state == maximized)
+        SetWindowFullscreenState(
+            window,
+            !glfwGetWindowAttrib(GetInnerWindow(window), GLFW_MAXIMIZED));
+    else if (glfwGetWindowMonitor(GetInnerWindow(window)) == NULL)
+        SetWindowFullscreenState(window, borderless);
+    else SetWindowFullscreenState(window, maximized);
 }
