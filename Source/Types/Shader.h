@@ -1,8 +1,8 @@
 /**
  * @file Shader.h
  * @author Zenais Argos
- * @brief Provides the functionality needed for the application to load and
- * compile OpenGL shader files.
+ * @brief Provides the functionality needed for the application to
+ * load and compile OpenGL shader files.
  * @date 2024-05-27
  *
  * @copyright Copyright (c) 2024
@@ -16,15 +16,15 @@
 #include <cglm/cglm.h>
 
 /**
- * @brief The max length a shader path can be. This is in place to prevent
- * buffer overflows.
+ * @brief The max length a shader path can be. This is in place to
+ * prevent buffer overflows.
  */
 #define SHADER_PATH_MAX_LENGTH 128
 
 /**
- * @brief Load a shader file from the 'Assets/Shaders/' folder. The "name" is
- * simply the name of the containing folder, everything else will be
- * automatically concatenated on.
+ * @brief Load a shader file from the 'Assets/Shaders/' folder. The
+ * "name" is simply the name of the containing folder, everything else
+ * will be automatically concatenated on.
  * @param name The shader's containing folder's name.
  * @return The OpenGL shader ID, or 0 if an error occurred.
  */

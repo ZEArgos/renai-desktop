@@ -64,13 +64,16 @@ void InsertNode(LinkedList* list, NodeType type, Node* node)
 
 Node* GetNode(LinkedList* list, const char* name)
 {
-    if (strcmp(list->first_node->name, name) == 0) return list->first_node;
-    if (strcmp(list->last_node->name, name) == 0) return list->last_node;
+    if (strcmp(list->first_node->name, name) == 0)
+        return list->first_node;
+    if (strcmp(list->last_node->name, name) == 0)
+        return list->last_node;
 
     Node* current_node = list->first_node->next;
     while (current_node != NULL)
     {
-        if (strcmp(current_node->name, name) == 0) return current_node;
+        if (strcmp(current_node->name, name) == 0)
+            return current_node;
         current_node = current_node->next;
     }
 

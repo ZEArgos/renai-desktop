@@ -1,7 +1,8 @@
 /**
  * @file LinkedList.h
  * @author Zenais Argos
- * @brief A file to declare all things linked list, implemented by yours truly.
+ * @brief A file to declare all things linked list, implemented by
+ * yours truly.
  * @date 2024-06-08
  *
  * @copyright Copyright (c) 2024
@@ -14,13 +15,13 @@
 #include <Declarations.h>
 // Provides shader loading and management functionality.
 #include <Shader.h>
-// Provides data structures and functionality needed to create and handle
-// textures.
+// Provides data structures and functionality needed to create and
+// handle textures.
 #include <Texture.h>
 
 /**
- * @brief The possible types of node, each corresponding to its respective @ref
- * NodeContents counterpart.
+ * @brief The possible types of node, each corresponding to its
+ * respective @ref NodeContents counterpart.
  */
 typedef enum NodeType
 {
@@ -29,15 +30,16 @@ typedef enum NodeType
      */
     shader,
     /**
-     * @brief The node contains an OpenGL texture object, and all information
-     * associated with it.
+     * @brief The node contains an OpenGL texture object, and all
+     * information associated with it.
      */
     texture
 } NodeType;
 
 /**
- * @brief The contents of a node. This can only be one content or the other, two
- * of these objects may not exist on one node at the same time.
+ * @brief The contents of a node. This can only be one content or the
+ * other, two of these objects may not exist on one node at the same
+ * time.
  */
 typedef union NodeContents
 {
@@ -46,7 +48,8 @@ typedef union NodeContents
      */
     u32 shader;
     /**
-     * @brief A texture image and all the information associated with it.
+     * @brief A texture image and all the information associated with
+     * it.
      */
     Texture* texture;
 } NodeContents;
@@ -73,7 +76,10 @@ __INLINE Texture* GetTextureContents(Node* node)
 {
     return node->contents.texture;
 }
-__INLINE u32* GetShaderContents(Node* node) { return &node->contents.shader; }
+__INLINE u32* GetShaderContents(Node* node)
+{
+    return &node->contents.shader;
+}
 
 // #define list_head_contents first_node->contents
 // #define list_head_texture  first_node->contents.texture
@@ -81,21 +87,25 @@ __INLINE u32* GetShaderContents(Node* node) { return &node->contents.shader; }
 // #define texture_contents   contents.texture
 // #define shader_contents    contents.shader
 
-// #define GetShaderNode(list, name)  GetNode(list, name)->shader_contents
-// #define GetTextureNode(list, name) GetNode(list, name)->texture_contents
-// #define GetShaderListHead(list)    list->list_head_shader
-// #define GetTextureListHead(list)   list->list_head_texture
+// #define GetShaderNode(list, name)  GetNode(list,
+// name)->shader_contents #define GetTextureNode(list, name)
+// GetNode(list, name)->texture_contents #define
+// GetShaderListHead(list)    list->list_head_shader #define
+// GetTextureListHead(list)   list->list_head_texture
 
-#define CreateShaderNode(type, name)                                           \
+#define CreateShaderNode(type, name)                                 \
     __CreateNode(type, name, LoadShader(name, __func__), NULL)
-#define CreateTextureNode(type, name, swidth, sheight)                         \
-    __CreateNode(type, name, 0, LoadTextureFromFile(name, swidth, sheight))
+#define CreateTextureNode(type, name, swidth, sheight)               \
+    __CreateNode(type, name, 0,                                      \
+                 LoadTextureFromFile(name, tileset, swidth, sheight, \
+                                     __func__))
 
 // stupid fucking solution
 Node* __CreateNode(NodeType type, const char* name, u32 shader,
                    Texture* texture);
 
-//??!!!! brother why am i take both type and node?? type is stored in node?? fix
+//??!!!! brother why am i take both type and node?? type is stored in
+//node?? fix
 LinkedList* CreateLinkedList(NodeType type, Node* head);
 
 #define DestroyNode(node) FreeItem(node)

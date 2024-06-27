@@ -1,4 +1,4 @@
-#include "Application.h" // Provides literally the entire engine.
+#include <Application.h> // Provides literally the entire engine.
 
 /**
  * @brief A variable in which is stored every bit of consistent data the
@@ -15,7 +15,8 @@ Application* renai;
 i32 main(void)
 {
     // Initialize the application and try to run its loop. If the loop fails,
-    // the process will self-destruct, so don't worry about error checking.
+    // the process will self-destruct, so don't worry about error
+    // checking.
     renai = CreateApplication(__func__);
     RunApplication(renai);
 

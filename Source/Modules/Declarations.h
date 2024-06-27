@@ -1,8 +1,8 @@
 /**
  * @file Declarations.h
  * @author Zenais Argos
- * @brief File to define various macros, functions, and global program variables
- * in a centralized, traceable location.
+ * @brief File to define various macros, functions, and global program
+ * variables in a centralized, traceable location.
  * @date 2024-05-23
  *
  * @copyright Copyright (c) 2024
@@ -11,9 +11,9 @@
 #ifndef _RENAI_DECLARATIONS_
 #define _RENAI_DECLARATIONS_
 
-// Provides a list of each include needed in the various translation units of
-// the project. IncludeBoard.h exists simply because it's ugly to have its
-// contents here.
+// Provides a list of each include needed in the various translation
+// units of the project. IncludeBoard.h exists simply because it's
+// ugly to have its contents here.
 #include <IncludeBoard.h>
 
 // (-9,223,372,036,854,775,807, +9,223,372,036,854,775,807)
@@ -41,13 +41,14 @@ typedef long double f128;
 
 /**
  * @brief Indicates a function that kills the process on fail. This is
- * simply a distinguisher between actual void-return functions and error-kill
- * functions.
+ * simply a distinguisher between actual void-return functions and
+ * error-kill functions.
  */
 #define __KILLFAIL void
 /**
  * @brief Indicates a function that will @b always kill the process on
- * completion. This is used nearly exclusively by the error-handling interface.
+ * completion. This is used nearly exclusively by the error-handling
+ * interface.
  */
 #define __KILL _Noreturn void
 /**
@@ -55,12 +56,14 @@ typedef long double f128;
  */
 #define __BOOLEAN _Bool
 /**
- * @brief Indicates that the marked function makes use of a caller-provided
- * buffer object, and as such does not return anything.
+ * @brief Indicates that the marked function makes use of a
+ * caller-provided buffer object, and as such does not return
+ * anything.
  */
 #define __PROVIDEDBUFFER void
 /**
- * @brief Indicates that the function returns an ambiguously-types value.
+ * @brief Indicates that the function returns an ambiguously-types
+ * value.
  */
 #define __AMBIGUOUS void*
 /**
@@ -68,8 +71,8 @@ typedef long double f128;
  */
 #define __CREATE_STRUCT(structure) structure*
 /**
- * @brief Indicates a function that creates a structure but kills the process on
- * fialure.
+ * @brief Indicates a function that creates a structure but kills the
+ * process on fialure.
  */
 #define __CREATE_STRUCT_KILLFAIL(structure) structure*
 /**
@@ -91,56 +94,72 @@ typedef long double f128;
 #define TTVP(value) (void*)&value
 
 /**
- * @brief A function to poll the application's runtime for any GLFW errors.
+ * @brief A short statement to check if a dynamic allocation was done
+ * correctly.
+ */
+#define __CHECK_MALLOC(allocated, error_message)                     \
+    if (allocated == NULL) (PrintError error_message)
+
+/**
+ * @brief A function to poll the application's runtime for any GLFW
+ * errors.
  * @param caller The caller of the function.
  */
 __KILLFAIL PollGLFWErrors(const char* caller);
 
 /**
- * @brief A function to poll the application's runtime for any OpenGL errors.
+ * @brief A function to poll the application's runtime for any OpenGL
+ * errors.
  * @param caller The caller of the function.
  */
 __KILLFAIL PollOpenGLErrors(const char* caller);
 
 /**
- * @brief Get a string representation of the current time in milliseconds.
- * @param buffer The string which will become the host of the current time.
+ * @brief Get a string representation of the current time in
+ * milliseconds.
+ * @param buffer The string which will become the host of the current
+ * time.
  */
 __PROVIDEDBUFFER GetTimeString(char* buffer, u8 buffer_length);
 
 /**
- * @brief Get a string representation of the current time and date, and
- * concatenate it into the given string buffer.
- * @param buffer The buffer into which we're copying the time and date.
+ * @brief Get a string representation of the current time and date,
+ * and concatenate it into the given string buffer.
+ * @param buffer The buffer into which we're copying the time and
+ * date.
  * @param buffer_length The length of the buffer provided.
  */
 __PROVIDEDBUFFER GetDateString(char* buffer, u8 buffer_length);
 
 /**
- * @brief Get the current time, based off of @ref start_time and the @b current
- * number of milliseconds it's been since the beginning of the epoch.
- * @return A 64-bit integer representation of the milliseconds difference
- * between the two; the amount of time the application has been running.
+ * @brief Get the current time, based off of @ref start_time and the
+ * @b current number of milliseconds it's been since the beginning of
+ * the epoch.
+ * @return A 64-bit integer representation of the milliseconds
+ * difference between the two; the amount of time the application has
+ * been running.
  */
 i64 GetCurrentTime(void);
 
 /**
- * @brief Calculate how well the application is running, in regards to how many
- * frames it @b could render in a second. Note the 'possible' in this function's
- * name. That is intentional, since the application is clamped to run at an
- * arbitrary VSYNC value as specified by @ref ChangeApplicationFrameCap.
+ * @brief Calculate how well the application is running, in regards to
+ * how many frames it @b could render in a second. Note the 'possible'
+ * in this function's name. That is intentional, since the application
+ * is clamped to run at an arbitrary VSYNC value as specified by @ref
+ * ChangeApplicationFrameCap.
  * @param new_value The newest time it's taken to render a frame.
  * @return The possible framerate.
  */
 f64 CalculatePossibleFramerate(u32 new_value);
 
 /**
- * @brief Count the number of digits in the number passed to the function. Note
- * that this function's effectiveness cuts at 255 digits, as the situation I use
- * this function in does not necessitate any longer numbers.
+ * @brief Count the number of digits in the number passed to the
+ * function. Note that this function's effectiveness cuts at 255
+ * digits, as the situation I use this function in does not
+ * necessitate any longer numbers.
  * @param number The number whose digits we want to count.
- * @return A 16-bit unsigned integer that represents the size of the number, or
- * 0 if something went wrong.
+ * @return A 16-bit unsigned integer that represents the size of the
+ * number, or 0 if something went wrong.
  */
 u16 CountDigits(u32 number);
 
