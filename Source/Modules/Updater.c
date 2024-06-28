@@ -64,9 +64,14 @@ __BOOLEAN _HandleKey(Updater* updater, i32 key)
     return false;
 }
 
-__CREATE_STRUCT(Updater) CreateUpdater(u8 tick_speed)
+__CREATE_STRUCT(Updater)
+CreateUpdater(u8 tick_speed)
 {
-    Updater* updater = malloc(sizeof(Updater));
+    Updater* updater =
+        __MALLOC(Updater, updater,
+                 ("Failed to allocate space for the application's "
+                  "allocater. Code: %d.",
+                  errno));
     PrintSuccess(
         "Allocated space for the application's updater: %d bytes.",
         sizeof(Updater));

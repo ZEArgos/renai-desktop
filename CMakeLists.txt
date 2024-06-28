@@ -68,7 +68,7 @@ macro(create_application)
     message(STATUS "Got operating system '${CMAKE_SYSTEM_NAME}'.")
 
     file(COPY ${CMAKE_SOURCE_DIR}/Source/Assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    target_compile_definitions(${PROJECT_NAME} PRIVATE NAME="${PROJECT_NAME}" TITLE="${PROJECT_NAME} | v${PROJECT_VERSION_STRING}")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TITLE="${PROJECT_NAME} | v${PROJECT_VERSION_STRING}")
     if(PROJECT_DEBUG_MODE)
         target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_MODE=1)
     endif()

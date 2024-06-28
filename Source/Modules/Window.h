@@ -56,11 +56,10 @@ typedef enum WindowFullscreenState
  * under-the-hood bits of it.
  * @param width The requested width of the window.
  * @param height The requested height of the window.
- * @param caller The caller of the function.
  * @return A pointer to the created window.
  */
 __CREATE_STRUCT_KILLFAIL(Window)
-CreateWindow(i32 width, i32 height, const char* caller);
+CreateWindow(i32 width, i32 height);
 
 /**
  * @brief This is a simple getter to grab the inner window of a Window

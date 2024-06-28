@@ -9,16 +9,16 @@
  * @param renderer The renderer to write to.
  * @param width The width of the screen.
  * @param height The height of the screen.
- * @param caller The caller of the function.
  */
-__INLINE __KILLFAIL _CreateLinkedLists(Renderer* renderer, f32 width,
-                                       f32 height, const char* caller)
+__INLINE __KILLFAIL _CreateLinkedLists(Renderer* renderer,
+                                       f32 window_width,
+                                       f32 window_height)
 {
     renderer->shader_list =
         CreateLinkedList(shader, CreateShaderNode(shader, "basic"));
     renderer->texture_list = CreateLinkedList(
         texture, CreateTextureNode(texture, "texture_missing.jpg",
-                                   width, height));
+                                   window_width, window_height));
 
     // Make sure nothing went wrong.
     if (GetTextureListHead(renderer) == NULL ||
@@ -29,12 +29,13 @@ __INLINE __KILLFAIL _CreateLinkedLists(Renderer* renderer, f32 width,
 }
 
 __CREATE_STRUCT_KILLFAIL(Renderer)
-CreateRenderer(f32 swidth, f32 sheight, const char* caller)
+CreateRenderer(f32 window_width, f32 window_height)
 {
-    Renderer* renderer = malloc(sizeof(Renderer));
-    if (renderer == NULL)
-        PrintError("Failed to allocate space for the application's "
-                   "renderer.");
+    Renderer* renderer =
+        __MALLOC(Renderer, renderer,
+                 ("Failed to allocate space for the application's "
+                  "renderer. Code: %d.",
+                  errno));
     PrintSuccess(
         "Allocated space for the application's renderer: %d bytes.",
         sizeof(Renderer));
@@ -44,13 +45,14 @@ CreateRenderer(f32 swidth, f32 sheight, const char* caller)
     stbi_set_flip_vertically_on_load(1);
     // Create the renderer's various linked lists. This also stands to
     // load the base assets for the application.
-    _CreateLinkedLists(renderer, swidth, sheight, __func__);
+    _CreateLinkedLists(renderer, window_width, window_height);
 
     Node* basic_shader = GetRendererHead(renderer, Shader);
     // Create the projection matrix of the application, using a box
     // with the dimensions swidth x sheight x 1000.
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
-    glm_ortho(0.0f, swidth, sheight, 0.0f, 0.0f, 1000.0f, projection);
+    glm_ortho(0.0f, window_width, window_height, 0.0f, 0.0f, 1000.0f,
+              projection);
 
     // Slide the projection matrix into the shader.
     UseShader(*GetNodeContents(basic_shader, Shader));

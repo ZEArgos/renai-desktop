@@ -94,18 +94,18 @@ __INLINE u32* GetShaderContents(Node* node)
 // GetTextureListHead(list)   list->list_head_texture
 
 #define CreateShaderNode(type, name)                                 \
-    __CreateNode(type, name, LoadShader(name, __func__), NULL)
+    __CreateNode(type, name, LoadShader(name), NULL)
 #define CreateTextureNode(type, name, swidth, sheight)               \
-    __CreateNode(type, name, 0,                                      \
-                 LoadTextureFromFile(name, tileset, swidth, sheight, \
-                                     __func__))
+    __CreateNode(                                                    \
+        type, name, 0,                                               \
+        LoadTextureFromFile(name, tileset, swidth, sheight))
 
 // stupid fucking solution
 Node* __CreateNode(NodeType type, const char* name, u32 shader,
                    Texture* texture);
 
 //??!!!! brother why am i take both type and node?? type is stored in
-//node?? fix
+// node?? fix
 LinkedList* CreateLinkedList(NodeType type, Node* head);
 
 #define DestroyNode(node) FreeItem(node)

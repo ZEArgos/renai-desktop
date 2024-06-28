@@ -1,14 +1,23 @@
 #include "Map.h"
+#include <Logger.h>
 
 Map* CreateMap(AmbiguousTypeSpecifier key_type,
                AmbiguousTypeSpecifier value_type, u32 max_size)
 {
-    Map* created_map = malloc(sizeof(Map));
+    Map* created_map = __MALLOC(
+        Map, created_map,
+        ("Failed to allocate map with keypair %dx%d and size "
+         "%d. Code: %d",
+         key_type, value_type, max_size));
     created_map->max_size = max_size;
     created_map->filled_size = 0;
     created_map->key_type = key_type;
     created_map->value_type = value_type;
-    created_map->map_values = malloc(sizeof(KeyPair) * max_size);
+    created_map->map_values = __MALLOC(
+        KeyPair, created_map->map_values,
+        ("Failed to allocate map value array of type %dx%d and "
+         "size %d. Code: %d.",
+         key_type, value_type, max_size));
 
     return created_map;
 }

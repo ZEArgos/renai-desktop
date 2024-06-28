@@ -41,8 +41,7 @@ __KILLFAIL PrintMessage(u8 state, const char* caller, char* message,
 
 #endif
 
-__KILL PrintErrorMessage(const char* caller_parent,
-                         const char* caller, i32 line, char* message,
+__KILL PrintErrorMessage(const char* caller, i32 line, char* message,
                          ...)
 {
     char msg[512];
@@ -54,9 +53,9 @@ __KILL PrintErrorMessage(const char* caller_parent,
     snprintf(msg, 512,
              "notify-send -u critical -a Renai -t 0 \"Renai Error "
              "Reporter\" "
-             "\"Renai ran into an error. Caller: %s > %s on line %d. "
+             "\"Renai ran into an error. Caller: %s on line %d. "
              "Message: '",
-             caller_parent, caller, line);
+             caller, line);
 
     // Get the variable arguments passed to the function, so we can
     // utilize them in the vsnprintf call.

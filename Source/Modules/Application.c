@@ -22,9 +22,14 @@ void _KeyCallback(GLFWwindow* window, i32 key, i32 scancode,
                 key);
 }
 
+bool _application_created = false;
+
 __CREATE_STRUCT_KILLFAIL(Application)
-CreateApplication(const char* caller)
+CreateApplication(void)
 {
+    if (_application_created)
+        PrintError("Tried to initialize the application twice.");
+
 // Get the current date and time, and then log that value to the
 // console if we're in debug mode.
 #ifdef DEBUG_MODE
@@ -33,11 +38,11 @@ CreateApplication(const char* caller)
     PrintWarning("Beginning a new session on %s.", current_date);
 #endif
 
-    Application* application = malloc(sizeof(struct Application));
-    if (application == NULL)
-        PrintError("Failed to properly allocate space for the "
-                   "application. Code: %d.",
-                   errno);
+    Application* application =
+        __MALLOC(Application, application,
+                 ("Failed to properly allocate space for the "
+                  "application. Code: %d.",
+                  errno));
     PrintSuccess("Allocated memory for the main application "
                  "structure: %d bytes.",
                  sizeof(Application));
@@ -67,8 +72,7 @@ CreateApplication(const char* caller)
                  application->screen_height, default_width,
                  default_height);
 
-    application->window =
-        CreateWindow(default_width, default_height, __func__);
+    application->window = CreateWindow(default_width, default_height);
     // Set the window's key press callback, so we don't have to call a
     // function redundantly every render call, and can instead rely on
     // GLFW to tell us when keys are pressed.
@@ -76,18 +80,22 @@ CreateApplication(const char* caller)
                        _KeyCallback);
 
     application->renderer =
-        CreateRenderer(default_width, default_height, __func__);
+        CreateRenderer(default_width, default_height);
 
     // Create the keybuffer, where we'll store the keys that have been
     // pressed in the last 25 cycles and are awaiting their time to be
     // pressed again.
     application->updater = CreateUpdater(50);
 
+    _application_created = true;
     return application;
 }
 
 __KILLFAIL RunApplication(Application* application)
 {
+    if (!_application_created || application == NULL)
+        PrintError("Tried to run a nonexistent application.");
+
     i64 last_frame_time = GetCurrentTime();
     f32 current_fps = 120.0f;
     u8 frames_past = 0;
@@ -166,26 +174,23 @@ __KILLFAIL RunApplication(Application* application)
         "Got through the application's main loop successfully.");
 }
 
-__KILL DestroyApplication(Application* application,
-                          const char* caller)
+__KILL DestroyApplication(Application* application)
 {
     if (application == NULL)
     {
-        PrintError(
-            "Tried to destroy the application '%s' before it was "
-            "created. Please report this bug.",
-            NAME);
+        PrintError("Tried to destroy the application before it was "
+                   "created. Please report this bug.");
     }
 
     KillWindow(application->window);
     KillRenderer(application->renderer);
     KillUpdater(application->updater);
-    PrintWarning("Killed the application '%s's resources.", NAME);
+    PrintWarning("Killed the application's resources.");
 
     // Free the memory shell associated with the application structure
     // and print what we did.
     free(application);
-    PrintWarning("Freed the memory of application '%s'.\n\n", NAME);
+    PrintWarning("Freed the memory of the application.\n\n");
 
     exit(0);
 }

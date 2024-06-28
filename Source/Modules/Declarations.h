@@ -94,25 +94,24 @@ typedef long double f128;
 #define TTVP(value) (void*)&value
 
 /**
- * @brief A short statement to check if a dynamic allocation was done
- * correctly.
+ * @brief Shorthand expression to dynamically allocate an object, and
+ * check to make certain it was allocated correctly.
  */
-#define __CHECK_MALLOC(allocated, error_message)                     \
+#define __MALLOC(type, allocated, error_message)                     \
+    malloc(sizeof(type));                                            \
     if (allocated == NULL) (PrintError error_message)
 
 /**
  * @brief A function to poll the application's runtime for any GLFW
  * errors.
- * @param caller The caller of the function.
  */
-__KILLFAIL PollGLFWErrors(const char* caller);
+__KILLFAIL PollGLFWErrors(void);
 
 /**
  * @brief A function to poll the application's runtime for any OpenGL
  * errors.
- * @param caller The caller of the function.
  */
-__KILLFAIL PollOpenGLErrors(const char* caller);
+__KILLFAIL PollOpenGLErrors(void);
 
 /**
  * @brief Get a string representation of the current time in

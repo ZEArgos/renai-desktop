@@ -68,12 +68,10 @@ typedef struct Application
 
 /**
  * @brief Create an application and initialize its starting processes.
- * This should really only be called once. Kills the process on
- * failure.
- * @param caller The caller of the function, should be "main".
+ * This can only be called once. Kills the process on failure.
  */
 __CREATE_STRUCT_KILLFAIL(Application)
-CreateApplication(const char* caller);
+CreateApplication(void);
 
 /**
  * @brief Run an application's main loop methods until the key window
@@ -87,10 +85,8 @@ __KILLFAIL RunApplication(Application* application);
  * @b always exits the process on completion, regardless of
  * anything--positive or negative--that may have occurred.
  * @param application The application to destroy.
- * @param caller The caller of the function, should be "main".
  */
-__KILL DestroyApplication(Application* application,
-                          const char* caller);
+__KILL DestroyApplication(Application* application);
 
 /**
  * @brief Swap the application's current state; from menu to gameplay
@@ -101,8 +97,7 @@ void SwapApplicationType(Application* application);
 
 /**
  * @brief Set the application frame cap, with the formula of monitor
- * hertz /
- * @param new_cap.
+ * hertz / @param new_cap.
  * @param new_cap The new value to divide the monitor refresh rate
  * with for updating. A value of 0 turns off VSYNC / the frame cap
  * entirely.

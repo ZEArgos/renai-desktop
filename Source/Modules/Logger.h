@@ -62,8 +62,7 @@ __KILLFAIL PrintMessage(u8 state, const char* caller, char* message,
  * @param ... Any variable arguments to be concatenated into @param
  * message.
  */
-__KILL PrintErrorMessage(const char* caller_parent,
-                         const char* caller, i32 line, char* message,
+__KILL PrintErrorMessage(const char* caller, i32 line, char* message,
                          ...);
 
 /**
@@ -71,6 +70,6 @@ __KILL PrintErrorMessage(const char* caller_parent,
  * calling the function a whole lot easier and less cumbersome.
  */
 #define PrintError(...)                                              \
-    PrintErrorMessage(caller, __func__, __LINE__, __VA_ARGS__)
+    PrintErrorMessage(__func__, __LINE__, __VA_ARGS__)
 
 #endif // _RENAI_LOGGER_

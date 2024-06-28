@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-__KILLFAIL PollGLFWErrors(const char* caller)
+__KILLFAIL PollGLFWErrors(void)
 {
     // Get both the error code and human-readable description of the
     // error.
@@ -16,7 +16,7 @@ __KILLFAIL PollGLFWErrors(const char* caller)
             code, description);
 }
 
-__KILLFAIL PollOpenGLErrors(const char* caller)
+__KILLFAIL PollOpenGLErrors(void)
 {
     i32 err = glGetError();
     if (err != 0)

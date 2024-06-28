@@ -41,15 +41,14 @@ typedef struct Renderer
  * @brief Create a new renderer. This basically just initializes the
  * base resources of the renderer ('basic' shader and 'missing'
  * texture, among others) and then does some fancy projection math.
- * @param width The width of the window we're going to be rendering
- * onto.
- * @param height The height of the window we're going to be rendering
- * onto.
- * @param caller The caller of the function.
+ * @param window_width The width of the window we're going to be
+ * rendering onto.
+ * @param window_height The height of the window we're going to be
+ * rendering onto.
  * @return A pointer to the renderer we just created.
  */
 __CREATE_STRUCT_KILLFAIL(Renderer)
-CreateRenderer(f32 width, f32 height, const char* caller);
+CreateRenderer(f32 window_width, f32 window_height);
 
 /**
  * @brief Destroy a renderer object. This frees up all space allocated

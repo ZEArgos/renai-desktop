@@ -52,7 +52,8 @@ typedef struct Updater
  * @param tick_speed The updater's default tickspeed.
  * @return A pointer to the object just created.
  */
-__CREATE_STRUCT(Updater) CreateUpdater(u8 tick_speed);
+__CREATE_STRUCT(Updater)
+CreateUpdater(u8 tick_speed);
 
 /**
  * @brief Kill the updater. This frees all resources related to the

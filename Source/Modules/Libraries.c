@@ -4,7 +4,7 @@
 __KILLFAIL InitializeGLFW(void)
 {
     // Try to initialize GLFW, and if it fails, kill the process.
-    if (!glfwInit()) PollGLFWErrors(__func__);
+    if (!glfwInit()) PollGLFWErrors();
 
     // Set all the needed window hints to tell GLFW what version of
     // OpenGL we're trying to take advantage of.
@@ -16,12 +16,12 @@ __KILLFAIL InitializeGLFW(void)
                  glfwGetVersionString());
 }
 
-void InitializeGLAD(const char* caller)
+void InitializeGLAD(void)
 {
     // Using the built-in GLAD initializer, load OpenGL using GLFW's
     // procedure address. If this fails, kill the application.
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        PollOpenGLErrors(__func__);
+        PollOpenGLErrors();
 
     // Set the OpenGL hint to indicate that we will be using various
     // depth-based functions.

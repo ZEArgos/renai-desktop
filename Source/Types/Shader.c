@@ -1,8 +1,7 @@
 #include "Shader.h"
 #include <Logger.h>
 
-__BOOLEAN _FileRead(FILE* file, char* buffer, i64 length,
-                    const char* caller)
+__BOOLEAN _FileRead(FILE* file, char* buffer, i64 length)
 {
     // Try to utilize fread and read the file's bytes into the given
     // buffer. If that fails, attempt to diagnose the error and print
@@ -34,10 +33,9 @@ __KILLFAIL _SetShaderSource(u32* shader, const char* source)
     glShaderSource(*shader, 1, &source, NULL);
 
     // If it fails, print the error and exit the method.
-    PollOpenGLErrors(__func__);
+    PollOpenGLErrors();
 }
-__KILLFAIL _GetCompilationError(u32 program, u8 type,
-                                const char* caller)
+__KILLFAIL _GetCompilationError(u32 program, u8 type)
 {
     i32 success_flag = 0;
     // Try to compile/link the shader. Get the status of the
@@ -73,7 +71,7 @@ __KILLFAIL _GetCompilationError(u32 program, u8 type,
     }
 }
 
-u32 LoadShader(const char* name, const char* caller)
+u32 LoadShader(const char* name)
 {
     // Set up the full shader paths, taking advantage of snprintf to
     // concatenate the full char* in one function call.
@@ -145,10 +143,9 @@ u32 LoadShader(const char* name, const char* caller)
 
         // Attempt to read the files into memory. If that process
         // fails, fail this process.
-        if (!_FileRead(vertex_file, vertex_buffer, vertex_length,
-                       __func__) ||
+        if (!_FileRead(vertex_file, vertex_buffer, vertex_length) ||
             !_FileRead(fragment_file, fragment_buffer,
-                       fragment_length, __func__))
+                       fragment_length))
             return false;
 
         // Close the shader files, as we don't need them anymore. We
@@ -169,8 +166,8 @@ u32 LoadShader(const char* name, const char* caller)
 
         // Try to compile each shader. If that fails, grab the error
         // codes.
-        _GetCompilationError(vertex, 1, __func__);
-        _GetCompilationError(fragment, 1, __func__);
+        _GetCompilationError(vertex, 1);
+        _GetCompilationError(fragment, 1);
 
         // Create the final program. This is basically just mashing
         // the shaders together in a special way so they work together
@@ -182,7 +179,7 @@ u32 LoadShader(const char* name, const char* caller)
         glAttachShader(final, fragment);
         // Try to compile the final program. If that fails, kill the
         // function.
-        _GetCompilationError(final, 0, __func__);
+        _GetCompilationError(final, 0);
 
         // Delete the now useless individual shader programs.
         glDeleteShader(vertex);
@@ -207,7 +204,7 @@ __KILLFAIL UseShader(u32 shader)
     // function, which checks to see if there are any errors and
     // prints them if so.
     glUseProgram(shader);
-    PollOpenGLErrors(__func__);
+    PollOpenGLErrors();
 }
 
 void SetBoolean(u32 shader, const char* name, i8 value)

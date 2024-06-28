@@ -4,7 +4,9 @@
 Node* __CreateNode(NodeType type, const char* name, u32 shader,
                    Texture* texture)
 {
-    Node* created_node = malloc(sizeof(struct Node));
+    Node* created_node = __MALLOC(
+        Node, created_node,
+        ("Failed to allocate node '%s'. Code: %d.", name, errno));
     created_node->next = NULL;
     created_node->name = name;
     created_node->type = type;
@@ -17,7 +19,10 @@ Node* __CreateNode(NodeType type, const char* name, u32 shader,
 
 LinkedList* CreateLinkedList(NodeType type, Node* head)
 {
-    LinkedList* created_list = malloc(sizeof(struct LinkedList));
+    LinkedList* created_list = __MALLOC(
+        LinkedList, created_list,
+        ("Failed to allocate node list of type %d. Code: %d.", type,
+         errno));
     created_list->type = type;
     created_list->first_node = head;
     created_list->last_node = head;
