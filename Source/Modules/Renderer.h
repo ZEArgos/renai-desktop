@@ -15,6 +15,9 @@
 // various helper functions to make working with them easier. It also
 // includes Declarations.h, so we don't bother including that.
 #include <LinkedList.h>
+// This file defines the structure and helper functions for the scene
+// manager, which we use for rendering purposes.
+#include <Manager.h>
 
 /**
  * @brief Basically just a large container for the various things
@@ -35,6 +38,11 @@ typedef struct Renderer
      * with its own dye, rotation, and position.
      */
     LinkedList* texture_list;
+    /**
+     * @brief A storage space for texture instances, spritesheets,
+     * animations, renders, and more.
+     */
+    SceneManager* scene_manager;
 } Renderer;
 
 /**

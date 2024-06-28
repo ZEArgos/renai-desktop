@@ -118,5 +118,26 @@ Texture* CreateTexture(const char* name, TextureType type,
     texture->vao =
         _GenerateVertexBuffer(texture->width, texture->height);
 
+    PrintSuccess("Loaded texture from file '%s'.", file_path);
     return texture;
+}
+
+__CREATE_STRUCT(TextureInstance)
+RegisterTexture(Texture* from, f32 x, f32 y, u8 z, u8 scale,
+                f32 brightness, f32 rotation)
+{
+    TextureInstance* registered_texture =
+        __MALLOC(TextureInstance, registered_texture,
+                 ("Failed to allocate enough space for a texture "
+                  "instance inheriting from '%s'.",
+                  from->name));
+
+    registered_texture->x = x;
+    registered_texture->y = y;
+    registered_texture->z = z;
+    registered_texture->scale = scale;
+    registered_texture->brightness = brightness;
+    registered_texture->rotation = rotation;
+
+    return registered_texture;
 }

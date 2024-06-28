@@ -32,10 +32,10 @@ typedef struct Texture
 typedef struct TextureInstance
 {
     Texture* inherits;
-    f32 brightness, rotation;
-    u8 scale;
     f32 x, y;
     u8 z;
+    u8 scale;
+    f32 brightness, rotation;
 } TextureInstance;
 
 /**
@@ -65,6 +65,10 @@ __INLINE void KillTexture(Texture* texture)
            ("The texture freer was given an invalid texture."));
     PrintWarning("Freed the texture '%s'.", freed_name);
 }
+
+__CREATE_STRUCT(TextureInstance)
+RegisterTexture(Texture* from, f32 x, f32 y, u8 z, u8 scale,
+                f32 brightness, f32 rotation);
 
 __INLINE void BindTexture(Texture* texture)
 {
