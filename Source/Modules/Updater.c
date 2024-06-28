@@ -87,12 +87,6 @@ CreateUpdater(u8 tick_speed)
     return updater;
 }
 
-void KillUpdater(Updater* updater)
-{
-    DestroyMap(updater->key_buffer);
-    free(updater);
-}
-
 void HandleInput(Updater* updater, Window* key_window, f32 delta_time,
                  i32 key)
 {

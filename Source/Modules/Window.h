@@ -124,8 +124,10 @@ __INLINE void UnsetWindowMonitor(Window* window)
 __INLINE void KillWindow(Window* window)
 {
     glfwDestroyWindow(window->inner_window);
-    free(window);
+    __FREE(window,
+           ("The window freer was given an invalid texture."));
     PrintWarning("Killed window '%s'.", TITLE);
+
     // We assume that GLFW is no longer needed after this call.
     glfwTerminate();
 }

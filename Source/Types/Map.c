@@ -24,8 +24,9 @@ Map* CreateMap(AmbiguousTypeSpecifier key_type,
 
 void DestroyMap(Map* map)
 {
-    free(map->map_values);
-    free(map);
+    __FREE(map->map_values,
+           ("The map freer was given an invalid map."));
+    __FREE(map, ("The map freer was given an invalid map."));
 }
 
 void __AppendMapItem(Map* map, void* key, void* value)

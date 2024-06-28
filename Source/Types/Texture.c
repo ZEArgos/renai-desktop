@@ -95,17 +95,19 @@ u32 _GenerateVertexBuffer(u16 texture_width, u16 texture_height)
     return VAO;
 }
 
-Texture* LoadTextureFromFile(const char* name, TextureType type,
-                             f32 window_width, f32 window_height)
+#define __TEXTURE_PATH_MAXLENGTH 64
+
+Texture* CreateTexture(const char* name, TextureType type,
+                       f32 window_width, f32 window_height)
 {
     Texture* texture =
         __MALLOC(Texture, texture,
                  ("Failed to allocate the texture '%s'. Code: %d.",
                   name, errno));
 
-    char file_path[__TEXTURE_PATH_MAXLENGTH] = "./Assets/";
-    snprintf(file_path + strlen(file_path), __TEXTURE_PATH_MAXLENGTH,
-             "%s/%s", __TYPE_STRING(type), name);
+    char file_path[__TEXTURE_PATH_MAXLENGTH];
+    snprintf(file_path, __TEXTURE_PATH_MAXLENGTH, "./Assets/%s/%s",
+             __TYPE_STRING(type), name);
 
     _InitializeOpenGLTexture(&texture->texture, GL_CLAMP_TO_BORDER,
                              GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);

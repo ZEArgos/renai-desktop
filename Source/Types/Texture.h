@@ -38,15 +38,32 @@ typedef struct TextureInstance
     u8 z;
 } TextureInstance;
 
-#define __TEXTURE_PATH_MAXLENGTH 128
+/**
+ * @brief Load a complete texture object from the given file,
+ * OpenGL-ready bitmap and all.
+ * @param name The file name of the image. Note that the full image
+ * path cannot be more than 64 characters, or it will be truncated.
+ * This means the image name can be, at most, 46 or 47 characters long
+ * (depending on the type).
+ * @param type The type of image it is.
+ * @param window_width The width of the key window.
+ * @param window_height The height of the key window.
+ * @return A pointer to the created texture.
+ */
+__CREATE_STRUCT(Texture)
+CreateTexture(const char* name, TextureType type, f32 window_width,
+              f32 window_height);
 
-Texture* LoadTextureFromFile(const char* name, TextureType type,
-                             f32 window_width, f32 window_height);
-
+/**
+ * @brief Free all resources to do with the given texture.
+ * @param texture The texture to kill.
+ */
 __INLINE void KillTexture(Texture* texture)
 {
-    PrintWarning("Freed the texture '%s'.", texture->name);
-    free(texture);
+    const char* freed_name = texture->name;
+    __FREE(texture,
+           ("The texture freer was given an invalid texture."));
+    PrintWarning("Freed the texture '%s'.", freed_name);
 }
 
 __INLINE void BindTexture(Texture* texture)

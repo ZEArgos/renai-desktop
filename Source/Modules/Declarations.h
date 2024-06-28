@@ -72,7 +72,7 @@ typedef long double f128;
 #define __CREATE_STRUCT(structure) structure*
 /**
  * @brief Indicates a function that creates a structure but kills the
- * process on fialure.
+ * process on ANY failure.
  */
 #define __CREATE_STRUCT_KILLFAIL(structure) structure*
 /**
@@ -100,6 +100,10 @@ typedef long double f128;
 #define __MALLOC(type, allocated, error_message)                     \
     malloc(sizeof(type));                                            \
     if (allocated == NULL) (PrintError error_message)
+
+#define __FREE(value, error_message)                                 \
+    if (value == NULL) (PrintError error_message);                   \
+    free(value)
 
 /**
  * @brief A function to poll the application's runtime for any GLFW

@@ -96,9 +96,8 @@ __INLINE u32* GetShaderContents(Node* node)
 #define CreateShaderNode(type, name)                                 \
     __CreateNode(type, name, LoadShader(name), NULL)
 #define CreateTextureNode(type, name, swidth, sheight)               \
-    __CreateNode(                                                    \
-        type, name, 0,                                               \
-        LoadTextureFromFile(name, tileset, swidth, sheight))
+    __CreateNode(type, name, 0,                                      \
+                 CreateTexture(name, tileset, swidth, sheight))
 
 // stupid fucking solution
 Node* __CreateNode(NodeType type, const char* name, u32 shader,

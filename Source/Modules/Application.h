@@ -74,19 +74,19 @@ __CREATE_STRUCT_KILLFAIL(Application)
 CreateApplication(void);
 
 /**
- * @brief Run an application's main loop methods until the key window
- * is closed. This includes rendering, keyboard polling, and more.
- * @param application The application to run.
- */
-__KILLFAIL RunApplication(Application* application);
-
-/**
  * @brief Destroy an application and all of its innards. This function
  * @b always exits the process on completion, regardless of
  * anything--positive or negative--that may have occurred.
  * @param application The application to destroy.
  */
 __KILL DestroyApplication(Application* application);
+
+/**
+ * @brief Run an application's main loop methods until the key window
+ * is closed. This includes rendering, keyboard polling, and more.
+ * @param application The application to run.
+ */
+__KILLFAIL RunApplication(Application* application);
 
 /**
  * @brief Swap the application's current state; from menu to gameplay

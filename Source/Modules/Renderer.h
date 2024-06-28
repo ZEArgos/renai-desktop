@@ -55,58 +55,25 @@ CreateRenderer(f32 window_width, f32 window_height);
  * to the object, resources included.
  * @param renderer The renderer we're going to kill.
  */
-void KillRenderer(Renderer* renderer);
+__INLINE void KillRenderer(Renderer* renderer)
+{
+    DestroyLinkedList(renderer->shader_list);
+    DestroyLinkedList(renderer->texture_list);
+    __FREE(renderer,
+           ("The renderer freer was given an invalid texture."));
+}
 
 /**
  * @brief Get a list of the specified type from the given renderer.
  */
-#define GetRendererList(renderer, list) Get##list##List(renderer)
-
-/**
- * @brief Get the texture list of the given renderer.
- * @param renderer The renderer to grab from.
- * @return The requested linked list.
- */
-__INLINE LinkedList* GetTextureList(Renderer* renderer)
-{
-    return renderer->texture_list;
-}
-
-/**
- * @brief Get the shader list of the given renderer.
- * @param renderer The renderer to grab from.
- * @return The requested linked list.
- */
-__INLINE LinkedList* GetShaderList(Renderer* renderer)
-{
-    return renderer->shader_list;
-}
+#define GetRendererList(renderer, list) renderer->list##_list
 
 /**
  * @brief Get the head node of the given renderer's list of the given
  * type.
  */
-#define GetRendererHead(renderer, list) Get##list##ListHead(renderer)
-
-/**
- * @brief Get the head node of the given renderer's texture list.
- * @param renderer The renderer to grab from.
- * @return The node requested.
- */
-__INLINE Node* GetTextureListHead(Renderer* renderer)
-{
-    return renderer->texture_list->first_node;
-}
-
-/**
- * @brief Get the head node of the given renderer's shader list.
- * @param renderer The renderer to grab from.
- * @return The node requested.
- */
-__INLINE Node* GetShaderListHead(Renderer* renderer)
-{
-    return renderer->shader_list->first_node;
-}
+#define GetRendererHead(renderer, list)                              \
+    renderer->list##_list->first_node
 
 /**
  * @brief Render the content of whatever window whose context is set

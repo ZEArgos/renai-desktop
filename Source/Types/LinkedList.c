@@ -42,7 +42,8 @@ void DestroyLinkedList(LinkedList* list)
         current_node = next_node;
     }
 
-    free(list);
+    __FREE(list,
+           ("The linked list freer was given an invalid texture."));
 }
 
 __BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents)

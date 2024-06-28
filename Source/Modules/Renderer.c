@@ -21,8 +21,8 @@ __INLINE __KILLFAIL _CreateLinkedLists(Renderer* renderer,
                                    window_width, window_height));
 
     // Make sure nothing went wrong.
-    if (GetTextureListHead(renderer) == NULL ||
-        GetShaderListHead(renderer) == NULL)
+    if (GetRendererHead(renderer, texture) == NULL ||
+        GetRendererHead(renderer, shader) == NULL)
         PrintError("Failed to create the base resources of the "
                    "renderer (are "
                    "files missing?).");
@@ -47,7 +47,7 @@ CreateRenderer(f32 window_width, f32 window_height)
     // load the base assets for the application.
     _CreateLinkedLists(renderer, window_width, window_height);
 
-    Node* basic_shader = GetRendererHead(renderer, Shader);
+    Node* basic_shader = GetRendererHead(renderer, shader);
     // Create the projection matrix of the application, using a box
     // with the dimensions swidth x sheight x 1000.
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
@@ -66,24 +66,17 @@ CreateRenderer(f32 window_width, f32 window_height)
     return renderer;
 }
 
-void KillRenderer(Renderer* renderer)
-{
-    DestroyLinkedList(GetRendererList(renderer, Shader));
-    DestroyLinkedList(GetRendererList(renderer, Texture));
-    free(renderer);
-}
-
 void RenderWindowContent(Renderer* renderer)
 {
     // Get the basic shader, the one we use to render plain textures,
     // and slot it as our current one.
     u32 basic_shader =
-        *GetNodeContents(GetRendererHead(renderer, Shader), Shader);
+        *GetNodeContents(GetRendererHead(renderer, shader), Shader);
     UseShader(basic_shader);
 
     // Bind the "missing" texture to render as a placeholder.
     Texture* missing_texture =
-        GetNodeContents(GetRendererHead(renderer, Texture), Texture);
+        GetNodeContents(GetRendererHead(renderer, texture), Texture);
     BindTexture(missing_texture);
 
     // Position transform the bound texture so it's within our

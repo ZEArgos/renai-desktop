@@ -60,7 +60,12 @@ CreateUpdater(u8 tick_speed);
  * object.
  * @param updater The updater to kill.
  */
-void KillUpdater(Updater* updater);
+__INLINE void KillUpdater(Updater* updater)
+{
+    DestroyMap(updater->key_buffer);
+    __FREE(updater,
+           ("The updater freer was given an invalid texture."));
+}
 
 /**
  * @brief This is a kind of dedicated subfunction for @ref

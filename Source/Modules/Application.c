@@ -91,6 +91,28 @@ CreateApplication(void)
     return application;
 }
 
+__KILL DestroyApplication(Application* application)
+{
+    if (application == NULL)
+    {
+        PrintError("Tried to destroy the application before it was "
+                   "created. Please report this bug.");
+    }
+
+    KillWindow(application->window);
+    KillRenderer(application->renderer);
+    KillUpdater(application->updater);
+    PrintWarning("Killed the application's resources.");
+
+    // Free the memory shell associated with the application structure
+    // and print what we did.
+    __FREE(application,
+           ("The application freer was given an invalid texture."));
+    PrintWarning("Freed the memory of the application.\n\n");
+
+    exit(0);
+}
+
 __KILLFAIL RunApplication(Application* application)
 {
     if (!_application_created || application == NULL)
@@ -172,27 +194,6 @@ __KILLFAIL RunApplication(Application* application)
     }
     PrintSuccess(
         "Got through the application's main loop successfully.");
-}
-
-__KILL DestroyApplication(Application* application)
-{
-    if (application == NULL)
-    {
-        PrintError("Tried to destroy the application before it was "
-                   "created. Please report this bug.");
-    }
-
-    KillWindow(application->window);
-    KillRenderer(application->renderer);
-    KillUpdater(application->updater);
-    PrintWarning("Killed the application's resources.");
-
-    // Free the memory shell associated with the application structure
-    // and print what we did.
-    free(application);
-    PrintWarning("Freed the memory of the application.\n\n");
-
-    exit(0);
 }
 
 void SwapApplicationType(Application* application)
