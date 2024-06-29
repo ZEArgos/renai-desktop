@@ -15,10 +15,9 @@ __INLINE __KILLFAIL _CreateLinkedLists(Renderer* renderer,
                                        f32 window_height)
 {
     renderer->shader_list =
-        CreateLinkedList(shader, CreateShaderNode(shader, "basic"));
-    renderer->texture_list = CreateLinkedList(
-        texture, CreateTextureNode(texture, "texture_missing.jpg",
-                                   window_width, window_height));
+        CreateLinkedList(CreateShaderNode("basic"));
+    renderer->texture_list = CreateLinkedList(CreateTextureNode(
+        "texture_missing.jpg", window_width, window_height));
 
     // Make sure nothing went wrong.
     if (GetRendererHead(renderer, texture) == NULL ||
@@ -55,13 +54,16 @@ CreateRenderer(f32 window_width, f32 window_height)
               projection);
 
     // Slide the projection matrix into the shader.
-    UseShader(*GetNodeContents(basic_shader, Shader));
-    SetMat4(*GetNodeContents(basic_shader, Shader), "projection",
-            projection);
+    UseShader(GetNodeContents(basic_shader, shader)->shader);
+    SetMat4(GetNodeContents(basic_shader, shader)->shader,
+            "projection", projection);
 
     PrintSuccess(
         "Successfully set up the projection matrix on shader '%s'.",
         basic_shader->name);
+
+    CreateManager(
+        GetNodeContents(GetRendererHead(renderer, texture), texture));
 
     return renderer;
 }
@@ -71,12 +73,13 @@ void RenderWindowContent(Renderer* renderer)
     // Get the basic shader, the one we use to render plain textures,
     // and slot it as our current one.
     u32 basic_shader =
-        *GetNodeContents(GetRendererHead(renderer, shader), Shader);
+        GetNodeContents(GetRendererHead(renderer, shader), shader)
+            ->shader;
     UseShader(basic_shader);
 
     // Bind the "missing" texture to render as a placeholder.
     Texture* missing_texture =
-        GetNodeContents(GetRendererHead(renderer, texture), Texture);
+        GetNodeContents(GetRendererHead(renderer, texture), texture);
     BindTexture(missing_texture);
 
     // Position transform the bound texture so it's within our

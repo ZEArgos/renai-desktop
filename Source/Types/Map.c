@@ -8,7 +8,7 @@ Map* CreateMap(AmbiguousTypeSpecifier key_type,
         Map, created_map,
         ("Failed to allocate map with keypair %dx%d and size "
          "%d. Code: %d",
-         key_type, value_type, max_size));
+         key_type, value_type, max_size, errno));
     created_map->max_size = max_size;
     created_map->filled_size = 0;
     created_map->key_type = key_type;
@@ -22,7 +22,7 @@ Map* CreateMap(AmbiguousTypeSpecifier key_type,
     return created_map;
 }
 
-void DestroyMap(Map* map)
+void KillMap(Map* map)
 {
     __FREE(map->map_values,
            ("The map freer was given an invalid map."));

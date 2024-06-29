@@ -33,7 +33,12 @@ typedef enum NodeType
      * @brief The node contains an OpenGL texture object, and all
      * information associated with it.
      */
-    texture
+    texture,
+    /**
+     * @brief The node contains a registered texture object for use in
+     * rendering.
+     */
+    instance
 } NodeType;
 
 /**
@@ -46,12 +51,17 @@ typedef union NodeContents
     /**
      * @brief An OpenGL shader ID.
      */
-    u32 shader;
+    Shader* shader;
     /**
      * @brief A texture image and all the information associated with
      * it.
      */
     Texture* texture;
+    /**
+     * @brief A registered texture with individual information for use
+     * in rendering.
+     */
+    TextureInstance* instance;
 } NodeContents;
 
 typedef struct Node
@@ -71,49 +81,37 @@ typedef struct LinkedList
     Node* last_node;
 } LinkedList;
 
-#define GetNodeContents(node, type) Get##type##Contents(node)
-__INLINE Texture* GetTextureContents(Node* node)
-{
-    return node->contents.texture;
-}
-__INLINE u32* GetShaderContents(Node* node)
-{
-    return &node->contents.shader;
-}
+#define GetNodeContents(node, type) node->contents.type
 
-// #define list_head_contents first_node->contents
-// #define list_head_texture  first_node->contents.texture
-// #define list_head_shader   first_node->contents.shader
-// #define texture_contents   contents.texture
-// #define shader_contents    contents.shader
-
-// #define GetShaderNode(list, name)  GetNode(list,
-// name)->shader_contents #define GetTextureNode(list, name)
-// GetNode(list, name)->texture_contents #define
-// GetShaderListHead(list)    list->list_head_shader #define
-// GetTextureListHead(list)   list->list_head_texture
-
-#define CreateShaderNode(type, name)                                 \
-    __CreateNode(type, name, LoadShader(name), NULL)
-#define CreateTextureNode(type, name, swidth, sheight)               \
-    __CreateNode(type, name, 0,                                      \
+#define CreateShaderNode(name)                                       \
+    __CreateNode(shader, name, LoadShader(name))
+#define CreateTextureNode(name, swidth, sheight)                     \
+    __CreateNode(texture, name,                                      \
                  CreateTexture(name, tileset, swidth, sheight))
-
+#define RegisterTextureNode(name, from, x, y, z, scale, brightness,  \
+                            rotation)                                \
+    __CreateNode(                                                    \
+        instance, name,                                              \
+        RegisterTexture(from, x, y, z, scale, brightness, rotation))
 // stupid fucking solution
-Node* __CreateNode(NodeType type, const char* name, u32 shader,
-                   Texture* texture);
+Node* __CreateNode(NodeType type, const char* name, void* contents);
 
 //??!!!! brother why am i take both type and node?? type is stored in
 // node?? fix
-LinkedList* CreateLinkedList(NodeType type, Node* head);
+LinkedList* CreateLinkedList(Node* head);
 
-#define DestroyNode(node) FreeItem(node)
-void DestroyLinkedList(LinkedList* list);
+#define KillNode(node)                                               \
+    __TYPE_SWITCH(                                                   \
+        current_node->type,                                          \
+        KillShader(current_node->contents.shader),                   \
+        KillTexture(current_node->contents.texture),                 \
+        DeregisterTexture(current_node->contents.instance));
+void KillLinkedList(LinkedList* list);
 
 __BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents);
 
-void AppendNode(LinkedList* list, NodeType type, Node* node);
-void InsertNode(LinkedList* list, NodeType type, Node* node);
+void AppendNode(LinkedList* list, Node* node);
+void InsertNode(LinkedList* list, Node* node);
 
 Node* GetNode(LinkedList* list, const char* name);
 

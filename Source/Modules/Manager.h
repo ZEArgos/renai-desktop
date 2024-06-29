@@ -20,4 +20,15 @@ typedef struct SceneManager
     LinkedList* registered_textures;
 } SceneManager;
 
+__CREATE_STRUCT(SceneManager)
+CreateManager(Texture* missing_texture);
+
+__INLINE void KillManager(SceneManager* manager)
+{
+    KillLinkedList(manager->registered_textures);
+    __FREE(manager,
+           ("The scene manager freer was given an invalid value."));
+    PrintWarning("The scene manager was freed.");
+}
+
 #endif // _RENAI_MANAGER_

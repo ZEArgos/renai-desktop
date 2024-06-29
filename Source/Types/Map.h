@@ -28,7 +28,7 @@ typedef struct Map
 
 Map* CreateMap(AmbiguousTypeSpecifier key_type,
                AmbiguousTypeSpecifier value_type, u32 max_size);
-void DestroyMap(Map* map);
+void KillMap(Map* map);
 
 #define AppendMapItem(map, key, value)                               \
     {                                                                \

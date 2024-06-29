@@ -65,10 +65,12 @@ CreateRenderer(f32 window_width, f32 window_height);
  */
 __INLINE void KillRenderer(Renderer* renderer)
 {
-    DestroyLinkedList(renderer->shader_list);
-    DestroyLinkedList(renderer->texture_list);
+    KillLinkedList(renderer->shader_list);
+    KillLinkedList(renderer->texture_list);
+    KillManager(renderer->scene_manager);
     __FREE(renderer,
            ("The renderer freer was given an invalid texture."));
+    PrintWarning("The renderer was freed.");
 }
 
 /**

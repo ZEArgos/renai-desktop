@@ -13,7 +13,14 @@
 
 // Again, gimme them typedefs
 #include <Declarations.h>
+#include <Logger.h>
 #include <cglm/cglm.h>
+
+typedef struct Shader
+{
+    u32 shader;
+    const char* name;
+} Shader;
 
 /**
  * @brief The max length a shader path can be. This is in place to
@@ -26,9 +33,17 @@
  * "name" is simply the name of the containing folder, everything else
  * will be automatically concatenated on.
  * @param name The shader's containing folder's name.
- * @return The OpenGL shader ID, or 0 if an error occurred.
+ * @return An object containing the OpenGL shader ID, or NULL if a
+ * problem occurred.
  */
-u32 LoadShader(const char* name);
+Shader* LoadShader(const char* name);
+
+__INLINE void KillShader(Shader* shader)
+{
+    const char* name = shader->name;
+    __FREE(shader, ("The shader freer was given an invalid shader."));
+    PrintWarning("Freed shader '%s'.", name);
+}
 
 /**
  * @brief Use the specified shader. Wrapper around @ref glUseProgram.

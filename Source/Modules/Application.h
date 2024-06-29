@@ -79,7 +79,7 @@ CreateApplication(void);
  * anything--positive or negative--that may have occurred.
  * @param application The application to destroy.
  */
-__KILL DestroyApplication(Application* application);
+__KILL KillApplication(Application* application);
 
 /**
  * @brief Run an application's main loop methods until the key window

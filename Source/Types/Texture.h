@@ -70,6 +70,12 @@ __CREATE_STRUCT(TextureInstance)
 RegisterTexture(Texture* from, f32 x, f32 y, u8 z, u8 scale,
                 f32 brightness, f32 rotation);
 
+__INLINE void DeregisterTexture(TextureInstance* texture)
+{
+    __FREE(texture, ("The texture deregisterer was given an invalid "
+                     "texture instance."));
+}
+
 __INLINE void BindTexture(Texture* texture)
 {
     glActiveTexture(GL_TEXTURE0);

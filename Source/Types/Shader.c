@@ -1,5 +1,4 @@
 #include "Shader.h"
-#include <Logger.h>
 
 __BOOLEAN _FileRead(FILE* file, char* buffer, i64 length)
 {
@@ -71,7 +70,7 @@ __KILLFAIL _GetCompilationError(u32 program, u8 type)
     }
 }
 
-u32 LoadShader(const char* name)
+Shader* LoadShader(const char* name)
 {
     // Set up the full shader paths, taking advantage of snprintf to
     // concatenate the full char* in one function call.
@@ -169,26 +168,32 @@ u32 LoadShader(const char* name)
         _GetCompilationError(vertex, 1);
         _GetCompilationError(fragment, 1);
 
+        Shader* created_shader =
+            __MALLOC(Shader, created_shader,
+                     ("Failed to allocate space for a shader object "
+                      "named %s. Code: %d.",
+                      name, errno));
+        created_shader->name = name;
+
         // Create the final program. This is basically just mashing
         // the shaders together in a special way so they work together
         // in a pipeline.
-        u32 final = glCreateProgram();
+        created_shader->shader = glCreateProgram();
         // Attach each shader to the final program, ready to be
         // compiled.
-        glAttachShader(final, vertex);
-        glAttachShader(final, fragment);
+        glAttachShader(created_shader->shader, vertex);
+        glAttachShader(created_shader->shader, fragment);
         // Try to compile the final program. If that fails, kill the
         // function.
-        _GetCompilationError(final, 0);
+        _GetCompilationError(created_shader->shader, 0);
 
         // Delete the now useless individual shader programs.
         glDeleteShader(vertex);
         glDeleteShader(fragment);
 
         // Gloat upon our success.
-        // PrintSuccess("Compiled the shader '%s' successfully.",
-        // name);
-        return final;
+        PrintSuccess("Compiled the shader '%s' successfully.", name);
+        return created_shader;
     }
 
     PrintError("Failed to open vertex and/or fragment shader file "

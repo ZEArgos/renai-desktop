@@ -62,9 +62,10 @@ CreateUpdater(u8 tick_speed);
  */
 __INLINE void KillUpdater(Updater* updater)
 {
-    DestroyMap(updater->key_buffer);
+    KillMap(updater->key_buffer);
     __FREE(updater,
            ("The updater freer was given an invalid texture."));
+    PrintWarning("The updater was freed.");
 }
 
 /**

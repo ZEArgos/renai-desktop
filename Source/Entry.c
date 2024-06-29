@@ -23,5 +23,5 @@ i32 main(void)
 
     // Destroy/free all allocated memory and get ready to exit the
     // application entirely.
-    DestroyApplication(renai);
+    KillApplication(renai);
 }

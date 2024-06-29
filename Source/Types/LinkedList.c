@@ -1,8 +1,15 @@
 #include "LinkedList.h"
 #include <Logger.h>
 
-Node* __CreateNode(NodeType type, const char* name, u32 shader,
-                   Texture* texture)
+#define __TYPE_SWITCH(type, ex1, ex2, ex3)                           \
+    switch (type)                                                    \
+    {                                                                \
+        case shader:   ex1; break;                                   \
+        case texture:  ex2; break;                                   \
+        case instance: ex3; break;                                   \
+    }
+
+Node* __CreateNode(NodeType type, const char* name, void* contents)
 {
     Node* created_node = __MALLOC(
         Node, created_node,
@@ -11,41 +18,42 @@ Node* __CreateNode(NodeType type, const char* name, u32 shader,
     created_node->name = name;
     created_node->type = type;
 
-    if (shader == 0) created_node->contents.texture = texture;
-    else created_node->contents.shader = shader;
+    __TYPE_SWITCH(type, created_node->contents.shader = contents,
+                  created_node->contents.texture = contents,
+                  created_node->contents.instance = contents);
 
     return created_node;
 }
 
-LinkedList* CreateLinkedList(NodeType type, Node* head)
+LinkedList* CreateLinkedList(Node* head)
 {
     LinkedList* created_list = __MALLOC(
         LinkedList, created_list,
-        ("Failed to allocate node list of type %d. Code: %d.", type,
-         errno));
-    created_list->type = type;
+        ("Failed to allocate node list of type %d. Code: %d.",
+         head->type, errno));
+    created_list->type = head->type;
     created_list->first_node = head;
     created_list->last_node = head;
 
     return created_list;
 }
 
-void DestroyLinkedList(LinkedList* list)
+void KillLinkedList(LinkedList* list)
 {
     Node* current_node = list->first_node;
     while (current_node != NULL)
     {
         Node* next_node = current_node->next;
-        if (current_node->type == texture)
-            KillTexture(current_node->contents.texture);
-        free(current_node);
+        KillNode(current_node);
         current_node = next_node;
+        printf("%s\n", current_node->name);
     }
 
     __FREE(list,
-           ("The linked list freer was given an invalid texture."));
+           ("The linked list freer was given an invalid list."));
 }
 
+//! outdated asf
 __BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents)
 {
     if (type == shader && contents->shader != 0) return true;
@@ -56,12 +64,12 @@ __BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents)
     return false;
 }
 
-void AppendNode(LinkedList* list, NodeType type, Node* node)
+void AppendNode(LinkedList* list, Node* node)
 {
     list->last_node->next = node;
     list->last_node = list->last_node->next;
 }
-void InsertNode(LinkedList* list, NodeType type, Node* node)
+void InsertNode(LinkedList* list, Node* node)
 {
     Node* last_head = list->first_node;
     list->first_node = node;

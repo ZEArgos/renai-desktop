@@ -91,7 +91,7 @@ CreateApplication(void)
     return application;
 }
 
-__KILL DestroyApplication(Application* application)
+__KILL KillApplication(Application* application)
 {
     if (application == NULL)
     {
