@@ -17,7 +17,7 @@ Map* CreateMap(AmbiguousTypeSpecifier key_type,
         KeyPair, created_map->map_values,
         ("Failed to allocate map value array of type %dx%d and "
          "size %d. Code: %d.",
-         key_type, value_type, max_size));
+         key_type, value_type, max_size, errno));
 
     return created_map;
 }
