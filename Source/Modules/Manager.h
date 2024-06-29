@@ -23,7 +23,7 @@ typedef struct SceneManager
 } SceneManager;
 
 __CREATE_STRUCT(SceneManager)
-CreateManager(Texture* missing_texture);
+CreateManager(f32 window_width, f32 window_height);
 
 __INLINE void KillManager(SceneManager* manager)
 {

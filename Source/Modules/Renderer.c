@@ -16,15 +16,11 @@ __INLINE __KILLFAIL _CreateLinkedLists(Renderer* renderer,
 {
     renderer->shader_list =
         CreateLinkedList(CreateShaderNode("basic"));
-    renderer->texture_list = CreateLinkedList(CreateTextureNode(
-        "texture_missing.jpg", window_width, window_height));
 
     // Make sure nothing went wrong.
-    if (GetRendererHead(renderer, texture) == NULL ||
-        GetRendererHead(renderer, shader) == NULL)
+    if (GetRendererHead(renderer, shader) == NULL)
         PrintError("Failed to create the base resources of the "
-                   "renderer (are "
-                   "files missing?).");
+                   "renderer (are files missing?).");
 }
 
 __CREATE_STRUCT_KILLFAIL(Renderer)
@@ -61,9 +57,8 @@ CreateRenderer(f32 window_width, f32 window_height)
         "Successfully set up the projection matrix on shader '%s'.",
         basic_shader->name);
 
-    renderer->scene_manager = CreateManager(
-        GetNode(renderer->texture_list, "texture_missing.jpg")
-            ->contents.texture);
+    renderer->scene_manager =
+        CreateManager(window_width, window_height);
 
     return renderer;
 }

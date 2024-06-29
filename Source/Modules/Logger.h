@@ -62,14 +62,15 @@ __KILLFAIL PrintMessage(u8 state, const char* caller, char* message,
  * @param ... Any variable arguments to be concatenated into @param
  * message.
  */
-__KILL PrintErrorMessage(const char* caller, i32 line, char* message,
-                         ...);
+__KILL PrintErrorMessage(const char* caller, const char* file,
+                         i32 line, char* message, ...);
 
 /**
  * @brief Print an error to the secondary output. This macro makes
  * calling the function a whole lot easier and less cumbersome.
  */
 #define PrintError(...)                                              \
-    PrintErrorMessage(__func__, __LINE__, __VA_ARGS__)
+    PrintErrorMessage(__func__, strrchr("/" __FILE__, '/') + 1,      \
+                      __LINE__, __VA_ARGS__)
 
 #endif // _RENAI_LOGGER_

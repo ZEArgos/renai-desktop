@@ -142,3 +142,21 @@ f64 CalculatePossibleFramerate(u32 new_value)
 
     return overall_tick_sum / __SAMPLE_CAP;
 }
+
+bool CheckVersionDifference(const char* cause, u8* version)
+{
+    if (version[0] != MAJOR)
+        PrintError("The %s on your device are severly outdated. "
+                   "Please obtain a fresh distribution of them.",
+                   cause);
+
+    if (version[1] != MINOR)
+    {
+        PrintWarning("The %s on your device are outdated. They may "
+                     "not work correctly.",
+                     cause);
+        return false;
+    }
+
+    return true;
+}

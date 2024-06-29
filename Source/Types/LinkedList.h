@@ -94,8 +94,7 @@ typedef struct LinkedList
     __CreateNode(                                                    \
         instance, name,                                              \
         RegisterTexture(from, x, y, z, scale, brightness, rotation))
-#define CreateSceneNode(missing_texture)                             \
-    __CreateNode(scene, "test_scene", TEST_SCENE(missing_texture))
+
 // stupid fucking solution
 Node* __CreateNode(NodeType type, const char* name, void* contents);
 

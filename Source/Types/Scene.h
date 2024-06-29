@@ -18,22 +18,20 @@ typedef struct LinkedList LinkedList;
 typedef struct Scene
 {
     LinkedList* scene_contents;
-    const char* name;
+    char name[32], description[64];
 } Scene;
-
-Scene* TEST_SCENE(Texture* missing_texture);
 
 /**
  * @brief Since we don't ship the program with scene files, we have to
  * generate them on first startup for use in the future. This takes in
- * a scene program and writes it to a binary format in the @dir
- * ./Assets/Scenes/[NAME].scene .
- * @return true The operation was a success.
- * @return false The operation failed.
+ * a scene program and writes it to a binary format in the file @dir
+ * ./Assets/scenes.resource .
  */
-bool CreateScene(void);
+void CreateScenes(char** name_array, char** description_array,
+                  char** texture_array, u16 texture_array_length,
+                  u16 scene_count);
 
-Scene* LoadScene(const char* name);
+LinkedList* LoadScenes(f32 window_width, f32 window_height);
 
 __INLINE void KillScene(Scene* scene)
 {

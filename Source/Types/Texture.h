@@ -26,7 +26,7 @@ typedef struct Texture
     TextureType type;
     u16 width, height;
     u32 texture, vao;
-    const char* name;
+    char* name;
 } Texture;
 
 typedef struct TextureInstance
@@ -53,6 +53,11 @@ typedef struct TextureInstance
 __CREATE_STRUCT(Texture)
 CreateTexture(const char* name, TextureType type, f32 window_width,
               f32 window_height);
+
+__CREATE_STRUCT(Texture)
+CreateTextureFromMemory(const char* name, u8* image, u64 image_size,
+                        TextureType type, f32 window_width,
+                        f32 window_height);
 
 /**
  * @brief Free all resources to do with the given texture.

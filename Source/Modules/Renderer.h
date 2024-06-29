@@ -32,13 +32,6 @@ typedef struct Renderer
      */
     LinkedList* shader_list;
     /**
-     * @brief A linked list of textures. Note that these are literally
-     * just loaded images, for rendering, instead register an @ref
-     * TextureInstance, which is a specific occurance of a texture
-     * with its own dye, rotation, and position.
-     */
-    LinkedList* texture_list;
-    /**
      * @brief A storage space for texture instances, spritesheets,
      * animations, renders, and more.
      */
@@ -66,7 +59,6 @@ CreateRenderer(f32 window_width, f32 window_height);
 __INLINE void KillRenderer(Renderer* renderer)
 {
     KillLinkedList(renderer->shader_list);
-    KillLinkedList(renderer->texture_list);
     KillManager(renderer->scene_manager);
     __FREE(renderer,
            ("The renderer freer was given an invalid texture."));

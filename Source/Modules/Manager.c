@@ -1,7 +1,7 @@
 #include "Manager.h"
 
 __CREATE_STRUCT(SceneManager)
-CreateManager(Texture* missing_texture)
+CreateManager(f32 window_width, f32 window_height)
 {
     SceneManager* manager = __MALLOC(
         SceneManager, manager,
@@ -10,10 +10,9 @@ CreateManager(Texture* missing_texture)
     PrintSuccess("Allocated space for the scene manager: %d bytes.",
                  sizeof(SceneManager));
 
-    manager->scene_list =
-        CreateLinkedList(CreateSceneNode(missing_texture));
-
-    manager->current_scene = "test_scene";
+    manager->scene_list = LoadScenes(window_width, window_height);
+    manager->current_scene =
+        (char*)manager->scene_list->first_node->name;
 
     return manager;
 }
@@ -24,10 +23,13 @@ void RenderCurrentScene(SceneManager* manager, Shader* basic_shader)
         GetNode(manager->scene_list, manager->current_scene)
             ->contents.scene;
 
+    printf("\n\n%s\n",
+           current_scene->scene_contents->first_node->name);
     // Bind the "missing" texture to render as a placeholder.
-    TextureInstance* missing_texture =
-        current_scene->scene_contents->first_node->contents.instance;
-    BindTexture(missing_texture->inherits);
+    Texture* missing_texture =
+        GetNode(current_scene->scene_contents, "texture_missing.jpg")
+            ->contents.texture;
+    BindTexture(missing_texture);
 
     // Position transform the bound texture so it's within our
     // viewport.

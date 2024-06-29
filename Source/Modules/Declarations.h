@@ -166,4 +166,6 @@ f64 CalculatePossibleFramerate(u32 new_value);
  */
 u16 CountDigits(u32 number);
 
+bool CheckVersionDifference(const char* cause, u8* version);
+
 #endif // _RENAI_DECLARATIONS_

@@ -59,7 +59,7 @@ u8* _LoadImageData(const char* path, i32* width, i32* height)
 __INLINE void _InsertTextureData(Texture* texture, const char* name,
                                  i32 width_ratio, i32 height_ratio)
 {
-    texture->name = name;
+    texture->name = (char*)name;
     texture->width = width_ratio * 4;
     texture->height = height_ratio * 4;
 }
@@ -119,6 +119,45 @@ Texture* CreateTexture(const char* name, TextureType type,
         _GenerateVertexBuffer(texture->width, texture->height);
 
     PrintSuccess("Loaded texture from file '%s'.", file_path);
+    return texture;
+}
+
+__CREATE_STRUCT(Texture)
+CreateTextureFromMemory(const char* name, u8* image, u64 image_size,
+                        TextureType type, f32 window_width,
+                        f32 window_height)
+{
+    Texture* texture =
+        __MALLOC(Texture, texture,
+                 ("Failed to allocate the texture '%s'. Code: %d.",
+                  name, errno));
+
+    _InitializeOpenGLTexture(&texture->texture, GL_CLAMP_TO_BORDER,
+                             GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+
+    i32 image_width, image_height, image_channels;
+    u8* image_content =
+        stbi_load_from_memory(image, image_size, &image_width,
+                              &image_height, &image_channels, 0);
+
+    if (image_channels == 3) glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    else glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+    glTexImage2D(GL_TEXTURE_2D, 0,
+                 (image_channels == 3 ? GL_RGB : GL_RGBA),
+                 image_width, image_height, 0,
+                 (image_channels == 3 ? GL_RGB : GL_RGBA),
+                 GL_UNSIGNED_BYTE, image_content);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(image_content);
+
+    _InsertTextureData(texture, name, window_width / image_width,
+                       window_height / image_height);
+
+    texture->vao =
+        _GenerateVertexBuffer(texture->width, texture->height);
+
+    PrintSuccess("Loaded texture '%s' from memory.", name);
     return texture;
 }
 

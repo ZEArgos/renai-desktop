@@ -67,8 +67,8 @@ __BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents)
 
 void AppendNode(LinkedList* list, Node* node)
 {
-    list->last_node->next = node;
-    list->last_node = list->last_node->next;
+    (list)->last_node->next = node;
+    (list)->last_node = (list)->last_node->next;
 }
 void InsertNode(LinkedList* list, Node* node)
 {

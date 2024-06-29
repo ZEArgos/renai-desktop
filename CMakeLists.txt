@@ -20,7 +20,8 @@ macro(get_version_string)
             message(FATAL_ERROR "Failure to find Git version has caused a fatal exception.")
         endif()
 
-        set(PROJECT_VERSION_STRING 0.${PROJECT_MINOR_VERS}.${PROJECT_REVIS_VERS})
+        set(PROJECT_MAJOR_VERS 0)
+        set(PROJECT_VERSION_STRING ${PROJECT_MAJOR_VERS}.${PROJECT_MINOR_VERS}.${PROJECT_REVIS_VERS})
         file(WRITE ${CMAKE_SOURCE_DIR}/Source/Assets/version.txt ${PROJECT_VERSION_STRING})
 
         message(STATUS "Found version ${PROJECT_VERSION_STRING}. Debug mode on.")
@@ -69,6 +70,7 @@ macro(create_application)
 
     file(COPY ${CMAKE_SOURCE_DIR}/Source/Assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
     target_compile_definitions(${PROJECT_NAME} PRIVATE TITLE="${PROJECT_NAME} | v${PROJECT_VERSION_STRING}")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE MAJOR=${PROJECT_MAJOR_VERS} MINOR=${PROJECT_MINOR_VERS} REVIS=${PROJECT_REVIS_VERS})
     if(PROJECT_DEBUG_MODE)
         target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_MODE=1)
     endif()

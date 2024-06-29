@@ -15,6 +15,13 @@ Application* renai;
  */
 i32 main(void)
 {
+    char* scene_names[1] = {"test"};
+    char* scene_descriptions[1] = {"a quick test scene"};
+    char* texture_paths[1] = {"texture_missing.jpg"};
+    CreateScenes(scene_names, scene_descriptions, texture_paths, 1,
+                 1);
+    // exit(0);
+
     // Initialize the application and try to run its loop. If the loop
     // fails, the process will self-destruct, so don't worry about
     // error checking.
