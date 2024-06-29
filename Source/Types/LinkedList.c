@@ -46,7 +46,6 @@ void KillLinkedList(LinkedList* list)
         Node* next_node = current_node->next;
         KillNode(current_node);
         current_node = next_node;
-        printf("%s\n", current_node->name);
     }
 
     __FREE(list,

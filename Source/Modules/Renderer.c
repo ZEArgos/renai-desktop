@@ -62,7 +62,7 @@ CreateRenderer(f32 window_width, f32 window_height)
         "Successfully set up the projection matrix on shader '%s'.",
         basic_shader->name);
 
-    CreateManager(
+    renderer->scene_manager = CreateManager(
         GetNodeContents(GetRendererHead(renderer, texture), texture));
 
     return renderer;
