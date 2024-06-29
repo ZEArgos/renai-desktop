@@ -59,6 +59,7 @@ typedef union AmbiguousType
         case __FIELD(i, 64): expression(i, 64) break;                \
     }
 
+#define __TYPENAME_void(size) structure
 /**
  * @brief A macro used to get the enum typename of a signed value.
  */

@@ -132,6 +132,7 @@ RegisterTexture(Texture* from, f32 x, f32 y, u8 z, u8 scale,
                   "instance inheriting from '%s'.",
                   from->name));
 
+    registered_texture->inherits = from;
     registered_texture->x = x;
     registered_texture->y = y;
     registered_texture->z = z;

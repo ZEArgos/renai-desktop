@@ -57,13 +57,13 @@ CreateRenderer(f32 window_width, f32 window_height)
     UseShader(GetNodeContents(basic_shader, shader)->shader);
     SetMat4(GetNodeContents(basic_shader, shader)->shader,
             "projection", projection);
-
     PrintSuccess(
         "Successfully set up the projection matrix on shader '%s'.",
         basic_shader->name);
 
     renderer->scene_manager = CreateManager(
-        GetNodeContents(GetRendererHead(renderer, texture), texture));
+        GetNode(renderer->texture_list, "texture_missing.jpg")
+            ->contents.texture);
 
     return renderer;
 }
@@ -77,18 +77,7 @@ void RenderWindowContent(Renderer* renderer)
             ->shader;
     UseShader(basic_shader);
 
-    // Bind the "missing" texture to render as a placeholder.
-    Texture* missing_texture =
-        GetNodeContents(GetRendererHead(renderer, texture), texture);
-    BindTexture(missing_texture);
-
-    // Position transform the bound texture so it's within our
-    // viewport.
-    mat4 model = GLM_MAT4_IDENTITY_INIT;
-    glm_translate(model, (vec3){0.0f, 0.0f, 0.0f});
-    SetMat4(basic_shader, "model", model);
-
-    // Draw the texture.
-    // glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    RenderCurrentScene(
+        renderer->scene_manager,
+        GetNodeContents(GetRendererHead(renderer, shader), shader));
 }

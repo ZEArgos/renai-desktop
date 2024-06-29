@@ -13,11 +13,13 @@
 
 #include <Declarations.h>
 #include <LinkedList.h>
+#include <Scene.h>
 #include <Texture.h>
 
 typedef struct SceneManager
 {
-    LinkedList* registered_textures;
+    char* current_scene;
+    LinkedList* scene_list;
 } SceneManager;
 
 __CREATE_STRUCT(SceneManager)
@@ -25,10 +27,12 @@ CreateManager(Texture* missing_texture);
 
 __INLINE void KillManager(SceneManager* manager)
 {
-    KillLinkedList(manager->registered_textures);
+    KillLinkedList(manager->scene_list);
     __FREE(manager,
            ("The scene manager freer was given an invalid value."));
     PrintWarning("The scene manager was freed.");
 }
+
+void RenderCurrentScene(SceneManager* manager, Shader* basic_shader);
 
 #endif // _RENAI_MANAGER_

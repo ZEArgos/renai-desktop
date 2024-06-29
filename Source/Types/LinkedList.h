@@ -14,6 +14,7 @@
 // Provides the various type definitions used in this file.
 #include <Declarations.h>
 // Provides shader loading and management functionality.
+#include <Scene.h>
 #include <Shader.h>
 // Provides data structures and functionality needed to create and
 // handle textures.
@@ -34,11 +35,11 @@ typedef enum NodeType
      * information associated with it.
      */
     texture,
+    instance,
     /**
-     * @brief The node contains a registered texture object for use in
-     * rendering.
+     * @brief The node contains a scene object.
      */
-    instance
+    scene
 } NodeType;
 
 /**
@@ -57,11 +58,11 @@ typedef union NodeContents
      * it.
      */
     Texture* texture;
-    /**
-     * @brief A registered texture with individual information for use
-     * in rendering.
-     */
     TextureInstance* instance;
+    /**
+     * @brief
+     */
+    Scene* scene;
 } NodeContents;
 
 typedef struct Node
@@ -93,6 +94,8 @@ typedef struct LinkedList
     __CreateNode(                                                    \
         instance, name,                                              \
         RegisterTexture(from, x, y, z, scale, brightness, rotation))
+#define CreateSceneNode(missing_texture)                             \
+    __CreateNode(scene, "test_scene", TEST_SCENE(missing_texture))
 // stupid fucking solution
 Node* __CreateNode(NodeType type, const char* name, void* contents);
 
@@ -105,7 +108,9 @@ LinkedList* CreateLinkedList(Node* head);
         current_node->type,                                          \
         KillShader(current_node->contents.shader),                   \
         KillTexture(current_node->contents.texture),                 \
-        DeregisterTexture(current_node->contents.instance));
+        DeregisterTexture(current_node->contents.instance),          \
+        KillScene(current_node->contents.scene))
+
 void KillLinkedList(LinkedList* list);
 
 __BOOLEAN VerifyNodeContents(NodeType type, NodeContents* contents);

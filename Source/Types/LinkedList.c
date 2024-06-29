@@ -1,12 +1,13 @@
 #include "LinkedList.h"
 #include <Logger.h>
 
-#define __TYPE_SWITCH(type, ex1, ex2, ex3)                           \
+#define __TYPE_SWITCH(type, ex1, ex2, ex3, ex4)                      \
     switch (type)                                                    \
     {                                                                \
         case shader:   ex1; break;                                   \
         case texture:  ex2; break;                                   \
         case instance: ex3; break;                                   \
+        case scene:    ex4; break;                                      \
     }
 
 Node* __CreateNode(NodeType type, const char* name, void* contents)
@@ -20,7 +21,8 @@ Node* __CreateNode(NodeType type, const char* name, void* contents)
 
     __TYPE_SWITCH(type, created_node->contents.shader = contents,
                   created_node->contents.texture = contents,
-                  created_node->contents.instance = contents);
+                  created_node->contents.instance = contents,
+                  created_node->contents.scene = contents);
 
     return created_node;
 }
